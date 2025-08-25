@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/custom/theme-provider";
+import Navbar from "@/components/custom/Navbar";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 
 const sourceSans3 = Source_Sans_3({
   variable: "--font-geist-mono",
@@ -22,17 +25,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${sourceSans3.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+        layout: {
+          logoImageUrl: "/logo.png",
+          socialButtonsVariant: "iconButton",
+        },
+        variables: { colorPrimary: "#0a66c2" },
+      }}
+    >
+      <html lang="en">
+        <body className={`${sourceSans3.variable} antialiased`}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar />
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
