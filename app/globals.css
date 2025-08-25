@@ -1,26 +1,165 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
+
+  --color-dark: var(--dark);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --primary: #0a66c2; /* LinkedIn Blue */
+  --primary-50: #eef3f8; /* LinkedIn light surface */
+  --primary-100: #dfe9f3;
+  --primary-200: #bbd7ea;
+  --primary-300: #8bbbe0;
+  --primary-400: #378fe9; /* lighter accent used in gradients */
+  --primary-500: #0a66c2; /* base */
+  --primary-600: #004182; /* hover/darker */
+  --primary-700: #00376b;
+  --primary-800: #002d57;
+  --primary-900: #00213f;
+  --primary-950: #00162a;
+
+  --dark: #1d2226;
+
+  --radius: 0.625rem;
+  --background: #ffffff; /* LinkedIn light background */
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary-foreground: #ffffff; /* text on primary */
+  --secondary: #f3f2ef; /* LinkedIn light neutral */
+  --secondary-foreground: #1f2328;
+  --muted: #f3f2ef;
+  --muted-foreground: #606770;
+  --accent: #eef3f8;
+  --accent-foreground: #1f2328;
+  --destructive: #d11124;
+  --border: #e6e6e6;
+  --input: #e6e6e6;
+  --ring: #0a66c2;
+  --chart-1: #0a66c2;
+  --chart-2: #378fe9;
+  --chart-3: #004182;
+  --chart-4: #8bbbe0;
+  --chart-5: #002d57;
+  --sidebar: #f3f2ef;
+  --sidebar-foreground: #111111;
+  --sidebar-primary: #0a66c2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef3f8;
+  --sidebar-accent-foreground: #111111;
+  --sidebar-border: #e6e6e6;
+  --sidebar-ring: #0a66c2;
+}
+
+.dark {
+  --primary: #0a66c2;
+  --primary-50: #0b5cad;
+  --primary-100: #0a56a2;
+  --primary-200: #094a8c;
+  --primary-300: #083f77;
+  --primary-400: #073462;
+  --primary-500: #004182; /* hover/darker */
+  --primary-600: #00376b;
+  --primary-700: #002d57;
+  --primary-800: #00213f;
+  --primary-900: #00162a;
+  --primary-950: #000f1d;
+
+  --dark: #1d2226;
+
+  --background: #000000e6; /* LinkedIn dark */
+  --foreground: #f5f6f7;
+  --card: #1d2226;
+  --card-foreground: #f5f6f7;
+  --popover: #1d2226;
+  --popover-foreground: #f5f6f7;
+  --primary-foreground: #ffffff;
+  --secondary: #111418;
+  --secondary-foreground: #f5f6f7;
+  --muted: #111418;
+  --muted-foreground: #cbd5e1;
+  --accent: #0b5cad;
+  --accent-foreground: #ffffff;
+  --destructive: #ff4d4f;
+  --border: #2a2f34;
+  --input: #2a2f34;
+  --ring: #378fe9;
+  --chart-1: #378fe9;
+  --chart-2: #0a66c2;
+  --chart-3: #004182;
+  --chart-4: #8bbbe0;
+  --chart-5: #002d57;
+  --sidebar: #1d2226;
+  --sidebar-foreground: #f5f6f7;
+  --sidebar-primary: #0a66c2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #111418;
+  --sidebar-accent-foreground: #f5f6f7;
+  --sidebar-border: #2a2f34;
+  --sidebar-ring: #378fe9;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
 }
