@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/custom/theme-provider";
 import Navbar from "@/components/custom/Navbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { Toaster } from "@/components/ui/sonner";
+import SyncUserProvider from "@/providers/SyncUserProvider";
 
 const sourceSans3 = Source_Sans_3({
   variable: "--font-geist-mono",
@@ -44,7 +46,8 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Navbar />
-            {children}
+            <SyncUserProvider>{children}</SyncUserProvider>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

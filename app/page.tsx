@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
+import ProfileSection from "./_components/ProfileSection";
 
 export const metadata: Metadata = {
   title: "Feed | JCM",
@@ -8,6 +9,17 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="py-2 sm:py-4 sm:px-6 md:px-10 lg:px-16">main body</main>
+    <main className="py-2 sm:py-4 sm:px-6 md:px-10 lg:px-16 flex flex-col lg:flex-row gap-6">
+      {/* profile */}
+      <div className="w-[20%] rounded-lg">
+        <ProfileSection />
+      </div>
+
+      {/* posts / projects  */}
+      <div className="w-[50%]  bg-purple-500 rounded-lg"></div>
+
+      {/* activities */}
+      <div className="w-[30%]  bg-purple-500 rounded-lg"></div>
+    </main>
   );
 }
