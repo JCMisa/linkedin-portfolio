@@ -9,10 +9,10 @@ import Link from "next/link";
 
 const LatestWorkExperience = () => {
   return (
-    <div className="h-[124px] w-full dark:bg-dark flex flex-col items-start gap-4 rounded-lg p-3">
-      <h2 className="font-bold text-md">Latest Work Experience</h2>
+    <div className="h-[124px] w-full dark:bg-dark flex flex-col items-start gap-4 rounded-lg p-3 overflow-hidden">
+      <h2 className="font-bold text-md truncate">Latest Work Experience</h2>
       <div className="flex items-center w-full gap-2 justify-between px-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full">
           <Image
             src={"/ptp.webp"}
             alt="ptp-logo"
@@ -22,14 +22,16 @@ const LatestWorkExperience = () => {
           />
           <div className="flex flex-col items-start justify-between gap-2">
             <div className="flex flex-col items-start">
-              <p className="text-sm font-bold">Philadelphia Truck Parts</p>
-              <span className="text-[9px] text-muted-foreground">
+              <p className="text-sm font-bold truncate">
+                Philadelphia Truck Parts
+              </p>
+              <span className="text-[9px] text-muted-foreground truncate">
                 July 2025 -{" "}
                 {new Date().toLocaleString("default", { month: "long" })}{" "}
                 {new Date().getFullYear()}
               </span>
             </div>
-            <span className="text-xs text-muted-foreground uppercase">
+            <span className="text-xs text-muted-foreground uppercase truncate">
               Frontend Developer
             </span>
           </div>

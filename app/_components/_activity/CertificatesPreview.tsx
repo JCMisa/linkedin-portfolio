@@ -56,7 +56,7 @@ const CertificatesPreview = () => {
             />
 
             <div className="flex flex-col items-start">
-              <p className="text-sm font-bold truncate w-40">
+              <p className="text-sm font-bold truncate w-[80%]">
                 Introduction to Large Language Model
               </p>
               <span className="text-xs text-muted-foreground truncate">

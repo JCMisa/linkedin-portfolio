@@ -16,7 +16,7 @@ export default function Home() {
       </div>
 
       {/* main content wrapper with offset for profile */}
-      <div className="flex flex-col lg:flex-row gap-6 lg:ml-[265px]">
+      <div className="flex flex-col lg:flex-row gap-6 lg:ml-[265px] py-5 lg:py-0">
         {/* posts / projects  */}
         <div className="w-full lg:w-[65%] min-h-[80rem] bg-purple-500 rounded-lg"></div>
 

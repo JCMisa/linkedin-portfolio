@@ -1,3 +1,4 @@
+import Footer from "@/components/custom/Footer";
 import CertificatesPreview from "./CertificatesPreview";
 import EducationPreview from "./EducationPreview";
 import LatestWorkExperience from "./LatestWorkExperience";
@@ -8,6 +9,10 @@ const ProfessionalActivities = () => {
       <LatestWorkExperience />
       <CertificatesPreview />
       <EducationPreview />
+
+      <div className="mt-5">
+        <Footer />
+      </div>
     </div>
   );
 };
