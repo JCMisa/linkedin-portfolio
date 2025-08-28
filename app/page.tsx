@@ -1,5 +1,6 @@
 import { Metadata } from "next";
-import ProfileSection from "./_components/ProfileSection";
+import ProfileSection from "./_components/_profile/ProfileSection";
+import ProfessionalActivities from "./_components/_activity/ProfessionalActivities";
 
 export const metadata: Metadata = {
   title: "Feed | JCM",
@@ -18,7 +19,9 @@ export default function Home() {
       <div className="w-[50%] min-h-[40rem] bg-purple-500 rounded-lg ml-5"></div>
 
       {/* activities */}
-      <div className="w-[30%]  bg-purple-500 rounded-lg"></div>
+      <div className="w-[30%] rounded-lg">
+        <ProfessionalActivities />
+      </div>
     </main>
   );
 }
