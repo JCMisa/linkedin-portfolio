@@ -55,7 +55,7 @@ const Navbar = () => {
   const { user } = useUser();
 
   return (
-    <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b dark:bg-dark flex items-center">
+    <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b dark:bg-dark flex items-center fixed">
       <div className="w-[80%] flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Image
