@@ -32,11 +32,11 @@ const ProfileCard = () => {
           </span>
           <div className="flex items-center gap-1 mt-1">
             <Image
-              src={"/empty-img.webp"}
+              src={"/ptp.webp"}
               alt="placeholder-img"
               width={1000}
               height={1000}
-              className="w-4 h-4 rounded-sm object-fill"
+              className="w-4 h-4 rounded-sm object-cover"
             />
             <p className="text-xs font-bold uppercase">
               Philadelphia Truck Parts

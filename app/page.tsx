@@ -9,18 +9,21 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="py-2 sm:py-10 md:py-12 lg:py-18 sm:px-6 md:px-10 lg:px-16 flex flex-col lg:flex-row gap-6">
-      {/* profile */}
-      <div className="w-[20%] rounded-lg">
+    <main className="relative py-2 sm:py-10 md:py-12 lg:py-18 sm:px-6 md:px-10 lg:px-16">
+      {/* profile - fixed */}
+      <div className="hidden lg:block fixed w-[240px] rounded-lg ">
         <ProfileSection />
       </div>
 
-      {/* posts / projects  */}
-      <div className="w-[50%] min-h-[40rem] bg-purple-500 rounded-lg ml-5"></div>
+      {/* main content wrapper with offset for profile */}
+      <div className="flex flex-col lg:flex-row gap-6 lg:ml-[265px]">
+        {/* posts / projects  */}
+        <div className="w-full lg:w-[65%] min-h-[80rem] bg-purple-500 rounded-lg"></div>
 
-      {/* activities */}
-      <div className="w-[30%] rounded-lg">
-        <ProfessionalActivities />
+        {/* activities */}
+        <div className="w-full lg:w-[35%] rounded-lg">
+          <ProfessionalActivities />
+        </div>
       </div>
     </main>
   );
