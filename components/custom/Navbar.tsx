@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ActivityIcon,
   BriefcaseBusinessIcon,
@@ -25,6 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Button } from "../ui/button";
 
 const menuItems = [
   {
@@ -62,6 +63,7 @@ const menuItems = [
 const Navbar = () => {
   const pathname = usePathname();
   const { user } = useUser();
+  const router = useRouter();
 
   return (
     <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b dark:bg-dark flex items-center fixed top-0 z-50">
@@ -181,12 +183,23 @@ const Navbar = () => {
       </div>
 
       {/* user icon */}
-      {user && (
-        <div className="w-[52px] h-[52px] flex flex-col items-start justify-center">
+      {user ? (
+        <div className="w-[52px] h-[52px] flex flex-col items-start justify-center mx-2">
           <UserButton />
         </div>
+      ) : (
+        <Button
+          variant={"outline"}
+          size={"sm"}
+          className="mx-2"
+          onClick={() => router.push("/sign-in")}
+        >
+          Sign In
+        </Button>
       )}
+
       <Separator orientation="vertical" className="hidden lg:block" />
+
       <div className="w-[20%] hidden lg:flex items-center">
         <Link
           href={"/about"}

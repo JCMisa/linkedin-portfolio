@@ -12,7 +12,7 @@ import { useState } from "react";
 const categorizations = [
   {
     id: 1,
-    title: "Automation & AI",
+    title: "Software & AI",
     icon: BrainCircuitIcon,
   },
   {

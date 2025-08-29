@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
 
 // --------------------------- Helper Functions ---------------------------
-const getSessionUserId = async (): Promise<string> => {
+export const getSessionUserId = async (): Promise<string> => {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthenticated");
 
@@ -36,4 +36,11 @@ export const getUserByEmail = withErrorHandling(async (email: string) => {
   }
 
   return data[0];
+});
+
+export const getUserRole = withErrorHandling(async () => {
+  const user = await getCurrentUser();
+
+  if (!user) throw new Error("User not found");
+  return user.role;
 });

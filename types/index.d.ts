@@ -8,3 +8,53 @@ declare interface UserType {
   createdAt: Date;
   updatedAt: Date;
 }
+
+declare interface ProjectType {
+  id: string;
+  title: string;
+  description?: string | null;
+  image?: string | null;
+  githubLink?: string | null;
+  liveLink?: string | null;
+  techStacks?: string[] | null;
+  category?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+declare interface ProjectInsertedDataType {
+  title: string;
+  description: string;
+  imageUrl: string;
+  githubUrl: string;
+  liveUrl: string;
+  category: string;
+}
+
+declare interface CommentUserType {
+  id: number;
+  name: string;
+  image: string | null;
+  role?: string | null;
+}
+
+declare interface CommentCreateResponse {
+  id: string;
+  content: string;
+  createdAt: Date;
+  userId: number;
+}
+
+declare interface CommentType {
+  id: string;
+  content: string;
+  createdAt: Date;
+  user: CommentUserType;
+}
+
+declare interface CommentWithOptionalUser {
+  id: string;
+  content: string;
+  createdAt: Date;
+  user: CommentUserType | null;
+}
