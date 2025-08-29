@@ -31,7 +31,7 @@ const ProjectSearchAndCategorize = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   return (
-    <div className="h-[116px] w-full dark:bg-dark flex flex-col items-start gap-4 rounded-lg py-3 px-5 overflow-hidden">
+    <div className="w-full dark:bg-dark flex flex-col items-start gap-4 rounded-lg py-3 px-5 overflow-hidden">
       {/* search */}
       <div className="flex items-center gap-2 w-full">
         <Image
@@ -51,7 +51,7 @@ const ProjectSearchAndCategorize = () => {
       </div>
 
       {/* categorize */}
-      <div className="flex flex-row gap-3 items-center justify-between px-5 w-full">
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between px-5 w-full">
         {categorizations.map((category) => {
           const Icon = category.icon;
           return (

@@ -11,11 +11,20 @@ import {
   GalleryVerticalEndIcon,
   HomeIcon,
   LaptopMinimalIcon,
+  MenuIcon,
   PhoneIcon,
   SearchIcon,
   UserIcon,
 } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const menuItems = [
   {
@@ -56,7 +65,7 @@ const Navbar = () => {
 
   return (
     <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b dark:bg-dark flex items-center fixed top-0 z-50">
-      <div className="w-[80%] flex items-center justify-between">
+      <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
           <Image
             src={"/logo.png"}
@@ -65,7 +74,7 @@ const Navbar = () => {
             height={34.17}
             className="rounded-[3px]"
           />
-          <div className="relative rounded-full w-[280px] h-[34px] border border-neutral-600 pl-[40px] pr-[16px] flex items-center justify-center">
+          <div className="relative rounded-full w-[280px] h-[34px] border border-neutral-600 pl-[40px] pr-[16px] hidden sm:flex items-center justify-center">
             <SearchIcon className="size-4 absolute top-2 left-5" />
             <Input
               className="bg-transparent text-gray-500 dark:text-gray-400 text-lg border-none focus:border-none focus:outline-none active:border-none"
@@ -75,8 +84,8 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* menu items */}
-        <div className="flex items-center">
+        {/* menu items - large screen */}
+        <div className="hidden md:flex items-center">
           {menuItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -108,6 +117,67 @@ const Navbar = () => {
             );
           })}
         </div>
+
+        {/* menu items - small screen */}
+        <Sheet>
+          <SheetTrigger>
+            <MenuIcon className="block md:hidden cursor-pointer" />
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+            <SheetHeader className="space-y-4">
+              <SheetTitle className="text-left text-lg font-bold">
+                Navigation Menu
+              </SheetTitle>
+              <SheetDescription className="sr-only">
+                List of navigation menu items
+              </SheetDescription>
+              <div className="flex flex-col gap-4">
+                {/* Menu Items */}
+                <div className="space-y-4 mt-2">
+                  {menuItems.map((item) => {
+                    const isActive = pathname === item.path;
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.id}
+                        href={item.path}
+                        className={
+                          "flex items-center gap-4 p-2 rounded-lg transition-colors " +
+                          (isActive
+                            ? "bg-accent text-accent-foreground"
+                            : "hover:bg-accent hover:text-accent-foreground")
+                        }
+                      >
+                        <Icon className="size-5" />
+                        <span className="text-base">{item.title}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                <Separator className="my-4" />
+
+                {/* Additional Menu Items */}
+                <div className="space-y-4">
+                  <Link
+                    href="/about"
+                    className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+                  >
+                    <UserIcon className="size-5" />
+                    <span className="text-base">About Me</span>
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+                  >
+                    <PhoneIcon className="size-5" />
+                    <span className="text-base">Contact Me</span>
+                  </Link>
+                </div>
+              </div>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
       </div>
 
       {/* user icon */}
@@ -116,8 +186,8 @@ const Navbar = () => {
           <UserButton />
         </div>
       )}
-      <Separator orientation="vertical" />
-      <div className="w-[20%] flex items-center">
+      <Separator orientation="vertical" className="hidden lg:block" />
+      <div className="w-[20%] hidden lg:flex items-center">
         <Link
           href={"/about"}
           className={
