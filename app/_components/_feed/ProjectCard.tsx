@@ -33,8 +33,13 @@ import {
 } from "@/components/ui/tooltip";
 import CreateComment from "@/components/custom/CreateComment";
 import { useUser } from "@clerk/nextjs";
+import { getCurrentUser } from "@/lib/actions/users";
+import EditProject from "@/components/custom/EditProject";
+import DeleteProject from "@/components/custom/DeleteProject";
 
 const ProjectCard = ({ project }: { project: ProjectType }) => {
+  const { user } = useUser();
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
@@ -43,15 +48,21 @@ const ProjectCard = ({ project }: { project: ProjectType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [latestCommenter, setLatestCommenter] =
     useState<CommentUserType | null>(null);
-  const { user } = useUser();
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [likesResult, userLikeStatus, commentsResult] = await Promise.all([
-        getProjectLikes(project.id),
-        hasUserLikedProject(project.id),
-        getProjectComments(project.id),
-      ]);
+      const [likesResult, userLikeStatus, commentsResult, loggedinUser] =
+        await Promise.all([
+          getProjectLikes(project.id),
+          hasUserLikedProject(project.id),
+          getProjectComments(project.id),
+          getCurrentUser(),
+        ]);
+
+      if (loggedinUser) {
+        setCurrentUser(loggedinUser);
+      }
 
       if (likesResult.success && likesResult.data) {
         setLikesCount(likesResult.data.length);
@@ -114,35 +125,45 @@ const ProjectCard = ({ project }: { project: ProjectType }) => {
       <div className="flex items-center gap-2 justify-between w-full">
         {/* latest commenter */}
         <div className="flex items-center gap-2">
-          <Image
-            src={latestCommenter?.image || "/empty-img.webp"}
-            alt="commenter"
-            width={1000}
-            height={1000}
-            className="w-[24px] h-[24px] object-fill rounded-full"
-          />
           {latestCommenter ? (
-            <p className="text-[9px]">
-              {latestCommenter.name}{" "}
-              <span className="text-muted-foreground">
-                recently commented on this
-              </span>
-            </p>
+            <>
+              <Image
+                src={latestCommenter?.image || "/empty-img.webp"}
+                alt="commenter"
+                width={1000}
+                height={1000}
+                className="w-[24px] h-[24px] object-fill rounded-full"
+              />
+              <p className="text-[9px]">
+                {latestCommenter.name}{" "}
+                <span className="text-muted-foreground">
+                  recently commented on this
+                </span>
+              </p>
+            </>
           ) : (
             <p className="text-[9px] text-muted-foreground">No comments yet</p>
           )}
         </div>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link href={"/projects/1"}>
-              <ChevronRightIcon className="size-4" />
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>More Details</p>
-          </TooltipContent>
-        </Tooltip>
+        <div className="flex items-center gap-2">
+          {currentUser && currentUser.role === "admin" && (
+            <>
+              <DeleteProject project={project} />
+              <EditProject project={project} />
+            </>
+          )}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href={"/projects/1"}>
+                <ChevronRightIcon className="size-4" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>More Details</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
 
       <Separator />
@@ -152,7 +173,7 @@ const ProjectCard = ({ project }: { project: ProjectType }) => {
         <div className="flex items-center gap-2 w-full">
           <Image
             src={"/profile-img.jpg"}
-            alt="cover-img"
+            alt="profile-img"
             width={1000}
             height={1000}
             className="w-[48px] h-[48px] object-fill rounded-full"

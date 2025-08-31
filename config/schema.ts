@@ -86,6 +86,20 @@ export const Comments = pgTable("comments", {
     .notNull(),
 });
 
+export const Certificates = pgTable("certificates", {
+  id: uuid().defaultRandom().primaryKey(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  image: text("image"),
+  acquiredDate: timestamp("acquiredDate"),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
 // ------------------------------------------- SCHEMA RELATIONSHIPS -------------------------------------------
 
 // Relations for the Users table

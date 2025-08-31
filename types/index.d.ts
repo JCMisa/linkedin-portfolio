@@ -58,3 +58,20 @@ declare interface CommentWithOptionalUser {
   createdAt: Date;
   user: CommentUserType | null;
 }
+
+declare interface CertificateType {
+  id: string;
+  title: string;
+  description?: string | null;
+  image?: string | null;
+  acquiredDate?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+declare interface CertificateInsertedDataType {
+  title: string;
+  description: string;
+  imageUrl: string;
+  acquiredDate: Date;
+}

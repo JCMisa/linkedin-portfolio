@@ -18,33 +18,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LoaderCircleIcon, PlusIcon, X, AlertCircle } from "lucide-react";
-import Link from "next/link";
+import { EditIcon, LoaderCircleIcon, X, AlertCircle } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { useState, KeyboardEvent, FocusEvent } from "react";
+import { useState, KeyboardEvent, useEffect, FocusEvent } from "react";
 import { toast } from "sonner";
-import { addProject } from "@/lib/actions/projects";
+import { updateProject } from "@/lib/actions/projects";
 import { showConfetti } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"; // shadcn helper
 
-/* ---------- regexes ---------- */
+/* ---------- validation helpers ---------- */
 const imageRegex = /^https?:\/\/.+\.(png|jpe?g|webp|svg)$/i;
-const genericRegex = /^https?:\/\/.+\..+/i;
+const genericRegex = /^https?:\/\/.+\..+/i; // basic URL
 
-const CreateProject = () => {
+const EditProject = ({ project }: { project: ProjectType }) => {
+  /* ---------- form state ---------- */
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    imageUrl: "",
-    githubUrl: "",
-    liveUrl: "",
-    category: "",
+    title: project.title || "",
+    description: project.description || "",
+    imageUrl: project.image || "",
+    githubUrl: project.githubLink || "",
+    liveUrl: project.liveLink || "",
+    category: project.category || "",
   });
 
-  const [techStack, setTechStack] = useState<string[]>([]);
+  const [techStack, setTechStack] = useState<string[]>(
+    project.techStacks || []
+  );
   const [currentTech, setCurrentTech] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [open, setOpen] = useState(false);
 
   /* ---------- touched flags ---------- */
   const [touched, setTouched] = useState({
@@ -53,8 +53,8 @@ const CreateProject = () => {
     liveUrl: false,
   });
 
-  const touch = (k: keyof typeof touched) =>
-    setTouched((prev) => ({ ...prev, [k]: true }));
+  const touch = (field: keyof typeof touched) =>
+    setTouched((prev) => ({ ...prev, [field]: true }));
 
   /* ---------- validation ---------- */
   const imageValid =
@@ -64,8 +64,27 @@ const CreateProject = () => {
   const liveValid =
     !formData.liveUrl || genericRegex.test(formData.liveUrl.trim());
 
-  /* ---------- handlers ---------- */
-  const handleChange = (
+  /* ---------- misc ---------- */
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  /* ---------- reset form when dialog re-opens for this project ---------- */
+  useEffect(() => {
+    if (!open) return;
+    setFormData({
+      title: project.title || "",
+      description: project.description || "",
+      imageUrl: project.image || "",
+      githubUrl: project.githubLink || "",
+      liveUrl: project.liveLink || "",
+      category: project.category || "",
+    });
+    setTechStack(project.techStacks || []);
+    setTouched({ imageUrl: false, githubUrl: false, liveUrl: false });
+  }, [open, project]);
+
+  /* ---------- field handlers ---------- */
+  const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
@@ -73,59 +92,61 @@ const CreateProject = () => {
   };
 
   const handleBlur =
-    (k: keyof typeof touched) => (e: FocusEvent<HTMLInputElement>) => {
-      touch(k);
-      setFormData((prev) => ({
-        ...prev,
-        [k]: e.target.value.trim(),
-      }));
+    (field: keyof typeof touched) => (e: FocusEvent<HTMLInputElement>) => {
+      touch(field);
+      // trim on blur
+      setFormData((prev) => ({ ...prev, [field]: e.target.value.trim() }));
     };
 
-  const addTech = () => {
-    const t = currentTech.trim();
-    if (t && !techStack.includes(t)) {
-      setTechStack((prev) => [...prev, t]);
+  /* ---------- tech-stack helpers ---------- */
+  const handleAddTech = () => {
+    const trimmed = currentTech.trim();
+    if (trimmed && !techStack.includes(trimmed)) {
+      setTechStack((prev) => [...prev, trimmed]);
       setCurrentTech("");
     }
   };
 
-  const handleTechKey = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleTechKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "," || e.key === "Enter") {
       e.preventDefault();
-      addTech();
+      handleAddTech();
     }
   };
 
-  const removeTech = (idx: number) =>
-    setTechStack((prev) => prev.filter((_, i) => i !== idx));
+  const handleRemoveTech = (indexToRemove: number) => {
+    setTechStack((prev) => prev.filter((_, i) => i !== indexToRemove));
+  };
 
+  /* ---------- submit ---------- */
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const res = await addProject(formData, techStack);
-      if (res?.success) {
-        toast.success(`${res.data} created successfully!`);
+      const result = await updateProject(project.id, formData, techStack);
+      if (result.success) {
         showConfetti();
+        toast.success(`${result.data} updated successfully!`);
         setOpen(false);
-        setFormData({
-          title: "",
-          description: "",
-          imageUrl: "",
-          githubUrl: "",
-          liveUrl: "",
-          category: "",
-        });
-        setTechStack([]);
-        setTouched({ imageUrl: false, githubUrl: false, liveUrl: false });
       } else {
-        toast.error("Could not create project");
+        toast.error(result.error || "Failed to update project");
       }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error updating project");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  /* ---------- ready to submit? ---------- */
+  const hasRealChanges =
+    formData.title !== project.title ||
+    formData.description !== project.description ||
+    formData.imageUrl !== project.image ||
+    formData.githubUrl !== project.githubLink ||
+    formData.liveUrl !== project.liveLink ||
+    formData.category !== project.category ||
+    JSON.stringify(techStack) !== JSON.stringify(project.techStacks || []);
+
   const canSubmit =
     formData.title &&
     formData.description &&
@@ -133,35 +154,22 @@ const CreateProject = () => {
     techStack.length > 0 &&
     imageValid &&
     githubValid &&
-    liveValid;
+    liveValid &&
+    hasRealChanges;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="flex items-center justify-center">
-        <PlusIcon className="size-4 cursor-pointer" />
+      <DialogTrigger asChild>
+        <button className="flex items-center justify-center">
+          <EditIcon className="size-3 cursor-pointer hover:text-primary transition-colors" />
+        </button>
       </DialogTrigger>
 
       <DialogContent className="max-h-[90vh] overflow-y-auto no-scrollbar">
         <DialogHeader>
-          <DialogTitle>Add New Project</DialogTitle>
+          <DialogTitle>Edit Project</DialogTitle>
           <DialogDescription>
-            Provide the details to add a new project. Convert first project
-            image in this link{" "}
-            <Link
-              href="https://postimages.org/"
-              target="_blank"
-              className="text-primary hover:underline"
-            >
-              PostImage
-            </Link>{" "}
-            or{" "}
-            <Link
-              href="https://imgbb.com/"
-              target="_blank"
-              className="text-primary hover:underline"
-            >
-              IMGBB
-            </Link>
+            Update the details for {project.title}
           </DialogDescription>
         </DialogHeader>
         <Separator />
@@ -169,50 +177,39 @@ const CreateProject = () => {
         <div className="space-y-4 py-4">
           {/* Title */}
           <div className="space-y-2">
-            <label htmlFor="title" className="text-sm font-medium">
-              Project Title
-            </label>
+            <label className="text-sm font-medium">Project Title</label>
             <Input
-              id="title"
               name="title"
               placeholder="Enter project title"
               value={formData.title}
-              onChange={handleChange}
+              onChange={handleInputChange}
             />
           </div>
 
           {/* Description */}
           <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium">
-              Description
-            </label>
+            <label className="text-sm font-medium">Description</label>
             <Textarea
-              id="description"
               name="description"
               placeholder="Describe your project"
               value={formData.description}
-              onChange={handleChange}
+              onChange={handleInputChange}
               rows={4}
             />
           </div>
 
           {/* Image URL */}
           <div className="space-y-1">
-            <label htmlFor="imageUrl" className="text-sm font-medium">
-              Image URL
-            </label>
+            <label className="text-sm font-medium">Image URL</label>
             <div className="relative">
               <Input
-                id="imageUrl"
                 name="imageUrl"
                 placeholder="https://example.com/image.png"
                 value={formData.imageUrl}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 onBlur={handleBlur("imageUrl")}
                 className={cn(
-                  touched.imageUrl &&
-                    !imageValid &&
-                    "border-destructive focus-visible:ring-destructive"
+                  touched.imageUrl && !imageValid && "border-destructive"
                 )}
               />
               {touched.imageUrl && !imageValid && (
@@ -221,28 +218,23 @@ const CreateProject = () => {
             </div>
             {touched.imageUrl && !imageValid && (
               <p className="text-xs text-destructive">
-                Must be a valid URL ending in .png, .jpg, .jpeg, .webp or .svg
+                Must be a direct link to .png, .jpg, .jpeg, .webp or .svg
               </p>
             )}
           </div>
 
           {/* GitHub & Live URLs */}
-          <div className="flex items-center gap-2 w-full">
-            <div className="space-y-1 w-full">
-              <label htmlFor="githubUrl" className="text-sm font-medium">
-                GitHub URL
-              </label>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-sm font-medium">GitHub URL</label>
               <Input
-                id="githubUrl"
                 name="githubUrl"
                 placeholder="https://github.com/..."
                 value={formData.githubUrl}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 onBlur={handleBlur("githubUrl")}
                 className={cn(
-                  touched.githubUrl &&
-                    !githubValid &&
-                    "border-destructive focus-visible:ring-destructive"
+                  touched.githubUrl && !githubValid && "border-destructive"
                 )}
               />
               {touched.githubUrl && !githubValid && (
@@ -250,21 +242,16 @@ const CreateProject = () => {
               )}
             </div>
 
-            <div className="space-y-1 w-full">
-              <label htmlFor="liveUrl" className="text-sm font-medium">
-                Live URL
-              </label>
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Live URL</label>
               <Input
-                id="liveUrl"
                 name="liveUrl"
                 placeholder="https://example.com"
                 value={formData.liveUrl}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 onBlur={handleBlur("liveUrl")}
                 className={cn(
-                  touched.liveUrl &&
-                    !liveValid &&
-                    "border-destructive focus-visible:ring-destructive"
+                  touched.liveUrl && !liveValid && "border-destructive"
                 )}
               />
               {touched.liveUrl && !liveValid && (
@@ -274,10 +261,8 @@ const CreateProject = () => {
           </div>
 
           {/* Category */}
-          <div className="space-y-2 w-full">
-            <label htmlFor="category" className="text-sm font-medium">
-              Category
-            </label>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Category</label>
             <Select
               value={formData.category}
               onValueChange={(v) =>
@@ -285,7 +270,7 @@ const CreateProject = () => {
               }
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select project category" />
+                <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="software">Software Development</SelectItem>
@@ -297,18 +282,15 @@ const CreateProject = () => {
 
           {/* Tech Stack */}
           <div className="space-y-2">
-            <label htmlFor="techStack" className="text-sm font-medium">
-              Tech Stack
-            </label>
+            <label className="text-sm font-medium">Tech Stack</label>
             <div className="flex gap-2">
               <Input
-                id="techStack"
-                placeholder="Add technologies (press comma or enter)"
+                placeholder="Add technology"
                 value={currentTech}
                 onChange={(e) => setCurrentTech(e.target.value)}
-                onKeyDown={handleTechKey}
+                onKeyDown={handleTechKeyDown}
               />
-              <Button onClick={addTech} type="button">
+              <Button onClick={handleAddTech} size="sm">
                 Add
               </Button>
             </div>
@@ -320,11 +302,8 @@ const CreateProject = () => {
                     className="flex items-center gap-1 bg-accent px-2 py-1 rounded-md"
                   >
                     <span className="text-sm">{tech}</span>
-                    <button
-                      onClick={() => removeTech(i)}
-                      className="hover:text-destructive"
-                    >
-                      <X className="size-3" />
+                    <button onClick={() => handleRemoveTech(i)}>
+                      <X className="size-3 hover:text-destructive" />
                     </button>
                   </div>
                 ))}
@@ -332,28 +311,31 @@ const CreateProject = () => {
             )}
           </div>
 
-          <Button
-            onClick={handleSubmit}
-            className="w-full"
-            disabled={
-              !formData.title ||
-              !formData.description ||
-              !formData.category ||
-              techStack.length === 0 ||
-              isSubmitting ||
-              !canSubmit
-            }
-          >
-            {isSubmitting ? (
-              <LoaderCircleIcon className="size-5 animate-spin" />
-            ) : (
-              "Create Project"
-            )}
-          </Button>
+          {/* Actions */}
+          <div className="flex gap-2">
+            <Button
+              onClick={handleSubmit}
+              className="flex-1"
+              disabled={!canSubmit || isSubmitting}
+            >
+              {isSubmitting ? (
+                <LoaderCircleIcon className="size-5 animate-spin" />
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default CreateProject;
+export default EditProject;
