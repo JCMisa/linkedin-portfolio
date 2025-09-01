@@ -6,38 +6,59 @@ import ProjectsFeedList from "./ProjectsFeedList";
 import CreateProject from "@/components/custom/CreateProject";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/utils/useDebounce";
-import { getFilteredProjects } from "@/lib/actions/projects";
-import { toast } from "sonner";
+import { getProjectsPaginated } from "@/lib/actions/projects";
 
-const ProjectsFeed = ({ userRole }: { userRole: string }) => {
-  const [projects, setProjects] = useState<ProjectType[]>([]);
+export default function ProjectsFeed({
+  userRole,
+  initialProjects,
+  initialCursor,
+  initialHasMore,
+}: {
+  userRole: string;
+  initialProjects: ProjectType[];
+  initialCursor?: string;
+  initialHasMore: boolean;
+}) {
+  const [projects, setProjects] = useState(initialProjects);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
+  const [cursor, setCursor] = useState(initialCursor);
+  const [hasMore, setHasMore] = useState(initialHasMore);
   const [loading, setLoading] = useState(false);
 
   const debouncedSearch = useDebounce(search, 300);
 
+  // reset + fetch first page on filter change
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      try {
-        const { data } = await getFilteredProjects({
-          query: debouncedSearch,
-          category,
-        });
+    setLoading(true);
+    getProjectsPaginated({ query: debouncedSearch, category, limit: 5 }).then(
+      ({ data, nextCursor }) => {
         setProjects(data ?? []);
-      } catch (error) {
-        console.log("Error fetching projects: ", error);
-        toast.error("Failed to fetch projects");
-      } finally {
+        setCursor(nextCursor ?? undefined);
+        setHasMore(!!nextCursor);
         setLoading(false);
       }
-    })();
+    );
   }, [debouncedSearch, category]);
+
+  const loadMore = () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    getProjectsPaginated({
+      query: debouncedSearch,
+      category,
+      cursor,
+      limit: 5,
+    }).then(({ data, nextCursor }) => {
+      setProjects((prev) => [...prev, ...(data ?? [])]);
+      setCursor(nextCursor ?? undefined);
+      setHasMore(!!nextCursor);
+      setLoading(false);
+    });
+  };
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {/* search and categorize card */}
       <ProjectSearchAndCategorize
         search={search}
         setSearch={setSearch}
@@ -47,7 +68,6 @@ const ProjectsFeed = ({ userRole }: { userRole: string }) => {
 
       <div className="flex items-center gap-2 w-full">
         <Separator
-          orientation="horizontal"
           className={`${
             userRole === "admin" ? "!w-[93%] sm:!w-[95%]" : "w-full"
           }`}
@@ -55,14 +75,13 @@ const ProjectsFeed = ({ userRole }: { userRole: string }) => {
         {userRole === "admin" && <CreateProject />}
       </div>
 
-      {/* projects list */}
       <ProjectsFeedList
         projects={projects}
         isFetchingProjects={loading}
         userRole={userRole}
+        hasMore={hasMore}
+        loadMore={loadMore}
       />
     </div>
   );
-};
-
-export default ProjectsFeed;
+}

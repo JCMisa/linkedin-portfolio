@@ -4,7 +4,7 @@ import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
 import { Projects } from "@/config/schema";
 import { getCurrentUser } from "./users";
-import { desc, eq, ilike, or } from "drizzle-orm";
+import { and, desc, eq, ilike, lt, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const addProject = withErrorHandling(
@@ -132,5 +132,62 @@ export const getFilteredProjects = withErrorHandling(
 
     const rows = await q;
     return { data: rows, success: true };
+  }
+);
+
+export const getProjectsPaginated = withErrorHandling(
+  async ({
+    query,
+    category,
+    cursor, // string: "ts|id"
+    limit = 5,
+  }: {
+    query?: string;
+    category?: string | null;
+    cursor?: string;
+    limit?: number;
+  }) => {
+    const user = await getCurrentUser();
+    if (!user) return { data: [], nextCursor: null, success: false };
+
+    // deterministic order
+    let q = db
+      .select()
+      .from(Projects)
+      .orderBy(desc(Projects.createdAt), desc(Projects.id))
+      .$dynamic();
+
+    // filters
+    if (query?.trim()) {
+      const like = `%${query.trim()}%`;
+      q = q.where(
+        or(ilike(Projects.title, like), ilike(Projects.description, like))
+      );
+    }
+    if (category) q = q.where(eq(Projects.category, category));
+
+    // cursor
+    if (cursor) {
+      const [ts, id] = cursor.split("|");
+      const cursorDate = new Date(ts); // ← turn string → Date
+      q = q.where(
+        or(
+          lt(Projects.createdAt, cursorDate),
+          and(eq(Projects.createdAt, cursorDate), lt(Projects.id, id))
+        )
+      );
+    }
+
+    const rows = await q.limit(limit + 1);
+    const hasMore = rows.length > limit;
+    const data = hasMore ? rows.slice(0, limit) : rows;
+
+    const nextCursor = hasMore
+      ? `${data[data.length - 1].createdAt.toISOString()}|${
+          data[data.length - 1].id
+        }`
+      : null;
+
+    return { data, nextCursor, success: true };
   }
 );
