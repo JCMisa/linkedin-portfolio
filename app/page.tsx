@@ -4,13 +4,16 @@ import ProfessionalActivities from "./_components/_activity/ProfessionalActiviti
 import ProjectsFeed from "./_components/_feed/ProjectsFeed";
 import CertificatesPreview from "./_components/_activity/CertificatesPreview";
 import Footer from "@/components/custom/Footer";
+import { getUserRole } from "@/lib/actions/users";
 
 export const metadata: Metadata = {
   title: "Feed | JCM",
   description: "Feed page of my portfolio where my projects posts can be seen.",
 };
 
-export default function Home() {
+export default async function Home() {
+  const userRole = await getUserRole();
+
   return (
     <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto relative">
@@ -23,7 +26,7 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row gap-6 py-5 lg:py-0 lg:pl-[265px]">
           {/* posts / projects  */}
           <div className="w-full lg:max-w-[640px] rounded-lg">
-            <ProjectsFeed />
+            <ProjectsFeed userRole={userRole} />
           </div>
 
           {/* activities */}

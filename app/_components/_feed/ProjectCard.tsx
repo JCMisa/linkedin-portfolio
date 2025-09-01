@@ -33,11 +33,16 @@ import {
 } from "@/components/ui/tooltip";
 import CreateComment from "@/components/custom/CreateComment";
 import { useUser } from "@clerk/nextjs";
-import { getCurrentUser } from "@/lib/actions/users";
 import EditProject from "@/components/custom/EditProject";
 import DeleteProject from "@/components/custom/DeleteProject";
 
-const ProjectCard = ({ project }: { project: ProjectType }) => {
+const ProjectCard = ({
+  project,
+  userRole,
+}: {
+  project: ProjectType;
+  userRole: string;
+}) => {
   const { user } = useUser();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -48,21 +53,14 @@ const ProjectCard = ({ project }: { project: ProjectType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [latestCommenter, setLatestCommenter] =
     useState<CommentUserType | null>(null);
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [likesResult, userLikeStatus, commentsResult, loggedinUser] =
-        await Promise.all([
-          getProjectLikes(project.id),
-          hasUserLikedProject(project.id),
-          getProjectComments(project.id),
-          getCurrentUser(),
-        ]);
-
-      if (loggedinUser) {
-        setCurrentUser(loggedinUser);
-      }
+      const [likesResult, userLikeStatus, commentsResult] = await Promise.all([
+        getProjectLikes(project.id),
+        hasUserLikedProject(project.id),
+        getProjectComments(project.id),
+      ]);
 
       if (likesResult.success && likesResult.data) {
         setLikesCount(likesResult.data.length);
@@ -147,10 +145,10 @@ const ProjectCard = ({ project }: { project: ProjectType }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          {currentUser && currentUser.role === "admin" && (
+          {userRole && userRole === "admin" && (
             <>
-              <DeleteProject project={project} />
               <EditProject project={project} />
+              <DeleteProject project={project} />
             </>
           )}
           <Tooltip>

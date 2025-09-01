@@ -1,15 +1,18 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
-import ProjectSearchAndCategorize from "./ProjectSearchAndCategorize";
-import ProjectsFeedList from "./ProjectsFeedList";
-import CreateProject from "@/components/custom/CreateProject";
 import { useEffect, useState } from "react";
-import { useDebounce } from "@/utils/useDebounce";
+import ProjectSearchAndCategorize from "@/app/_components/_feed/ProjectSearchAndCategorize";
+import ProjectCard from "./ProjectCard";
 import { getFilteredProjects } from "@/lib/actions/projects";
 import { toast } from "sonner";
+import Loader from "@/components/custom/Loader";
+import { useDebounce } from "@/utils/useDebounce";
 
-const ProjectsFeed = ({ userRole }: { userRole: string }) => {
+export default function ProjectsList({
+  currentUser,
+}: {
+  currentUser: UserType;
+}) {
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
@@ -36,8 +39,7 @@ const ProjectsFeed = ({ userRole }: { userRole: string }) => {
   }, [debouncedSearch, category]);
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      {/* search and categorize card */}
+    <div className="flex flex-col items-center gap-5 w-full lg:w-[75%]">
       <ProjectSearchAndCategorize
         search={search}
         setSearch={setSearch}
@@ -45,24 +47,25 @@ const ProjectsFeed = ({ userRole }: { userRole: string }) => {
         setCategory={setCategory}
       />
 
-      <div className="flex items-center gap-2 w-full">
-        <Separator
-          orientation="horizontal"
-          className={`${
-            userRole === "admin" ? "!w-[93%] sm:!w-[95%]" : "w-full"
-          }`}
-        />
-        {userRole === "admin" && <CreateProject />}
-      </div>
-
-      {/* projects list */}
-      <ProjectsFeedList
-        projects={projects}
-        isFetchingProjects={loading}
-        userRole={userRole}
-      />
+      {!loading ? (
+        <div className="flex flex-col w-full gap-3">
+          {projects.length > 0 ? (
+            projects.map((p) => (
+              <ProjectCard
+                key={p.id}
+                project={p}
+                currentUserRole={currentUser.role}
+              />
+            ))
+          ) : (
+            <p className="text-center text-sm text-gray-500 font-semibold">
+              No projects found
+            </p>
+          )}
+        </div>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
-};
-
-export default ProjectsFeed;
+}

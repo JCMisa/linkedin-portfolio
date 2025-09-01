@@ -4,7 +4,7 @@ import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
 import { Projects } from "@/config/schema";
 import { getCurrentUser } from "./users";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, ilike, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const addProject = withErrorHandling(
@@ -104,3 +104,33 @@ export const deleteProject = withErrorHandling(async (projectId: string) => {
   }
   return { data: null, success: false };
 });
+
+export const getFilteredProjects = withErrorHandling(
+  async ({
+    query,
+    category,
+  }: { query?: string; category?: string | null } = {}) => {
+    const user = await getCurrentUser();
+    if (!user) return { data: [], success: false };
+
+    let q = db
+      .select()
+      .from(Projects)
+      .orderBy(desc(Projects.createdAt))
+      .$dynamic();
+
+    if (query?.trim()) {
+      const like = `%${query.trim()}%`;
+      q = q.where(
+        or(ilike(Projects.title, like), ilike(Projects.description, like))
+      );
+    }
+
+    if (category) {
+      q = q.where(eq(Projects.category, category));
+    }
+
+    const rows = await q;
+    return { data: rows, success: true };
+  }
+);

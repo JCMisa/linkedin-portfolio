@@ -1,5 +1,3 @@
-"use client";
-
 import { Input } from "@/components/ui/input";
 import {
   BrainCircuitIcon,
@@ -7,76 +5,72 @@ import {
   PaletteIcon,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 const categorizations = [
-  {
-    id: 1,
-    title: "Software & AI",
-    icon: BrainCircuitIcon,
-  },
-  {
-    id: 2,
-    title: "Design & Creative",
-    icon: PaletteIcon,
-  },
-  {
-    id: 3,
-    title: "Others",
-    icon: LayoutDashboardIcon,
-  },
+  { id: 1, title: "Software & AI", key: "software", icon: BrainCircuitIcon },
+  { id: 2, title: "Design & Assitance", key: "virtual", icon: PaletteIcon },
+  { id: 3, title: "Others", key: "others", icon: LayoutDashboardIcon },
 ];
 
-const ProjectSearchAndCategorize = () => {
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+interface Props {
+  search: string;
+  setSearch: Dispatch<SetStateAction<string>>;
+  category: string | null;
+  setCategory: Dispatch<SetStateAction<string | null>>;
+}
 
+export default function ProjectSearchAndCategorize({
+  search,
+  setSearch,
+  category,
+  setCategory,
+}: Props) {
   return (
-    <div className="w-full dark:bg-dark flex flex-col items-start gap-4 rounded-lg py-3 px-5 overflow-hidden">
-      {/* search */}
+    <div className="w-full dark:bg-dark flex flex-col items-start gap-4 rounded-lg py-3 px-5">
+      {/* Search */}
       <div className="flex items-center gap-2 w-full">
         <Image
-          src={"/profile-img.jpg"}
-          alt="cover-img"
-          width={1000}
-          height={1000}
-          className="w-[48px] h-[48px] object-fill rounded-full"
+          src="/profile-img.jpg"
+          alt="avatar"
+          width={48}
+          height={48}
+          className="rounded-full"
         />
-        <div className="rounded-full w-full h-[48px] border border-neutral-600  flex items-center justify-center">
-          <Input
-            className="bg-transparent text-gray-500 dark:text-gray-400 text-lg border-none focus:border-none focus:outline-none active:border-none"
-            placeholder="Search a project"
-            style={{ background: "none", boxShadow: "none" }}
-          />
-        </div>
+        <Input
+          placeholder="Search a project"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="bg-transparent rounded-full border-black dark:border-white h-[48px]"
+        />
       </div>
 
-      {/* categorize */}
+      {/* Category */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between px-5 w-full">
-        {categorizations.map((category) => {
-          const Icon = category.icon;
+        {categorizations.map((c) => {
+          const Icon = c.icon;
+          const active = category === c.key;
           return (
             <button
-              key={category.id}
-              className="flex items-center gap-1 cursor-pointer hover:opacity-[0.8] transition-opacity duration-200 ease-in-out"
-              onClick={() => setSelectedCategory(category.id)}
+              key={c.id}
+              onClick={() => setCategory(active ? null : c.key)}
+              className="flex items-center gap-1 cursor-pointer hover:opacity-80"
             >
               <Icon
                 className={`size-4 ${
-                  category.id === 1
+                  c.id === 1
                     ? "text-green-400"
-                    : category.id === 2
+                    : c.id === 2
                     ? "text-blue-400"
                     : "text-red-400"
                 }`}
               />
               <p
-                className={`font-bold text-xs truncate ${
-                  selectedCategory === category.id
-                    ? "text-white"
-                    : "text-muted-foreground"
+                className={`font-bold text-xs ${
+                  active ? "text-white" : "text-muted-foreground"
                 }`}
               >
-                {category.title}
+                {c.title}
               </p>
             </button>
           );
@@ -84,6 +78,4 @@ const ProjectSearchAndCategorize = () => {
       </div>
     </div>
   );
-};
-
-export default ProjectSearchAndCategorize;
+}
