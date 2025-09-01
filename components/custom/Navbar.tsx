@@ -6,7 +6,6 @@ import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  ActivityIcon,
   BriefcaseBusinessIcon,
   GalleryVerticalEndIcon,
   HomeIcon,
@@ -26,6 +25,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
+import SkillsModal from "./SkillsModal";
 
 const menuItems = [
   {
@@ -52,12 +52,12 @@ const menuItems = [
     icon: GalleryVerticalEndIcon,
     path: "/certificates",
   },
-  {
-    id: 5,
-    title: "Skills",
-    icon: ActivityIcon,
-    path: "/skills",
-  },
+  // {
+  //   id: 5,
+  //   title: "Skills",
+  //   icon: ActivityIcon,
+  //   path: "/skills",
+  // },
 ];
 
 const Navbar = () => {
@@ -118,6 +118,7 @@ const Navbar = () => {
               </Link>
             );
           })}
+          <SkillsModal />
         </div>
 
         {/* menu items - small screen */}
@@ -202,7 +203,7 @@ const Navbar = () => {
 
       <div className="w-[20%] hidden lg:flex items-center">
         <Link
-          href={"/about"}
+          href={"/profile"}
           className={
             "w-[80px] h-[52px] flex flex-col items-center justify-center border-b "
           }

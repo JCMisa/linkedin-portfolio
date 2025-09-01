@@ -153,7 +153,7 @@ const ProjectCard = ({
           )}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href={"/projects/1"}>
+              <Link href={`/project/${project.id}`}>
                 <ChevronRightIcon className="size-4" />
               </Link>
             </TooltipTrigger>

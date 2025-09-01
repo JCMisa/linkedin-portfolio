@@ -1,8 +1,8 @@
 import {
-  ActivityIcon,
   BriefcaseBusinessIcon,
   GalleryVerticalEndIcon,
   LaptopIcon,
+  PhoneIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -34,11 +34,11 @@ const ProfileEngagements = () => {
       </Link>
 
       <Link
-        href={"/skills"}
+        href={"/contact"}
         className="flex items-center gap-2 hover:opacity-[0.8] transition-opacity duration-200 ease-in-out"
       >
-        <ActivityIcon className="size-4" />
-        <p className="text-xs font-bold">Skills</p>
+        <PhoneIcon className="size-4" />
+        <p className="text-xs font-bold">Contact Information</p>
       </Link>
     </div>
   );

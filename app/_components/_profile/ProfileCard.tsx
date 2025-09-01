@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const ProfileCard = () => {
@@ -25,7 +26,12 @@ const ProfileCard = () => {
           className="w-[72px] h-[72px] object-fill rounded-full border-2 border-white absolute -top-8 left-4"
         />
         <div className="mt-8 px-2 flex flex-col gap-[2px]">
-          <h1 className="text-lg font-bold tracking-wider">John Carlo Misa</h1>
+          <Link
+            href={"/profile"}
+            className="text-lg font-bold tracking-wider hover:underline hover:opacity-[0.8] transition-all ease-linear duration-200"
+          >
+            John Carlo Misa
+          </Link>
           <span className="text-xs font-semibold">Fullstack Developer 🚀</span>
           <span className="text-xs font-semibold text-muted-foreground">
             San Pablo, Calabarzon

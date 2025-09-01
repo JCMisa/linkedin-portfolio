@@ -182,6 +182,7 @@ export const getProjectsPaginated = withErrorHandling(
     const hasMore = rows.length > limit;
     const data = hasMore ? rows.slice(0, limit) : rows;
 
+    // identify what is the next project to show based on the last project id and createdAt properties
     const nextCursor = hasMore
       ? `${data[data.length - 1].createdAt.toISOString()}|${
           data[data.length - 1].id
