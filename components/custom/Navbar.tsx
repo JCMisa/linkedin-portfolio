@@ -44,7 +44,7 @@ const menuItems = [
     id: 3,
     title: "Experience",
     icon: BriefcaseBusinessIcon,
-    path: "/experience",
+    path: "/experiences",
   },
   {
     id: 4,
