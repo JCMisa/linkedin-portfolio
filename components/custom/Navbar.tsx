@@ -66,7 +66,7 @@ const Navbar = () => {
   const router = useRouter();
 
   return (
-    <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b dark:bg-dark flex items-center fixed top-0 z-50">
+    <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b bg-white dark:bg-dark flex items-center fixed top-0 z-50">
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
           <Image
