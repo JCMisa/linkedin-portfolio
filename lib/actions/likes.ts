@@ -7,6 +7,18 @@ import { and, desc, eq } from "drizzle-orm";
 import { getCurrentUser } from "./users";
 import { revalidatePath } from "next/cache";
 
+export const getAllLikes = withErrorHandling(async () => {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return { data: null, success: false };
+  }
+
+  const likes = await db.select().from(Likes);
+
+  return { data: likes, success: true };
+});
+
 export const toggleProjectLike = withErrorHandling(
   async (projectId: string) => {
     const user = await getCurrentUser();

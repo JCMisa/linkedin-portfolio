@@ -19,11 +19,11 @@ const ProfileCard = () => {
       {/* profile info */}
       <div className="h-[70%] w-full p-[10px] relative">
         <Image
-          src={"/profile-img.jpg"}
+          src={"/profile-img-3.png"}
           alt="cover-img"
           width={1000}
           height={1000}
-          className="w-[72px] h-[72px] object-fill rounded-full border-2 border-white absolute -top-8 left-4"
+          className="w-[72px] h-[72px] object-fill rounded-full border-2 border-white dark:border-dark absolute -top-8 left-4"
         />
         <div className="mt-8 px-2 flex flex-col gap-[2px]">
           <Link

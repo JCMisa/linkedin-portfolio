@@ -15,6 +15,12 @@ export const getSessionUserId = async (): Promise<string> => {
 };
 
 // --------------------------- Server Actions ---------------------------
+export const getAllUsers = withErrorHandling(async () => {
+  const data = await db.select().from(Users);
+
+  return data;
+});
+
 export const getCurrentUser = withErrorHandling(async () => {
   const data = await db
     .select()

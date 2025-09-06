@@ -7,6 +7,18 @@ import { desc, eq } from "drizzle-orm";
 import { getCurrentUser } from "./users";
 import { revalidatePath } from "next/cache";
 
+export const getAllComments = withErrorHandling(async () => {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return { data: null, success: false };
+  }
+
+  const comments = await db.select().from(Comments);
+
+  return { data: comments, success: true };
+});
+
 export const createComment = withErrorHandling(
   async (projectId: string, content: string) => {
     const user = await getCurrentUser();

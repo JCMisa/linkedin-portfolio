@@ -153,12 +153,12 @@ const ProjectCard = ({
           )}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href={`/project/${project.id}`}>
+              <Link href={`/projects`}>
                 <ChevronRightIcon className="size-4" />
               </Link>
             </TooltipTrigger>
             <TooltipContent>
-              <p>More Details</p>
+              <p>More Projects</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -170,7 +170,7 @@ const ProjectCard = ({
       <div className="flex items-center justify-center w-full">
         <div className="flex items-center gap-2 w-full">
           <Image
-            src={"/profile-img.jpg"}
+            src={"/profile-img-3.png"}
             alt="profile-img"
             width={1000}
             height={1000}
