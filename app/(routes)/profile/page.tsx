@@ -1,5 +1,4 @@
 import CertificatesPreview from "@/app/_components/_activity/CertificatesPreview";
-import ProfileCard from "@/app/_components/_profile/ProfileCard";
 import Footer from "@/components/custom/Footer";
 import ProfileLeftInfo from "./_components/ProfileLeftInfo";
 import { getAllUsers, getCurrentUser } from "@/lib/actions/users";
