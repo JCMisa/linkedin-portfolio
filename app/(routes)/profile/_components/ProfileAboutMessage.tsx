@@ -43,9 +43,8 @@ const ProfileAboutMessage = () => {
           Linkedin
         </LinkPreview>{" "}
         or explore my work on my{" "}
-        {/* //todo: change this to the current linkedin potfolio url */}
         <LinkPreview
-          url="https://jcm-mocha.vercel.app"
+          url="https://jcm-portfolio.vercel.app/"
           className="text-xs font-semibold !text-blue-500"
         >
           portfolio

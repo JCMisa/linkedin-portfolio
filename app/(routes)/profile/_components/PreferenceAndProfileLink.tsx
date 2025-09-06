@@ -14,14 +14,13 @@ const PreferenceAndProfileLink = () => {
 
       <Separator />
 
-      {/* // todo: change the url once deployed  */}
       <div className="flex flex-col items-start gap-2">
         <p className="text-lg font-bold">Public profile & URL</p>
         <LinkPreview
-          url="https://github.com/JCMisa"
+          url="https://jcm-portfolio.vercel.app/"
           className="text-xs text-muted-foreground hover:underline"
         >
-          https://github.com/JCMisa
+          https://jcm-portfolio.vercel.app/
         </LinkPreview>
       </div>
     </div>
