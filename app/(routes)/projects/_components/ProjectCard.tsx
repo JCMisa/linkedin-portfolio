@@ -6,7 +6,7 @@ import EditProject from "@/components/custom/EditProject";
 import { Button } from "@/components/ui/button";
 import { LinkPreview } from "@/components/ui/link-preview";
 import { useState } from "react";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, MoreHorizontalIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -26,7 +26,7 @@ const ProjectCard = ({
     <div className="inter-var">
       <div className="bg-neutral-200 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-primary-500/[0.1] dark:bg-dark dark:border-white/[0.2] border-black/[0.1] w-full h-auto rounded-xl p-6 border">
         <div className="flex items-center justify-between gap-4">
-          <div className="text-xl font-bold text-neutral-600 dark:text-white">
+          <div className="text-xl font-bold text-neutral-600 dark:text-white line-clamp-1">
             {project.title}
           </div>
           {currentUserRole && currentUserRole === "admin" && (
@@ -70,7 +70,7 @@ const ProjectCard = ({
             alt="thumbnail"
           />
         </div>
-        <div className="flex justify-between items-center mt-5">
+        <div className="hidden sm:flex justify-between items-center mt-5">
           <Button
             asChild
             disabled={!project.githubLink}
@@ -101,18 +101,58 @@ const ProjectCard = ({
           </Button>
         </div>
 
-        <Popover>
-          <PopoverTrigger className="cursor-pointer mt-5 flex items-center gap-1 hover:opacity-[0.8] transition-opacity duration-200 ease-linear text-blue-400">
-            <p className="text-sm underline">Tech Stack</p>
-          </PopoverTrigger>
-          <PopoverContent align="start">
-            <span className="text-xs text-muted-foreground max-w-sm ">
-              {project.techStacks && project.techStacks.length > 0
-                ? project.techStacks.join(" | ")
-                : "No tech stacks"}
-            </span>
-          </PopoverContent>
-        </Popover>
+        <div className="flex items-center justify-between gap-2">
+          <Popover>
+            <PopoverTrigger className="cursor-pointer mt-5 flex items-center gap-1 hover:opacity-[0.8] transition-opacity duration-200 ease-linear text-blue-400">
+              <p className="text-sm underline">Tech Stack</p>
+            </PopoverTrigger>
+            <PopoverContent align="start">
+              <span className="text-xs text-muted-foreground max-w-sm ">
+                {project.techStacks && project.techStacks.length > 0
+                  ? project.techStacks.join(" | ")
+                  : "No tech stacks"}
+              </span>
+            </PopoverContent>
+          </Popover>
+
+          <Popover>
+            <PopoverTrigger className="flex sm:hidden mt-5">
+              <MoreHorizontalIcon className="size-4 cursor-pointer flex sm:hidden" />
+            </PopoverTrigger>
+            <PopoverContent align="end">
+              <div className="flex items-center flex-col gap-1">
+                <Button
+                  asChild
+                  disabled={!project.githubLink}
+                  className="px-4 py-2 rounded-md text-xs font-normal text-black dark:text-white bg-neutral-100 dark:bg-neutral-900 min-w-32 max-w-32 flex items-center justify-center cursor-pointer"
+                >
+                  <LinkPreview
+                    url={project.githubLink || "#"}
+                    className={`font-bold ${
+                      project.githubLink ? "" : "text-gray-400 line-through"
+                    }`}
+                  >
+                    Github
+                  </LinkPreview>
+                </Button>
+                <Button
+                  asChild
+                  disabled={!project.liveLink}
+                  className="px-4 py-2 rounded-md bg-primary text-white text-xs font-bold min-w-32 max-w-32 flex items-center justify-center cursor-pointer"
+                >
+                  <LinkPreview
+                    url={project.liveLink || "#"}
+                    className={`font-bold ${
+                      project.liveLink ? "" : "text-gray-400 line-through"
+                    }`}
+                  >
+                    Live
+                  </LinkPreview>
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </div>
   );

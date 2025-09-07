@@ -48,7 +48,7 @@ export default function ProjectSearchAndCategorize({
       </div>
 
       {/* Category */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between px-5 w-full">
+      <div className="flex flex-row gap-3 items-center justify-between px-5 w-full">
         {categorizations.map((c) => {
           const Icon = c.icon;
           const active = category === c.key;
@@ -68,7 +68,7 @@ export default function ProjectSearchAndCategorize({
                 }`}
               />
               <p
-                className={`font-bold text-xs ${
+                className={`font-bold text-xs hidden sm:block ${
                   active ? "text-white" : "text-muted-foreground"
                 }`}
               >
