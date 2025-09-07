@@ -7,10 +7,95 @@ import Footer from "@/components/custom/Footer";
 import { getUserRole } from "@/lib/actions/users";
 import { getProjectsPaginated } from "@/lib/actions/projects";
 
-export const metadata: Metadata = {
-  title: "Feed | JCM",
-  description: "Feed page of my portfolio where my projects posts can be seen.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const title = "Feed | JCM Portfolio";
+
+  const description =
+    "Explore real-world projects, open-source contributions, and professional certificates " +
+    "built with Next.js, TypeScript, Javascript, Tailwindcss, AWS, Serverless database (Neon), Drizzle ORM, .NET Web API, FastAPI (Modal), with modern cloud and software developer tools.";
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+
+  return {
+    title,
+    description,
+    authors: [{ name: "John Carlo Misa", url: siteUrl }],
+    creator: "John Carlo Misa",
+    publisher: "John Carlo Misa",
+    keywords: [
+      "Portfolio",
+      "portfolio",
+      "e-portfolio",
+      "website portfolio",
+      "modern portfolio",
+      "Next.js portfolio",
+      "React TypeScript projects",
+      "full-stack engineer",
+      "full-stack developer",
+      "full-stack development",
+      "cloud architect",
+      "serverless",
+      "serverless database",
+      "drizzle orm",
+      "orm",
+      "AWS solutions",
+      "open-source contributor",
+      "software engineer portfolio",
+      "certified solutions architect",
+      "software development",
+      "software",
+      "website",
+      "ai",
+      "AI",
+      "website development",
+      "feed",
+      "linkedin",
+      "Linkedin",
+      "linkedin portfolio",
+      "linkedin design",
+      "linkedin portfolio design",
+      "linkedin feed",
+    ],
+    openGraph: {
+      title,
+      description,
+      url: siteUrl,
+      siteName: "John Carlo Misa – Portfolio & Feed",
+      images: [
+        {
+          url: `${siteUrl}/og/feed.png`, // 1200×630, < 500 kB
+          width: 1200,
+          height: 630,
+          alt: "Preview of latest projects and certificates",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@jcmisa_dev", // your Twitter handle
+      title,
+      description,
+      images: [`${siteUrl}/og/feed.png`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    alternates: {
+      canonical: siteUrl,
+    },
+  };
+}
 
 export default async function Home() {
   const [userRole, initialProjects] = await Promise.all([
