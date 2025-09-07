@@ -23,7 +23,7 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
   };
 
   return (
-    <div className="rounded-lg w-full h-[400px] dark:bg-dark flex flex-col items-center relative">
+    <div className="rounded-lg w-full h-[400px] bg-neutral-100 dark:bg-dark flex flex-col items-center relative">
       {/* cover photo */}
       <div className="h-[35%] w-full">
         <Image
@@ -113,9 +113,9 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
         </div>
 
         <Popover>
-          <PopoverTrigger asChild>
+          <PopoverTrigger asChild className="hidden md:flex">
             <Button
-              className="text-xs flex items-center justify-center gap-1 cursor-pointer absolute bottom-2 right-2"
+              className="text-xs hidden md:flex items-center justify-center gap-1 cursor-pointer absolute bottom-2 right-2"
               variant={"outline"}
               size={"sm"}
             >

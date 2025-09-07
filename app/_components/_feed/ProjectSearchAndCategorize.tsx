@@ -27,15 +27,17 @@ export default function ProjectSearchAndCategorize({
   setCategory,
 }: Props) {
   return (
-    <div className="w-full dark:bg-dark flex flex-col items-start gap-4 rounded-lg py-3 px-5">
+    <div className="w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-4 rounded-lg py-3 px-5">
       {/* Search */}
       <div className="flex items-center gap-2 w-full">
         <Image
           src="/profile-img-3.png"
           alt="avatar"
-          width={48}
-          height={48}
-          className="rounded-full"
+          width={48} // real pixels
+          height={44} // real pixels
+          className="rounded-full object-cover"
+          style={{ width: 48, height: 44, maxWidth: 48, maxHeight: 44 }}
+          draggable={false}
         />
         <Input
           placeholder="Search a project"

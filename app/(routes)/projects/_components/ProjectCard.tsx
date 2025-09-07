@@ -74,7 +74,7 @@ const ProjectCard = ({
           <Button
             asChild
             disabled={!project.githubLink}
-            className="px-4 py-2 rounded-md text-xs font-normal dark:text-white bg-neutral-100 dark:bg-neutral-900 min-w-32 max-w-32 flex items-center justify-center cursor-pointer"
+            className="px-4 py-2 rounded-md text-xs font-normal text-black dark:text-white bg-neutral-100 dark:bg-neutral-900 min-w-32 max-w-32 flex items-center justify-center cursor-pointer"
           >
             <LinkPreview
               url={project.githubLink || "#"}

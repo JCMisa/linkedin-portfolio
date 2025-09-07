@@ -142,7 +142,7 @@ export const testimonials = [
 
 const ProfileTestimonials = () => {
   return (
-    <div className="rounded-lg w-full dark:bg-dark flex flex-col p-[10px] px-5">
+    <div className="rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col p-[10px] px-5">
       <h2 className="text-2xl font-medium">Top Voices</h2>
 
       {/* testimonials carousel */}

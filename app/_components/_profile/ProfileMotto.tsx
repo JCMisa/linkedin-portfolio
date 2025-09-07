@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const ProfileMotto = () => {
   return (
-    <div className="h-[60px] w-full dark:bg-dark flex flex-col items-start gap-1 rounded-lg py-2">
+    <div className="h-[60px] w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-1 rounded-lg py-2">
       <p className="text-xs font-bold text-muted-foreground px-5">
         My Personal Manifesto
       </p>

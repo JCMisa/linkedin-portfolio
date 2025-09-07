@@ -125,7 +125,7 @@ const ProfileSkills = () => {
 
   return (
     <div
-      className={`rounded-lg w-full dark:bg-dark flex flex-col justify-between p-[10px] pb-0 px-5 overflow-hidden relative ${
+      className={`rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col justify-between p-[10px] pb-0 px-5 overflow-hidden relative ${
         isExpanded ? "h-auto" : "h-[277px]"
       }`}
     >

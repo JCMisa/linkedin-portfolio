@@ -102,18 +102,29 @@ const skills = [
   },
 ];
 
-const SkillsModal = () => {
+const SkillsModal = ({ view = "desktop" }: { view: "desktop" | "mobile" }) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div
-          className={
-            "w-[80px] h-[52px] flex flex-col items-center justify-center border-b text-muted-foreground cursor-pointer -ml-2"
-          }
-        >
-          <ActivityIcon className="size-5" />
-          <span className={"text-[12px] leading-none mt-1 "}>Skills</span>
-        </div>
+        {view === "desktop" ? (
+          <div
+            className={
+              "w-[80px] h-[52px] flex flex-col items-center justify-center border-b text-muted-foreground cursor-pointer -ml-2"
+            }
+          >
+            <ActivityIcon className="size-5" />
+            <span className={"text-[12px] leading-none mt-1 "}>Skills</span>
+          </div>
+        ) : (
+          <div
+            className={
+              "flex items-center gap-4 p-2 rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground w-[268px] md:w-[350px] cursor-pointer "
+            }
+          >
+            <ActivityIcon className="size-5" />
+            <span className={"text-base "}>Skills</span>
+          </div>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="hidden">

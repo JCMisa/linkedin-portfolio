@@ -118,7 +118,7 @@ const ProjectCard = ({
   };
 
   return (
-    <div className="w-full dark:bg-dark flex flex-col items-start gap-3 rounded-lg py-2 px-3 overflow-hidden">
+    <div className="w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-3 rounded-lg py-2 px-3 overflow-hidden">
       {/* header */}
       <div className="flex items-center gap-2 justify-between w-full">
         {/* latest commenter */}
@@ -275,7 +275,7 @@ const ProjectCard = ({
               isLiked ? "bg-primary" : "bg-blue-500"
             }`}
           >
-            <ThumbsUpIcon className="size-3" />
+            <ThumbsUpIcon className="size-3 text-white" />
           </div>
           <p className="text-xs text-muted-foreground">{likesCount}</p>
         </div>

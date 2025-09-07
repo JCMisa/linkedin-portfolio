@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
 import SkillsModal from "./SkillsModal";
+import { useState } from "react";
 
 const menuItems = [
   {
@@ -65,6 +66,14 @@ const Navbar = () => {
   const { user } = useUser();
   const router = useRouter();
 
+  const [query, setQuery] = useState("");
+
+  const go = () => {
+    const q = query.trim().toLowerCase();
+    if (!q) return; // ignore empty
+    router.push(`/${encodeURIComponent(q)}`); // e.g.  /projects
+  };
+
   return (
     <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b bg-white dark:bg-dark flex items-center fixed top-0 z-50">
       <div className="flex items-center justify-between w-full">
@@ -77,11 +86,14 @@ const Navbar = () => {
             className="rounded-[3px]"
           />
           <div className="relative rounded-full w-[280px] h-[34px] border border-neutral-600 pl-[40px] pr-[16px] hidden sm:flex items-center justify-center">
-            <SearchIcon className="size-4 absolute top-2 left-5" />
+            <SearchIcon className="size-4 absolute top-2 left-5" onClick={go} />
             <Input
               className="bg-transparent text-gray-500 dark:text-gray-400 text-lg border-none focus:border-none focus:outline-none active:border-none"
-              placeholder="Search"
+              placeholder="Go to..."
               style={{ background: "none", boxShadow: "none" }}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && go()}
             />
           </div>
         </div>
@@ -118,7 +130,7 @@ const Navbar = () => {
               </Link>
             );
           })}
-          <SkillsModal />
+          <SkillsModal view="desktop" />
         </div>
 
         {/* menu items - small screen */}
@@ -156,6 +168,7 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
+                  <SkillsModal view="mobile" />
                 </div>
 
                 <Separator className="my-4" />
@@ -163,7 +176,7 @@ const Navbar = () => {
                 {/* Additional Menu Items */}
                 <div className="space-y-4">
                   <Link
-                    href="/about"
+                    href="/profile"
                     className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
                   >
                     <UserIcon className="size-5" />

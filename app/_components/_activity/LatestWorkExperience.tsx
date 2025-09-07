@@ -9,7 +9,7 @@ import Link from "next/link";
 
 const LatestWorkExperience = () => {
   return (
-    <div className="h-[124px] w-full dark:bg-dark flex flex-col items-start gap-4 rounded-lg p-3 overflow-hidden">
+    <div className="h-[124px] w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-4 rounded-lg p-3 overflow-hidden">
       <h2 className="font-bold text-md truncate">Latest Work Experience</h2>
       <div className="flex items-center w-full gap-2 justify-between px-4">
         <div className="flex items-center gap-2 w-full">

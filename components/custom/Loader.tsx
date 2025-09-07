@@ -15,7 +15,7 @@ const Loader = () => {
         />
       </div>
 
-      <span className="loader bg-neutral-800 dark:bg-neutral-200 rounded-full w-[10%] h-[3px]"></span>
+      <span className="loader bg-neutral-800 dark:bg-neutral-200 rounded-full w-[50%] lg:w-[10%] h-[3px]"></span>
     </main>
   );
 };

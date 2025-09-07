@@ -3,7 +3,7 @@ import React from "react";
 
 const ProfileAboutMessage = () => {
   return (
-    <div className="rounded-lg w-full dark:bg-dark flex flex-col p-[10px] px-5">
+    <div className="rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col p-[10px] px-5">
       <h2 className="text-2xl font-medium">About</h2>
 
       <div className="mt-5 w-full text-sm text-muted-foreground">
