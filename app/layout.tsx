@@ -7,8 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Toaster } from "@/components/ui/sonner";
 import SyncUserProvider from "@/providers/SyncUserProvider";
-import ModeToggle from "@/components/custom/ModeToggle";
-
+import AIChatbot from "@/components/custom/AIChatbot";
 const sourceSans3 = Source_Sans_3({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -49,7 +48,7 @@ export default function RootLayout({
             <Navbar />
             <SyncUserProvider>{children}</SyncUserProvider>
             <div className="fixed bottom-3 right-3">
-              <ModeToggle />
+              <AIChatbot />
             </div>
             <Toaster />
           </ThemeProvider>

@@ -12,7 +12,7 @@ const CertificatesPage = async () => {
   ]);
 
   return (
-    <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16">
+    <main className="relative py-18 px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row gap-6">
         {/* profile and latest certificates and footer - fixed */}
         <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">

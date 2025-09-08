@@ -200,7 +200,7 @@ const ExperiencesPage = () => {
   ];
 
   return (
-    <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16">
+    <main className="relative py-18 px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row gap-6">
         {/* experiences timeline */}
         <div className="relative w-full overflow-clip rounded-lg">

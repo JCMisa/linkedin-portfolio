@@ -6,7 +6,7 @@ import { CopyCheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const PUBLIC_URL = "https://jcm-portfolio.vercel.app/";
+const PUBLIC_URL = "https://jcm-portfolio.vercel.app/profileprofile";
 
 const PreferenceAndProfileLink = () => {
   const [justCopied, setJustCopied] = useState(false);
@@ -38,10 +38,10 @@ const PreferenceAndProfileLink = () => {
         <p className="text-lg font-bold">Public profile & URL</p>
         <div className="flex sm:items-center flex-col sm:flex-row items-start gap-2 sm:justify-between w-full">
           <LinkPreview
-            url="https://jcm-portfolio.vercel.app/"
+            url="https://jcm-portfolio.vercel.app/profile"
             className="text-xs text-muted-foreground hover:underline"
           >
-            https://jcm-portfolio.vercel.app/
+            https://jcm-portfolio.vercel.app/profile
           </LinkPreview>
 
           {justCopied ? (

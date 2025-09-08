@@ -10,7 +10,7 @@ import PreferenceAndProfileLink from "./_components/PreferenceAndProfileLink";
 import DownloadResumeMobile from "./_components/DownloadResumeMobile";
 
 export const metadata: Metadata = {
-  title: "Profile | JCM",
+  title: "Profile",
   description:
     "Profile page of my portfolio where my you can see the overview of John Carlo Misa.",
 };
@@ -39,7 +39,7 @@ const ProfilePage = async () => {
   }
 
   return (
-    <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16 ">
+    <main className="relative py-18 px-6 md:px-10 lg:px-16 ">
       <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row gap-6">
         {/* left info */}
         <ProfileLeftInfo

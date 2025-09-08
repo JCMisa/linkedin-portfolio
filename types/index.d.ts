@@ -75,3 +75,9 @@ declare interface CertificateInsertedDataType {
   imageUrl: string;
   acquiredDate: Date;
 }
+
+declare interface ChatErrorBody {
+  response?: string;
+  error?: string;
+  retryAfterSeconds?: number;
+}

@@ -27,6 +27,7 @@ import {
 import { Button } from "../ui/button";
 import SkillsModal from "./SkillsModal";
 import { useState } from "react";
+import ModeToggle from "./ModeToggle";
 
 const menuItems = [
   {
@@ -194,6 +195,11 @@ const Navbar = () => {
             </SheetHeader>
           </SheetContent>
         </Sheet>
+      </div>
+
+      {/* theme toggler */}
+      <div className="block md:hidden lg:block ml-1">
+        <ModeToggle />
       </div>
 
       {/* user icon */}
