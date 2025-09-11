@@ -4,7 +4,7 @@ import ProfessionalActivities from "./_components/_activity/ProfessionalActiviti
 import ProjectsFeed from "./_components/_feed/ProjectsFeed";
 import CertificatesPreview from "./_components/_activity/CertificatesPreview";
 import Footer from "@/components/custom/Footer";
-import { getUserRole } from "@/lib/actions/users";
+import { getCurrentUser } from "@/lib/actions/users";
 import { getProjectsPaginated } from "@/lib/actions/projects";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "John Carlo Misa – Portfolio & Feed",
       images: [
         {
-          url: `${siteUrl}/og/feed.png`, // 1200×630, < 500 kB
+          url: `${siteUrl}/og/logo.png`, // 1200×630, < 500 kB
           width: 1200,
           height: 630,
           alt: "Preview of latest projects and certificates",
@@ -58,7 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
       site: "@jcmisa_dev", // your Twitter handle
       title,
       description,
-      images: [`${siteUrl}/og/feed.png`],
+      images: [`${siteUrl}/og/logo.png`],
     },
     robots: {
       index: true,
@@ -73,20 +73,29 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     alternates: {
       canonical: siteUrl,
+      types: {
+        "application/pdf": `${siteUrl}/Resume-IT.pdf`,
+      },
     },
     manifest: "/site.webmanifest",
     other: {
       "msapplication-TileColor": "#0f172a",
       "theme-color": "#0f172a",
+      "linkedin:profile":
+        "https://www.linkedin.com/in/john-carlo-misa-80a1b5208",
+      "github:username": "JCMisa",
+      "resume:pdf": `${siteUrl}/Resume-IT.pdf`,
     },
   };
 }
 
 export default async function Home() {
-  const [userRole, initialProjects] = await Promise.all([
-    getUserRole(),
+  const [currentUser, initialProjects] = await Promise.all([
+    getCurrentUser(),
     getProjectsPaginated({ limit: 5 }), // first 5 projects
   ]);
+
+  const userRole = currentUser && currentUser.role ? currentUser.role : "user";
 
   return (
     <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16">

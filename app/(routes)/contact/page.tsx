@@ -1,28 +1,102 @@
-"use client";
+import { Metadata } from "next";
+import SendMessageForm from "./_components/SendMessageForm";
 
-import { useState } from "react";
-import { toast } from "sonner";
+export async function generateMetadata(): Promise<Metadata> {
+  const title = "Contact";
+
+  const description =
+    "Get in touch with John Carlo Misa – based in San Pablo City, Philippines. " +
+    "Book a call, email jcmisa.dev@gmail.com, or DM on LinkedIn/Twitter. " +
+    "Freelance web/mobile development, AI integrations, virtual assistance, and more.";
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+
+  return {
+    title,
+    description,
+    authors: [{ name: "John Carlo Misa", url: siteUrl }],
+    creator: "John Carlo Misa",
+    publisher: "John Carlo Misa",
+    keywords: [
+      "John Carlo Misa contact",
+      "hire freelance developer Philippines",
+      "San Pablo Laguna web developer",
+      "Next.js freelancer for hire",
+      "React Native app developer",
+      "AWS serverless consultant",
+      "AI integration services",
+      "virtual assistant developer",
+      "full-stack engineer hire",
+      "freelance quote request",
+      "book discovery call",
+      "Calendly jcmisa",
+      "LinkedIn DM John Carlo Misa",
+      "Philippines remote developer",
+      "urgent web development",
+      "mobile app freelancer",
+      "Neon Drizzle ORM expert",
+      ".NET Web API contractor",
+      "Gemini API integration",
+      "Stripe Clerk Auth setup",
+      "contact form portfolio",
+      "24 hr response guarantee",
+    ],
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}/contact`,
+      siteName: "John Carlo Misa – Contact & Booking",
+      images: [
+        {
+          url: `${siteUrl}/og/logo.png`, // 1200×630, < 500 kB
+          width: 1200,
+          height: 630,
+          alt: "Let’s work together – John Carlo Misa contact page",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@jcmisa_dev",
+      creator: "@jcmisa_dev",
+      title,
+      description,
+      images: [`${siteUrl}/og/logo.png`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    alternates: {
+      canonical: `${siteUrl}/contact`,
+    },
+    manifest: "/site.webmanifest",
+    other: {
+      "msapplication-TileColor": "#0f172a",
+      "theme-color": "#0f172a",
+      "email:primary": "jcmisa.dev@gmail.com",
+      "phone:ph": "+639071816666",
+      "linkedin:message":
+        "https://www.linkedin.com/in/john-carlo-misa-80a1b5208",
+      "twitter:dm": "https://x.com/jcmisa_dev",
+      "whatsapp:chat": "https://wa.me/639071816666",
+      "response:time": "24 hours",
+      "timezone:manila": "UTC+8",
+    },
+  };
+}
 
 const ContactPage = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-
-  const handleSend = () => {
-    if (!name.trim() || !email.trim() || !message.trim()) {
-      toast.error("Please fill in every field.");
-      return;
-    }
-
-    const subject = `Message from ${name} (${email})`;
-    const body = encodeURIComponent(message);
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=johncarlomisa399@gmail.com&su=${encodeURIComponent(
-      subject
-    )}&body=${body}`;
-
-    window.open(gmailUrl, "_blank");
-  };
-
   return (
     <section className="text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-900 body-font relative mt-13">
       <div className="absolute inset-0 bg-gray-100 dark:bg-gray-900">
@@ -30,74 +104,13 @@ const ContactPage = () => {
           title="map"
           width="100%"
           height="100%"
-          src="https://maps.google.com/maps?q=San%20Pablo%20City%20Laguna,%20Philippines&t=&z=13&ie=UTF8&iwloc=&output=embed"
+          src="https://maps.google.com/maps?q=Laguna,Philippines&t=&z=9&ie=UTF8&iwloc=&output=embed"
           style={{ filter: "grayscale(1) contrast(1.2) opacity(0.16)" }}
         />
       </div>
 
-      <div className="container px-5 py-24 mx-auto flex">
-        <div className="lg:w-1/3 md:w-1/2 bg-gray-100 dark:bg-gray-900 shadow-md rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 relative z-10">
-          <h2 className="text-black dark:text-white text-lg mb-1 font-medium title-font">
-            Get in Touch!
-          </h2>
-          <p className="leading-relaxed mb-5">
-            I&apos;m always open to new projects, collaborations, and
-            conversations. Feel free to reach out to me!
-          </p>
-
-          <div className="relative mb-4">
-            <label htmlFor="name" className="leading-7 text-sm">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full bg-gray-200 dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-700 focus:border-primary focus:ring-2 focus:ring-primary text-base outline-none text-gray-900 dark:text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-
-          <div className="relative mb-4">
-            <label htmlFor="email" className="leading-7 text-sm">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-gray-200 dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-700 focus:border-primary focus:ring-2 focus:ring-primary text-base outline-none text-gray-900 dark:text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-
-          <div className="relative mb-4">
-            <label htmlFor="message" className="leading-7 text-sm">
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full bg-gray-200 dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-700 focus:border-primary focus:ring-2 focus:ring-primary h-32 text-base outline-none text-gray-900 dark:text-gray-100 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-
-          <button
-            onClick={handleSend}
-            className="text-white bg-primary border-0 py-2 px-6 focus:outline-none hover:bg-primary-600 rounded text-lg cursor-pointer"
-          >
-            Send Message
-          </button>
-
-          <p className="text-xs text-gray-500 dark:text-gray-400 text-opacity-90 mt-3">
-            I&apos;ll do my best to respond as soon as possible.
-          </p>
-        </div>
-      </div>
+      {/* form */}
+      <SendMessageForm />
     </section>
   );
 };

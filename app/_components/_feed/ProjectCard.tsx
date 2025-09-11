@@ -281,7 +281,10 @@ const ProjectCard = ({
         </div>
 
         {/* comments */}
-        <p className="text-xs text-muted-foreground">
+        <p
+          className="text-xs text-muted-foreground hover:underline hover:opacity-[0.8] cursor-pointer transition-all duration-200 ease-linear"
+          onClick={() => setShowComments(!showComments)}
+        >
           {commentsCount} {commentsCount === 1 ? "comment" : "comments"}
         </p>
       </div>
