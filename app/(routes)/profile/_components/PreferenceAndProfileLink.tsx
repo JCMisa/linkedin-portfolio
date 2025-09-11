@@ -6,7 +6,7 @@ import { CopyCheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const PUBLIC_URL = "https://jcm-portfolio.vercel.app/profileprofile";
+const PUBLIC_URL = "https://jcm-portfolio.vercel.app/profile";
 
 const PreferenceAndProfileLink = () => {
   const [justCopied, setJustCopied] = useState(false);
