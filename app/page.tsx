@@ -6,6 +6,8 @@ import CertificatesPreview from "./_components/_activity/CertificatesPreview";
 import Footer from "@/components/custom/Footer";
 import { getCurrentUser } from "@/lib/actions/users";
 import { getProjectsPaginated } from "@/lib/actions/projects";
+import { ThemedTradingViewWidget } from "@/components/custom/ThemedTradingViewWidget";
+import { TOP_STORIES_WIDGET_CONFIG } from "@/lib/constants";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Feed | JCM Portfolio";
@@ -97,6 +99,9 @@ export default async function Home() {
 
   const userRole = currentUser && currentUser.role ? currentUser.role : "user";
 
+  const scriptUrl =
+    "https://s3.tradingview.com/external-embedding/embed-widget-";
+
   return (
     <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto relative">
@@ -116,6 +121,10 @@ export default async function Home() {
 
           <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
             <ProfessionalActivities />
+            <ThemedTradingViewWidget
+              scriptUrl={`${scriptUrl}timeline.js`}
+              config={TOP_STORIES_WIDGET_CONFIG}
+            />
             <div className="sticky top-[73px]">
               <CertificatesPreview />
               <div className="mt-4">

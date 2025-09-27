@@ -1,0 +1,30 @@
+export const HEATMAP_WIDGET_CONFIG = {
+  dataSource: "SPX500",
+  blockSize: "market_cap_basic",
+  blockColor: "change",
+  grouping: "sector",
+  isTransparent: true,
+  locale: "en",
+  symbolUrl: "",
+  // colorTheme: "dark",
+  exchanges: [],
+  hasTopBar: false,
+  isDataSetEnabled: false,
+  isZoomEnabled: true,
+  hasSymbolTooltip: true,
+  isMonoSize: false,
+  width: "100%",
+  height: "600",
+};
+
+export const TOP_STORIES_WIDGET_CONFIG = {
+  displayMode: "regular",
+  feedMode: "market",
+  blockColor: "change",
+  // colorTheme: "dark",
+  isTransparent: false,
+  locale: "en",
+  market: "stock",
+  width: "100%",
+  height: "600",
+};

@@ -59,19 +59,19 @@
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
   @keyframes marquee {
-  from {
-    transform: translateX(0);
+    from {
+      transform: translateX(0);
     }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
     }
   }
   @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
+    from {
+      transform: translateY(0);
     }
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
     }
   }
 }
@@ -216,4 +216,24 @@
     left: 100%;
     transform: translateX(-99%);
   }
+}
+
+.custom-chart.tradingview-widget-container iframe {
+  border: 1px solid #30333a;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.tradingview-widget-container {
+  position: relative;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.tradingview-widget-container__widget {
+  height: 100% !important;
+}
+
+.tradingview-widget-container iframe {
+  width: 100% !important;
 }
