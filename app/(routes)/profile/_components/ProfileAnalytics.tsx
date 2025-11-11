@@ -29,10 +29,10 @@ const ProfileAnalytics = ({
           <UsersIcon className="size-5" />
           <div className="flex flex-col items-start gap-[2px]">
             <p className="text-sm font-bold">
-              {numberOfUsers || 0} Profile views
+              {numberOfUsers || 0} Profile Signin
             </p>
             <span className="text-xs">
-              Discover who&apos;s visited my profile.
+              Discover who signed in on my profile.
             </span>
           </div>
         </div>

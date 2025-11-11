@@ -8,7 +8,7 @@ const ProfileStats = () => {
         <div className="flex items-center justify-between">
           <p className="text-xs font-bold">Resume Link</p>
           <LinkPreview
-            url="https://drive.google.com/file/d/1GMpTfF4YWTc60tBCEB0OfTCQynBbGqye/view?usp=sharing"
+            url="https://drive.google.com/file/d/1twXzPjK3HCeqBigrkeCu47OpP2RYTSON/view?usp=sharing"
             className="text-xs font-semibold !text-blue-500"
           >
             Resume

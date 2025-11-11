@@ -124,32 +124,20 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="flex flex-col gap-2" align="end">
-            <span
+            <a
+              href="/Resume-IT-2025-11-05.pdf"
+              download={"John_Carlo_Misa_Resume_IT.pdf"}
               className="cursor-pointer text-sm"
-              onClick={() => {
-                const link = document.createElement("a");
-                link.href = "/Resume-IT.pdf";
-                link.download = "John_Carlo_Misa_Resume_IT.pdf";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }}
             >
               IT Resume
-            </span>
-            <span
+            </a>
+            <a
+              href="/Resume-VA-2025-11-11.pdf"
+              download={"John_Carlo_Misa_Resume_VA.pdf"}
               className="cursor-pointer text-sm"
-              onClick={() => {
-                const link = document.createElement("a");
-                link.href = "/Resume-VA-General.pdf";
-                link.download = "John_Carlo_Misa_Resume_VA.pdf";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }}
             >
               VA Resume
-            </span>
+            </a>
           </PopoverContent>
         </Popover>
       </div>
