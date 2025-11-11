@@ -125,15 +125,17 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
           </PopoverTrigger>
           <PopoverContent className="flex flex-col gap-2" align="end">
             <a
-              href="/Resume-IT-2025-11-05.pdf"
+              href="https://drive.google.com/file/d/1twXzPjK3HCeqBigrkeCu47OpP2RYTSON/view?usp=drive_link"
               download={"John_Carlo_Misa_Resume_IT.pdf"}
+              target="_blank"
               className="cursor-pointer text-sm"
             >
               IT Resume
             </a>
             <a
-              href="/Resume-VA-2025-11-11.pdf"
+              href="https://drive.google.com/file/d/1kMA1kKR1O6FpwRNBtsK29ChQafxFEkHi/view?usp=drive_link"
               download={"John_Carlo_Misa_Resume_VA.pdf"}
+              target="_blank"
               className="cursor-pointer text-sm"
             >
               VA Resume
