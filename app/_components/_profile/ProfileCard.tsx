@@ -19,7 +19,7 @@ const ProfileCard = () => {
       {/* profile info */}
       <div className="h-[70%] w-full p-[10px] relative">
         <Image
-          src={"/profile-img-3.png"}
+          src={"/profile-img.png"}
           alt="cover-img"
           width={1000}
           height={1000}

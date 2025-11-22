@@ -32,7 +32,7 @@ const ProfileAnalytics = ({
               {numberOfUsers || 0} Profile Signin
             </p>
             <span className="text-xs">
-              Discover who signed in on my profile.
+              Discover how many people signed in on my profile.
             </span>
           </div>
         </div>

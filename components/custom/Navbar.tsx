@@ -142,10 +142,10 @@ const Navbar = () => {
           <SheetContent side="left" className="w-[300px] sm:w-[400px]">
             <SheetHeader className="space-y-4">
               <SheetTitle className="text-left text-lg font-bold">
-                Navigation Menu
+                Explore My Portfolio
               </SheetTitle>
               <SheetDescription className="sr-only">
-                List of navigation menu items
+                Navigate through pages and view more about me.
               </SheetDescription>
               <div className="flex flex-col gap-4">
                 {/* Menu Items */}

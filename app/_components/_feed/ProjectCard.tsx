@@ -170,7 +170,7 @@ const ProjectCard = ({
       <div className="flex items-center justify-center w-full">
         <div className="flex items-center gap-2 w-full">
           <Image
-            src={"/profile-img-3.png"}
+            src={"/profile-img.png"}
             alt="profile-img"
             width={1000}
             height={1000}

@@ -143,7 +143,7 @@ const AIChatbot = () => {
   );
   const BotAvatar = () => (
     <Avatar className="h-6 w-6">
-      <AvatarImage src="/profile-img-3.png" />
+      <AvatarImage src="/profile-img.png" />
       <AvatarFallback className="text-[10px] bg-blue-500 text-white">
         B
       </AvatarFallback>

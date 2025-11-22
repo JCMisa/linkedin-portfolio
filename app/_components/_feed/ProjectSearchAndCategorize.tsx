@@ -31,7 +31,7 @@ export default function ProjectSearchAndCategorize({
       {/* Search */}
       <div className="flex items-center gap-2 w-full">
         <Image
-          src="/profile-img-3.png"
+          src="/profile-img.png"
           alt="avatar"
           width={48} // real pixels
           height={44} // real pixels

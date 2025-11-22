@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -125,8 +126,8 @@ const ProfileSkills = () => {
 
   return (
     <div
-      className={`rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col justify-between p-[10px] pb-0 px-5 overflow-hidden relative ${
-        isExpanded ? "h-auto" : "h-[277px]"
+      className={`rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col justify-between p-[10px] overflow-hidden relative ${
+        isExpanded ? "h-full" : "h-[277px]"
       }`}
     >
       <h2 className="text-2xl font-medium">Skills</h2>
@@ -148,7 +149,10 @@ const ProfileSkills = () => {
       </div>
 
       <div
-        className="cursor-pointer  flex items-center gap-1 justify-center h-10  border-t absolute bg-white dark:bg-dark z-10 bottom-0 w-full"
+        className={cn(
+          "cursor-pointer  flex items-center gap-1 justify-center h-[44px]  border-t  bg-white dark:bg-dark z-10  w-full",
+          !isExpanded && "absolute bottom-0"
+        )}
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <p className="text-sm font-semibold hover:opacity-[0.5] transition-opacity duration-200 ease-linear">

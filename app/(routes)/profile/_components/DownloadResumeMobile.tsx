@@ -14,33 +14,23 @@ const DownloadResumeMobile = () => {
           <DownloadIcon className="size-4 text-white" />
         </div>
       </PopoverTrigger>
-      <PopoverContent className="flex flex-col gap-2" align="end">
-        <span
+      <PopoverContent className="flex flex-col gap-2" align="end" side="top">
+        <a
+          href="https://drive.google.com/file/d/1twXzPjK3HCeqBigrkeCu47OpP2RYTSON/view?usp=drive_link"
+          download={"John_Carlo_Misa_Resume_IT.pdf"}
+          target="_blank"
           className="cursor-pointer text-sm"
-          onClick={() => {
-            const link = document.createElement("a");
-            link.href = "/Resume-IT.pdf";
-            link.download = "John_Carlo_Misa_Resume_IT.pdf";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }}
         >
           IT Resume
-        </span>
-        <span
+        </a>
+        <a
+          href="https://drive.google.com/file/d/1kMA1kKR1O6FpwRNBtsK29ChQafxFEkHi/view?usp=drive_link"
+          download={"John_Carlo_Misa_Resume_VA.pdf"}
+          target="_blank"
           className="cursor-pointer text-sm"
-          onClick={() => {
-            const link = document.createElement("a");
-            link.href = "/Resume-VA-General.pdf";
-            link.download = "John_Carlo_Misa_Resume_VA.pdf";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }}
         >
           VA Resume
-        </span>
+        </a>
       </PopoverContent>
     </Popover>
   );

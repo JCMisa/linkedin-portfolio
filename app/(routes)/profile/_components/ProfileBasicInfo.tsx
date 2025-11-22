@@ -23,7 +23,7 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
   };
 
   return (
-    <div className="rounded-lg w-full h-[400px] bg-neutral-100 dark:bg-dark flex flex-col items-center relative">
+    <div className="rounded-lg w-full md:h-[400px] h-full bg-neutral-100 dark:bg-dark flex flex-col items-center relative">
       {/* cover photo */}
       <div className="h-[35%] w-full">
         <Image
@@ -35,25 +35,28 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
         />
       </div>
 
-      {/* profile info */}
-      <div className="h-[65%] w-full p-[10px] overflow-auto no-scrollbar ">
-        <div onClick={handleImageClick} className="cursor-pointer">
-          <Image
-            src={"/profile-img-3.png"}
-            alt="cover-img"
-            width={1000}
-            height={1000}
-            className="w-[152px] h-[152px] object-fill rounded-full border-3 border-white dark:border-dark absolute top-7 left-6"
-          />
-        </div>
+      <div
+        onClick={handleImageClick}
+        className="cursor-pointer mt-[-100px] flex items-start justify-start self-start ml-[20px]"
+      >
+        <Image
+          src={"/profile-img.png"}
+          alt="cover-img"
+          width={1000}
+          height={1000}
+          className="w-[152px] h-[152px] object-fill rounded-full border-3 border-white dark:border-dark "
+        />
+      </div>
 
-        <div className="mt-8 px-5 flex flex-col lg:flex-row items-start gap-2 justify-between">
+      {/* profile info */}
+      <div className="h-full w-full p-[10px] overflow-auto no-scrollbar ">
+        <div className="px-5 flex flex-col lg:flex-row items-start gap-2 justify-between">
           <div className=" flex flex-col gap-[2px]">
             <Link
               href={"/profile"}
               className="text-2xl font-bold hover:underline hover:opacity-[0.8] transition-all ease-linear duration-200"
             >
-              John Carlo Misa
+              John Carlo S. Misa
             </Link>
             <div className="border-blue-400 text-blue-400 border border-dashed px-3 flex items-center gap-1 rounded-full w-fit">
               <ShieldCheckIcon className="size-4 text-blue-400" />
@@ -116,7 +119,7 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
           <PopoverTrigger asChild className="hidden md:flex">
             <Button
               className="text-xs hidden md:flex items-center justify-center gap-1 cursor-pointer absolute bottom-2 right-2"
-              variant={"outline"}
+              variant={"secondary"}
               size={"sm"}
             >
               <DownloadIcon className="size-4" />
@@ -157,7 +160,7 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
               &times;
             </button>
             <Image
-              src={"/profile-img-3.png"}
+              src={"/profile-img.png"}
               alt="cover-img"
               width={1000}
               height={1000}
