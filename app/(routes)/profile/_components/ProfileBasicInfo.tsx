@@ -128,7 +128,7 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
           </PopoverTrigger>
           <PopoverContent className="flex flex-col gap-2" align="end">
             <a
-              href="https://drive.google.com/file/d/1twXzPjK3HCeqBigrkeCu47OpP2RYTSON/view?usp=drive_link"
+              href="https://drive.google.com/file/d/1xYahrMC5zf9qmsRX7_zzENlS31eMue29/view?usp=drive_link"
               download={"John_Carlo_Misa_Resume_IT.pdf"}
               target="_blank"
               className="cursor-pointer text-sm"
