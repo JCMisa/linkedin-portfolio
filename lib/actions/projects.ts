@@ -7,6 +7,24 @@ import { getCurrentUser } from "./users";
 import { and, desc, eq, ilike, lt, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+export const getAllProjects = withErrorHandling(async () => {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return { data: null, success: false };
+  }
+
+  const data = await db
+    .select()
+    .from(Projects)
+    .orderBy(desc(Projects.createdAt));
+
+  if (data && data.length > 0) {
+    return { data: data, success: true };
+  }
+  return { data: null, success: false };
+});
+
 export const addProject = withErrorHandling(
   async (projectData: ProjectInsertedDataType, techStacks: string[]) => {
     const user = await getCurrentUser();
@@ -35,24 +53,6 @@ export const addProject = withErrorHandling(
     return { data: null, success: false };
   }
 );
-
-export const getAllProjects = withErrorHandling(async () => {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    return { data: null, success: false };
-  }
-
-  const data = await db
-    .select()
-    .from(Projects)
-    .orderBy(desc(Projects.createdAt));
-
-  if (data && data.length > 0) {
-    return { data: data, success: true };
-  }
-  return { data: null, success: false };
-});
 
 export const updateProject = withErrorHandling(
   async (

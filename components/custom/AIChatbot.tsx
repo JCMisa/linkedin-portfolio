@@ -5,14 +5,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { MessageSquareMoreIcon, SendIcon } from "lucide-react";
+import { SendIcon, XCircleIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
-import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +21,12 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Message = {
   id: string;
@@ -151,19 +156,32 @@ const AIChatbot = () => {
   );
 
   /* ---------- shared trigger ---------- */
-  const Trigger = (
-    <button
-      disabled={!user}
-      aria-label="Open chat"
-      className={cn(
-        "flex items-center justify-center rounded-full h-8 w-8 shadow-md",
-        !user
-          ? "bg-gray-700 dark:bg-gray-600 cursor-not-allowed"
-          : "bg-blue-400 hover:bg-blue-500 transition"
-      )}
-    >
-      <MessageSquareMoreIcon className="h-4 w-4 text-white" />
-    </button>
+  const Trigger = !user ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="w-[40px] h-[40px] rounded-full bg-neutral-100 dark:bg-neutral-900 shadow-xl flex items-center justify-center flex-none">
+          <XCircleIcon className="size-5 text-red-600" />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent
+        side="left"
+        className="bg-neutral-100 dark:bg-neutral-900"
+      >
+        <p>Sign in to unlock JCM AI</p>
+      </TooltipContent>
+    </Tooltip>
+  ) : (
+    <Image
+      src="/machine.webp"
+      alt="Pixel art pumpkin computer with bat wings"
+      width={50}
+      height={50}
+      className="image-pixelated cursor-pointer"
+      style={{
+        maxWidth: "100%",
+        height: "auto",
+      }}
+    />
   );
 
   /* ---------- chat body ---------- */
@@ -260,7 +278,7 @@ const AIChatbot = () => {
           <PopoverTrigger asChild>{Trigger}</PopoverTrigger>
           <PopoverContent
             align="end"
-            side="top"
+            side="left"
             sideOffset={8}
             className="w-[380px] h-[600px] flex flex-col p-0 rounded-2xl shadow-2xl"
           >

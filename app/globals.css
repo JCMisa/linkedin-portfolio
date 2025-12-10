@@ -237,3 +237,9 @@
 .tradingview-widget-container iframe {
   width: 100% !important;
 }
+
+.image-pixelated {
+  image-rendering: pixelated; /* Chrome/Edge/Firefox */
+  image-rendering: -moz-crisp-edges; /* Firefox Legacy */
+  image-rendering: crisp-edges; /* Standard */
+}

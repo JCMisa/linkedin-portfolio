@@ -4,8 +4,59 @@ import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
 import { getCurrentUser } from "./users";
 import { Certificates } from "@/config/schema";
-import { revalidatePath } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { desc, eq } from "drizzle-orm";
+
+export const getAllCertificates = unstable_cache(
+  withErrorHandling(async () => {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return { data: null, success: false };
+    }
+
+    const data = await db
+      .select()
+      .from(Certificates)
+      .orderBy(desc(Certificates.acquiredDate));
+
+    if (data && data.length > 0) {
+      return { data: data ?? [], success: true };
+    }
+    return { data: null, success: false };
+  }),
+  ["all-certificates-list-full"], // Key parts (cache tag)
+  {
+    revalidate: 3600, // Cache for 1 hour (adjust as needed)
+    tags: ["certificates"], // Tag for manual revalidation later
+  }
+);
+
+export const getLatestThreeCertificates = unstable_cache(
+  withErrorHandling(async () => {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return { data: null, success: false };
+    }
+
+    const data = await db
+      .select()
+      .from(Certificates)
+      .orderBy(desc(Certificates.acquiredDate))
+      .limit(3);
+
+    if (data && data.length > 0) {
+      return { data: data ?? [], success: true };
+    }
+    return { data: null, success: false };
+  }),
+  ["all-certificates-list-three"], // Key parts (cache tag)
+  {
+    revalidate: 3600, // Cache for 1 hour (adjust as needed)
+    tags: ["certificates"], // Tag for manual revalidation later
+  }
+);
 
 export const addCertificate = withErrorHandling(
   async (certificateData: CertificateInsertedDataType) => {
@@ -26,49 +77,12 @@ export const addCertificate = withErrorHandling(
       .returning({ insertedCertificateTitle: Certificates.title });
 
     if (data && data.insertedCertificateTitle) {
-      revalidatePath("/");
+      revalidateTag("certificates", "");
       return { data: data.insertedCertificateTitle, success: true };
     }
     return { data: null, success: false };
   }
 );
-
-export const getAllCertificates = withErrorHandling(async () => {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    return { data: null, success: false };
-  }
-
-  const data = await db
-    .select()
-    .from(Certificates)
-    .orderBy(desc(Certificates.acquiredDate));
-
-  if (data && data.length > 0) {
-    return { data: data ?? [], success: true };
-  }
-  return { data: null, success: false };
-});
-
-export const getLatestThreeCertificates = withErrorHandling(async () => {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    return { data: null, success: false };
-  }
-
-  const data = await db
-    .select()
-    .from(Certificates)
-    .orderBy(desc(Certificates.acquiredDate))
-    .limit(3);
-
-  if (data && data.length > 0) {
-    return { data: data ?? [], success: true };
-  }
-  return { data: null, success: false };
-});
 
 export const updateCertificate = withErrorHandling(
   async (
@@ -92,7 +106,7 @@ export const updateCertificate = withErrorHandling(
       .where(eq(Certificates.id, id))
       .returning({ updatedTitle: Certificates.title });
 
-    revalidatePath("/certificates");
+    revalidateTag("certificates", "");
     return { data: data.updatedTitle, success: true };
   }
 );
@@ -110,7 +124,7 @@ export const deleteCertificate = withErrorHandling(
       .where(eq(Certificates.id, certificateId));
 
     if (data) {
-      revalidatePath("/certificates");
+      revalidateTag("certificates", "");
       return { data: null, success: true };
     }
     return { data: null, success: false };

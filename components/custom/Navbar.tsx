@@ -139,7 +139,10 @@ const Navbar = () => {
           <SheetTrigger>
             <MenuIcon className="block md:hidden cursor-pointer" />
           </SheetTrigger>
-          <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+          <SheetContent
+            side="left"
+            className="w-[300px] sm:w-[400px] bg-neutral-100 dark:bg-dark"
+          >
             <SheetHeader className="space-y-4">
               <SheetTitle className="text-left text-lg font-bold">
                 Explore My Portfolio
@@ -211,7 +214,7 @@ const Navbar = () => {
         <Button
           variant={"outline"}
           size={"sm"}
-          className="mx-2"
+          className="mx-2 cursor-pointer"
           onClick={() => router.push("/sign-in")}
         >
           Sign In

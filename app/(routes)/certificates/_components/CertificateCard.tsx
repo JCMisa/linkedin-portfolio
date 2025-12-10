@@ -76,13 +76,13 @@ const CertificateCard = ({
             {cert.title}
           </p>
           <span className="text-sm text-muted-foreground truncate">
-            {cert &&
-              cert.acquiredDate &&
-              cert.acquiredDate.toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
+            {cert && cert.acquiredDate
+              ? new Date(cert.acquiredDate).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })
+              : "Date not available"}
           </span>
         </div>
 

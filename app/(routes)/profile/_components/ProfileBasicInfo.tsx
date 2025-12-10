@@ -37,14 +37,14 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
 
       <div
         onClick={handleImageClick}
-        className="cursor-pointer mt-[-100px] flex items-start justify-start self-start ml-[20px]"
+        className="cursor-pointer sm:mt-[-100px] mt-[-70px] flex items-start justify-start self-start ml-[20px]"
       >
         <Image
           src={"/profile-img.png"}
           alt="cover-img"
           width={1000}
           height={1000}
-          className="w-[152px] h-[152px] object-fill rounded-full border-3 border-white dark:border-dark "
+          className="sm:w-[152px] sm:h-[152px] w-[100px] h-[100px] object-fill rounded-full border-3 border-white dark:border-dark "
         />
       </div>
 

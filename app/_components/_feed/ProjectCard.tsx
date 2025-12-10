@@ -167,25 +167,23 @@ const ProjectCard = ({
       <Separator />
 
       {/* content header */}
-      <div className="flex items-center justify-center w-full">
-        <div className="flex items-center gap-2 w-full">
+      <div className="flex items-center justify-between w-full px-2">
+        <div className="flex items-start gap-2">
           <Image
             src={"/profile-img.png"}
             alt="profile-img"
             width={1000}
             height={1000}
-            className="w-[48px] h-[48px] object-fill rounded-full"
+            className="w-[48px] h-[48px] object-fill rounded-full flex-none"
           />
-          <div className="flex flex-col w-[80%] ">
-            <p className="text-sm font-bold capitalize truncate">
-              {project.title}
-            </p>
-            <span className="text-xs text-muted-foreground truncate">
+          <div className="flex flex-col max-w-[80%]">
+            <p className="text-sm font-bold capitalize ">{project.title}</p>
+            <span className="text-xs text-muted-foreground ">
               {project.techStacks && project.techStacks.length > 0
                 ? project.techStacks.join(" | ")
                 : "No tech stacks"}
             </span>
-            <span className="text-xs text-muted-foreground truncate flex items-center mt-1">
+            <span className="text-xs text-muted-foreground  flex items-center mt-1">
               {Math.ceil(
                 (Date.now() - new Date(project.createdAt).getTime()) /
                   (1000 * 60 * 60 * 24)

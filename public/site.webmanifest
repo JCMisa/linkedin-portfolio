@@ -1,0 +1,16 @@
+{
+  "name": "JCM Portfolio",
+  "short_name": "JCM",
+  "description": "Explore projects, open-source contributions, and certificates by John Carlo Misa.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/blur.jpg",
+      "sizes": "192x192",
+      "type": "image/jpg"
+    }
+  ]
+}

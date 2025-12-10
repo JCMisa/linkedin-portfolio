@@ -26,13 +26,13 @@ const CertificatePreviewCard = ({ cert }: { cert: CertificateType }) => {
       <div className="flex flex-col items-start">
         <p className="text-sm font-bold truncate line-clamp-1">{cert.title}</p>
         <span className="text-xs text-muted-foreground truncate">
-          {cert &&
-            cert.acquiredDate &&
-            cert.acquiredDate.toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
+          {cert && cert.acquiredDate
+            ? new Date(cert.acquiredDate).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "Date not available"}
         </span>
 
         <Dialog>

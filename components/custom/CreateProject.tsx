@@ -141,10 +141,10 @@ const CreateProject = () => {
         <PlusIcon className="size-4 cursor-pointer" />
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto no-scrollbar">
+      <DialogContent className="max-h-[90vh] overflow-y-auto no-scrollbar bg-neutral-100 dark:bg-neutral-900">
         <DialogHeader>
           <DialogTitle>Add New Project</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs text-muted-foreground">
             Provide the details to add a new project. Convert first project
             image in this link{" "}
             <Link
