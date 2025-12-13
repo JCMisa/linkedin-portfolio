@@ -20,12 +20,15 @@ import {
 } from "@/components/ui/select";
 import { LoaderCircleIcon, PlusIcon, X, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Separator } from "../ui/separator";
 import { useState, KeyboardEvent, FocusEvent } from "react";
 import { toast } from "sonner";
 import { addProject } from "@/lib/actions/projects";
 import { showConfetti } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { FileUpload } from "../ui/file-upload";
+import { uploadImageToCloudinary } from "@/lib/actions/cloudinary";
 
 /* ---------- regexes ---------- */
 const imageRegex = /^https?:\/\/.+\.(png|jpe?g|webp|svg)$/i;
@@ -43,7 +46,10 @@ const CreateProject = () => {
 
   const [techStack, setTechStack] = useState<string[]>([]);
   const [currentTech, setCurrentTech] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
   const [open, setOpen] = useState(false);
 
   /* ---------- touched flags ---------- */
@@ -99,6 +105,32 @@ const CreateProject = () => {
   const removeTech = (idx: number) =>
     setTechStack((prev) => prev.filter((_, i) => i !== idx));
 
+  const handleFileUpload = async (files: File[]) => {
+    if (files.length === 0) return;
+
+    setFiles(files);
+    setIsUploading(true);
+
+    try {
+      const file = files[0];
+      const imageUrl = await uploadImageToCloudinary(file, "projects");
+
+      if (imageUrl) {
+        setUploadedImageUrl(imageUrl);
+        setFormData((prev) => ({ ...prev, imageUrl }));
+        // Mark as touched and valid since we got a valid URL from Cloudinary
+        setTouched((prev) => ({ ...prev, imageUrl: true }));
+      } else {
+        toast.error("Failed to upload image");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -116,6 +148,8 @@ const CreateProject = () => {
           category: "",
         });
         setTechStack([]);
+        setFiles([]);
+        setUploadedImageUrl("");
         setTouched({ imageUrl: false, githubUrl: false, liveUrl: false });
       } else {
         toast.error("Could not create project");
@@ -131,9 +165,10 @@ const CreateProject = () => {
     formData.description &&
     formData.category &&
     techStack.length > 0 &&
-    imageValid &&
+    formData.imageUrl && // Ensure image URL is present
     githubValid &&
-    liveValid;
+    liveValid &&
+    !isUploading; // Don't allow submission while uploading
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -141,7 +176,7 @@ const CreateProject = () => {
         <PlusIcon className="size-4 cursor-pointer" />
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto no-scrollbar bg-neutral-100 dark:bg-neutral-900">
+      <DialogContent className="max-h-[90vh] xl:min-w-[70rem] overflow-y-auto no-scrollbar bg-neutral-100 dark:bg-neutral-900">
         <DialogHeader>
           <DialogTitle>Add New Project</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
@@ -196,32 +231,36 @@ const CreateProject = () => {
             />
           </div>
 
-          {/* Image URL */}
+          {/* Project Image */}
           <div className="space-y-1">
             <label htmlFor="imageUrl" className="text-sm font-medium">
-              Image URL
+              Project Image
             </label>
-            <div className="relative">
-              <Input
-                id="imageUrl"
-                name="imageUrl"
-                placeholder="https://example.com/image.png"
-                value={formData.imageUrl}
-                onChange={handleChange}
-                onBlur={handleBlur("imageUrl")}
-                className={cn(
-                  touched.imageUrl &&
-                    !imageValid &&
-                    "border-destructive focus-visible:ring-destructive"
-                )}
-              />
-              {touched.imageUrl && !imageValid && (
-                <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
-              )}
-            </div>
+            <FileUpload onChange={handleFileUpload} />
+            {isUploading && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <LoaderCircleIcon className="size-3 animate-spin" />
+                <span>Uploading image...</span>
+              </div>
+            )}
+            {uploadedImageUrl && !isUploading && (
+              <div className="mt-2 space-y-2">
+                <p className="text-xs text-muted-foreground">
+                  Image uploaded successfully!
+                </p>
+                <div className="relative w-full h-48 rounded-md overflow-hidden border">
+                  <Image
+                    src={uploadedImageUrl}
+                    alt="Project preview"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            )}
             {touched.imageUrl && !imageValid && (
               <p className="text-xs text-destructive">
-                Must be a valid URL ending in .png, .jpg, .jpeg, .webp or .svg
+                Must be a valid file ending in .png, .jpg, .jpeg
               </p>
             )}
           </div>
@@ -340,7 +379,9 @@ const CreateProject = () => {
               !formData.description ||
               !formData.category ||
               techStack.length === 0 ||
+              !formData.imageUrl ||
               isSubmitting ||
+              isUploading ||
               !canSubmit
             }
           >

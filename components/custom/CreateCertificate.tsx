@@ -29,6 +29,9 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
 import { addCertificate } from "@/lib/actions/certificates";
+import { FileUpload } from "../ui/file-upload";
+import { uploadImageToCloudinary } from "@/lib/actions/cloudinary";
+import Image from "next/image";
 
 const CreateCertificate = () => {
   const [formData, setFormData] = useState({
@@ -39,6 +42,9 @@ const CreateCertificate = () => {
   });
   const [dateOpen, setDateOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
+  const [files, setFiles] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
   const [touched, setTouched] = useState({
     imageUrl: false,
@@ -47,8 +53,10 @@ const CreateCertificate = () => {
   const touch = (k: keyof typeof touched) =>
     setTouched((prev) => ({ ...prev, [k]: true }));
 
+  // For Cloudinary URLs, we accept any valid URL (not just image extensions)
   const imageValid =
     !formData.imageUrl ||
+    formData.imageUrl.trim().startsWith("http") ||
     /^https?:\/\/.+\.(png|jpe?g|webp|svg)$/i.test(formData.imageUrl.trim());
 
   const handleBlur =
@@ -59,6 +67,31 @@ const CreateCertificate = () => {
         [k]: e.target.value.trim(),
       }));
     };
+
+  const handleFileUpload = async (files: File[]) => {
+    if (files.length === 0) return;
+
+    setFiles(files);
+    setIsUploading(true);
+
+    try {
+      const file = files[0];
+      const imageUrl = await uploadImageToCloudinary(file, "jcm");
+
+      if (imageUrl) {
+        setUploadedImageUrl(imageUrl);
+        setFormData((prev) => ({ ...prev, imageUrl }));
+        setTouched((prev) => ({ ...prev, imageUrl: true }));
+      } else {
+        toast.error("Failed to upload image");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -74,6 +107,8 @@ const CreateCertificate = () => {
           imageUrl: "",
           acquiredDate: new Date(),
         });
+        setFiles([]);
+        setUploadedImageUrl("");
         setTouched({ imageUrl: false });
       } else {
         toast.error("Could not create certificate");
@@ -83,7 +118,12 @@ const CreateCertificate = () => {
     }
   };
 
-  const canSubmit = formData.title && formData.acquiredDate && imageValid;
+  const canSubmit =
+    formData.title &&
+    formData.acquiredDate &&
+    formData.imageUrl &&
+    imageValid &&
+    !isUploading;
 
   /* ---------- render ---------- */
   return (
@@ -92,7 +132,7 @@ const CreateCertificate = () => {
         <PlusIcon className="size-4 cursor-pointer" />
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto no-scrollbar">
         <DialogHeader>
           <DialogTitle>Add New Certificate</DialogTitle>
           <DialogDescription>
@@ -130,31 +170,34 @@ const CreateCertificate = () => {
             />
           </div>
 
-          {/* Image URL */}
+          {/* Certificate Image */}
           <div className="space-y-1">
-            <label className="text-sm font-medium">Image URL</label>
-            <div className="relative">
-              <Input
-                name="imageUrl"
-                placeholder="https://example.com/image.png"
-                value={formData.imageUrl}
-                onBlur={handleBlur("imageUrl")}
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, imageUrl: e.target.value }))
-                }
-                className={cn(
-                  touched.imageUrl &&
-                    !imageValid &&
-                    "border-destructive focus-visible:ring-destructive"
-                )}
-              />
-              {touched.imageUrl && !imageValid && (
-                <AlertCircleIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
-              )}
-            </div>
-            {!imageValid && formData.imageUrl && (
+            <label className="text-sm font-medium">Certificate Image</label>
+            <FileUpload onChange={handleFileUpload} />
+            {isUploading && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <LoaderCircleIcon className="size-3 animate-spin" />
+                <span>Uploading image...</span>
+              </div>
+            )}
+            {uploadedImageUrl && !isUploading && (
+              <div className="mt-2 space-y-2">
+                <p className="text-xs text-muted-foreground">
+                  Image uploaded successfully!
+                </p>
+                <div className="relative w-full h-48 rounded-md overflow-hidden border">
+                  <Image
+                    src={uploadedImageUrl}
+                    alt="Certificate preview"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            )}
+            {touched.imageUrl && !imageValid && (
               <p className="text-xs text-destructive">
-                Must be a valid URL ending in .png, .jpg, .jpeg, .webp or .svg
+                Must be a valid image URL
               </p>
             )}
           </div>
@@ -196,7 +239,7 @@ const CreateCertificate = () => {
           <Button
             onClick={handleSubmit}
             className="w-full"
-            disabled={!canSubmit || isSubmitting}
+            disabled={!canSubmit || isSubmitting || isUploading}
           >
             {isSubmitting ? (
               <LoaderCircleIcon className="size-5 animate-spin" />

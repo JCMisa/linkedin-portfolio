@@ -6,6 +6,7 @@ import { Projects } from "@/config/schema";
 import { getCurrentUser } from "./users";
 import { and, desc, eq, ilike, lt, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { deleteImageFromCloudinary } from "./cloudinary";
 
 export const getAllProjects = withErrorHandling(async () => {
   const user = await getCurrentUser();
@@ -66,6 +67,34 @@ export const updateProject = withErrorHandling(
       return { data: null, success: false, error: "Unauthorized" };
     }
 
+    // Get the current project to check if image is being changed
+    const [currentProject] = await db
+      .select()
+      .from(Projects)
+      .where(eq(Projects.id, projectId))
+      .limit(1);
+
+    if (!currentProject) {
+      return { data: null, success: false, error: "Project not found" };
+    }
+
+    // If image URL is being updated and it's different from the current one,
+    // delete the old image from Cloudinary
+    if (
+      projectData.imageUrl &&
+      projectData.imageUrl !== currentProject.image &&
+      currentProject.image
+    ) {
+      try {
+        await deleteImageFromCloudinary(currentProject.image);
+        // Note: We don't fail the update if Cloudinary deletion fails
+        // The project will still be updated with the new image
+      } catch (error) {
+        console.error("Error deleting old image from Cloudinary:", error);
+        // Continue with project update even if old image deletion fails
+      }
+    }
+
     const [data] = await db
       .update(Projects)
       .set({
@@ -96,6 +125,30 @@ export const deleteProject = withErrorHandling(async (projectId: string) => {
     return { data: null, success: false };
   }
 
+  // First, get the project to retrieve the image URL
+  const [project] = await db
+    .select()
+    .from(Projects)
+    .where(eq(Projects.id, projectId))
+    .limit(1);
+
+  if (!project) {
+    return { data: null, success: false, error: "Project not found" };
+  }
+
+  // Delete the image from Cloudinary if it exists
+  if (project.image) {
+    try {
+      await deleteImageFromCloudinary(project.image);
+      // Note: We don't fail the deletion if Cloudinary deletion fails
+      // The project will still be deleted from the database
+    } catch (error) {
+      console.error("Error deleting image from Cloudinary:", error);
+      // Continue with project deletion even if image deletion fails
+    }
+  }
+
+  // Delete the project from the database
   const data = await db.delete(Projects).where(eq(Projects.id, projectId));
 
   if (data) {

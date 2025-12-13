@@ -20,14 +20,17 @@ import {
 } from "@/components/ui/select";
 import { EditIcon, LoaderCircleIcon, X, AlertCircle } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { useState, KeyboardEvent, useEffect, FocusEvent } from "react";
+import { useState, KeyboardEvent, useEffect, FocusEvent, useRef } from "react";
 import { toast } from "sonner";
 import { updateProject } from "@/lib/actions/projects";
 import { showConfetti } from "@/lib/utils";
 import { cn } from "@/lib/utils"; // shadcn helper
+import { FileUpload } from "../ui/file-upload";
+import { uploadImageToCloudinary } from "@/lib/actions/cloudinary";
+import Image from "next/image";
 
 /* ---------- validation helpers ---------- */
-const imageRegex = /^https?:\/\/.+\.(png|jpe?g|webp|svg)$/i;
+const imageRegex = /^https?:\/\/.+\.(png|jpe?g)$/i;
 const genericRegex = /^https?:\/\/.+\..+/i; // basic URL
 
 const EditProject = ({ project }: { project: ProjectType }) => {
@@ -45,6 +48,10 @@ const EditProject = ({ project }: { project: ProjectType }) => {
     project.techStacks || []
   );
   const [currentTech, setCurrentTech] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   /* ---------- touched flags ---------- */
   const [touched, setTouched] = useState({
@@ -57,8 +64,12 @@ const EditProject = ({ project }: { project: ProjectType }) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
 
   /* ---------- validation ---------- */
+  // For Cloudinary URLs, we accept any valid URL (not just image extensions)
+  // Cloudinary URLs don't always have file extensions
   const imageValid =
-    !formData.imageUrl || imageRegex.test(formData.imageUrl.trim());
+    !formData.imageUrl ||
+    formData.imageUrl.trim().startsWith("http") ||
+    imageRegex.test(formData.imageUrl.trim());
   const githubValid =
     !formData.githubUrl || genericRegex.test(formData.githubUrl.trim());
   const liveValid =
@@ -80,6 +91,8 @@ const EditProject = ({ project }: { project: ProjectType }) => {
       category: project.category || "",
     });
     setTechStack(project.techStacks || []);
+    setFiles([]);
+    setUploadedImageUrl("");
     setTouched({ imageUrl: false, githubUrl: false, liveUrl: false });
   }, [open, project]);
 
@@ -118,6 +131,33 @@ const EditProject = ({ project }: { project: ProjectType }) => {
     setTechStack((prev) => prev.filter((_, i) => i !== indexToRemove));
   };
 
+  /* ---------- image upload handler ---------- */
+  const handleFileUpload = async (files: File[]) => {
+    if (files.length === 0) return;
+
+    setFiles(files);
+    setIsUploading(true);
+
+    try {
+      const file = files[0];
+      const imageUrl = await uploadImageToCloudinary(file, "jcm");
+
+      if (imageUrl) {
+        setUploadedImageUrl(imageUrl);
+        setFormData((prev) => ({ ...prev, imageUrl }));
+        // Mark as touched and valid since we got a valid URL from Cloudinary
+        setTouched((prev) => ({ ...prev, imageUrl: true }));
+      } else {
+        toast.error("Failed to upload image");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   /* ---------- submit ---------- */
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -152,10 +192,12 @@ const EditProject = ({ project }: { project: ProjectType }) => {
     formData.description &&
     formData.category &&
     techStack.length > 0 &&
+    formData.imageUrl &&
     imageValid &&
     githubValid &&
     liveValid &&
-    hasRealChanges;
+    hasRealChanges &&
+    !isUploading;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -198,27 +240,77 @@ const EditProject = ({ project }: { project: ProjectType }) => {
             />
           </div>
 
-          {/* Image URL */}
+          {/* Project Image */}
           <div className="space-y-1">
-            <label className="text-sm font-medium">Image URL</label>
-            <div className="relative">
-              <Input
-                name="imageUrl"
-                placeholder="https://example.com/image.png"
-                value={formData.imageUrl}
-                onChange={handleInputChange}
-                onBlur={handleBlur("imageUrl")}
-                className={cn(
-                  touched.imageUrl && !imageValid && "border-destructive"
-                )}
-              />
-              {touched.imageUrl && !imageValid && (
-                <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
-              )}
-            </div>
+            <label className="text-sm font-medium">Project Image</label>
+
+            {/* Hidden file input for clicking preview */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/jpg"
+              className="hidden"
+              onChange={(e) => {
+                const selectedFiles = Array.from(e.target.files || []);
+                if (selectedFiles.length > 0) {
+                  handleFileUpload([selectedFiles[0]]);
+                }
+              }}
+            />
+
+            {/* Current Image Preview - Clickable to upload new */}
+            {formData.imageUrl && !uploadedImageUrl && (
+              <div className="space-y-2 mb-4">
+                <p className="text-xs text-muted-foreground">
+                  Current image (click image to upload a new one)
+                </p>
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="relative w-full h-48 rounded-md overflow-hidden border cursor-pointer group"
+                >
+                  <Image
+                    src={formData.imageUrl || "/empty-img.webp"}
+                    alt="Current project image"
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
+                    <p className="text-white opacity-0 group-hover:opacity-100 text-sm font-medium">
+                      Click to upload new image
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* File Upload Component */}
+            {isUploading && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <LoaderCircleIcon className="size-3 animate-spin" />
+                <span>Uploading image...</span>
+              </div>
+            )}
+
+            {/* New Uploaded Image Preview */}
+            {uploadedImageUrl && !isUploading && (
+              <div className="mt-2 space-y-2">
+                <p className="text-xs text-muted-foreground">
+                  New image uploaded successfully!
+                </p>
+                <div className="relative w-full h-48 rounded-md overflow-hidden border">
+                  <Image
+                    src={uploadedImageUrl}
+                    alt="New project image preview"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            )}
+
             {touched.imageUrl && !imageValid && (
               <p className="text-xs text-destructive">
-                Must be a direct link to .png, .jpg, .jpeg, .webp or .svg
+                Must be a valid image URL
               </p>
             )}
           </div>
@@ -316,7 +408,7 @@ const EditProject = ({ project }: { project: ProjectType }) => {
             <Button
               onClick={handleSubmit}
               className="flex-1"
-              disabled={!canSubmit || isSubmitting}
+              disabled={!canSubmit || isSubmitting || isUploading}
             >
               {isSubmitting ? (
                 <LoaderCircleIcon className="size-5 animate-spin" />

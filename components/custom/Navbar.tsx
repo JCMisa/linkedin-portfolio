@@ -90,7 +90,7 @@ const Navbar = () => {
             <SearchIcon className="size-4 absolute top-2 left-5" onClick={go} />
             <Input
               className="bg-transparent text-gray-500 dark:text-gray-400 text-lg border-none focus:border-none focus:outline-none active:border-none"
-              placeholder="Go to..."
+              placeholder="Search page..."
               style={{ background: "none", boxShadow: "none" }}
               value={query}
               onChange={(e) => setQuery(e.target.value)}

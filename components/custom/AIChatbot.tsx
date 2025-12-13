@@ -289,7 +289,7 @@ const AIChatbot = () => {
 
       {isMobile && (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>{Trigger}</DialogTrigger>
+          <DialogTrigger>{Trigger}</DialogTrigger>
           <DialogContent className="h-screen w-screen max-w-none max-h-none p-0 gap-0 rounded-none">
             <DialogHeader className="hidden">
               <DialogTitle>Chat</DialogTitle>

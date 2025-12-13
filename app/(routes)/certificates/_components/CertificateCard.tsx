@@ -29,7 +29,10 @@ const CertificateCard = ({
               View
             </button>
           </DialogTrigger>
-          <DialogContent className="max-w-[800px] max-h-[400px] flex items-center justify-center bg-transparent border-none">
+          <DialogContent
+            showCloseButton={false}
+            className="max-w-[800px] max-h-[400px] flex items-center justify-center bg-transparent border-none"
+          >
             <DialogHeader>
               <DialogTitle className="sr-only">
                 Are you absolutely sure?
