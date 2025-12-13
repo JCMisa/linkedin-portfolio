@@ -6,7 +6,7 @@ import { getCurrentUser } from "./users";
 import { Certificates } from "@/config/schema";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { desc, eq } from "drizzle-orm";
-import { deleteImageFromCloudinary } from "./cloudinary";
+import { deleteImageFromCloudinary } from "../cloudinary";
 
 export const getAllCertificates = unstable_cache(
   withErrorHandling(async () => {

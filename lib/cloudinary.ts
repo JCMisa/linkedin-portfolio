@@ -1,7 +1,7 @@
 "use server";
 
 import { v2 as cloudinary } from "cloudinary";
-import { withErrorHandling } from "../utils";
+import { withErrorHandling } from "./utils";
 
 // Configure Cloudinary
 cloudinary.config({

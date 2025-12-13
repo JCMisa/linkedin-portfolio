@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { updateCertificate } from "@/lib/actions/certificates";
 import { useState, FocusEvent, useEffect, useRef } from "react";
 import { FileUpload } from "@/components/ui/file-upload";
-import { uploadImageToCloudinary } from "@/lib/actions/cloudinary";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import Image from "next/image";
 
 const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {

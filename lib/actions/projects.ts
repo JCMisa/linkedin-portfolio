@@ -6,7 +6,7 @@ import { Projects } from "@/config/schema";
 import { getCurrentUser } from "./users";
 import { and, desc, eq, ilike, lt, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { deleteImageFromCloudinary } from "./cloudinary";
+import { deleteImageFromCloudinary } from "../cloudinary";
 
 export const getAllProjects = withErrorHandling(async () => {
   const user = await getCurrentUser();

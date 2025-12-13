@@ -26,7 +26,7 @@ import { updateProject } from "@/lib/actions/projects";
 import { showConfetti } from "@/lib/utils";
 import { cn } from "@/lib/utils"; // shadcn helper
 import { FileUpload } from "../ui/file-upload";
-import { uploadImageToCloudinary } from "@/lib/actions/cloudinary";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import Image from "next/image";
 
 /* ---------- validation helpers ---------- */

@@ -30,7 +30,7 @@ import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
 import { addCertificate } from "@/lib/actions/certificates";
 import { FileUpload } from "../ui/file-upload";
-import { uploadImageToCloudinary } from "@/lib/actions/cloudinary";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import Image from "next/image";
 
 const CreateCertificate = () => {

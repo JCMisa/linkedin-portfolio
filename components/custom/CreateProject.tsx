@@ -28,7 +28,7 @@ import { addProject } from "@/lib/actions/projects";
 import { showConfetti } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { FileUpload } from "../ui/file-upload";
-import { uploadImageToCloudinary } from "@/lib/actions/cloudinary";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
 /* ---------- regexes ---------- */
 const imageRegex = /^https?:\/\/.+\.(png|jpe?g|webp|svg)$/i;
