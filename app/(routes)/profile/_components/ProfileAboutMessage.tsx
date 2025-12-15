@@ -42,7 +42,7 @@ const ProfileAboutMessage = () => {
         >
           Linkedin
         </LinkPreview>{" "}
-        or explore my work on my{" "}
+        or explore my works on my{" "}
         <LinkPreview
           url="https://jcm-portfolio.vercel.app/"
           className="text-xs font-semibold !text-blue-500"

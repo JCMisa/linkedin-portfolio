@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { useState } from "react";
 
 const skills = [
@@ -126,6 +126,7 @@ const ProfileSkills = () => {
 
   return (
     <div
+      id="skills"
       className={`rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col justify-between p-[10px] overflow-hidden relative ${
         isExpanded ? "h-full" : "h-[277px]"
       }`}
@@ -158,7 +159,11 @@ const ProfileSkills = () => {
         <p className="text-sm font-semibold hover:opacity-[0.5] transition-opacity duration-200 ease-linear">
           {isExpanded ? "See Less" : "Show all skills"}
         </p>
-        <ArrowRightIcon className="size-5" />
+        {isExpanded ? (
+          <ArrowUpIcon className="size-4" />
+        ) : (
+          <ArrowDownIcon className="size-4" />
+        )}
       </div>
     </div>
   );

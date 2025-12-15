@@ -23,7 +23,7 @@ const ProfileLeftInfo = ({
 }) => {
   return (
     <div className="flex flex-col gap-2 py-5 lg:py-0 w-full rounded-lg">
-      <ProfileBasicInfo numberOfUsers={numberOfUsers} />
+      <ProfileBasicInfo />
       <ProfileAnalytics
         numberOfUsers={numberOfUsers}
         numberOfPostLikes={numberOfPostLikes}

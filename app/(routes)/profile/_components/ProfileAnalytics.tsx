@@ -15,12 +15,12 @@ const ProfileAnalytics = ({
   numberOfPostComments: number;
 }) => {
   return (
-    <div className="rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col p-[10px] px-5">
-      <h2 className="text-2xl font-medium">Analytics</h2>
+    <div className="rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col p-5">
+      <h2 className="text-2xl font-medium">Engagements</h2>
       <div className="flex items-center gap-1 text-muted-foreground">
         <EyeIcon className="size-4" />
         <p className="text-sm">
-          See my portfolio profile engagements and post analytics.
+          See my portfolio profile and post engagements.
         </p>
       </div>
 

@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
-import { Input } from "../ui/input";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  ActivityIcon,
   BriefcaseBusinessIcon,
   GalleryVerticalEndIcon,
   HomeIcon,
@@ -25,9 +25,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
-import SkillsModal from "./SkillsModal";
-import { useState } from "react";
 import ModeToggle from "./ModeToggle";
+import SearhPage from "./SearhPage";
 
 const menuItems = [
   {
@@ -54,26 +53,18 @@ const menuItems = [
     icon: GalleryVerticalEndIcon,
     path: "/certificates",
   },
-  // {
-  //   id: 5,
-  //   title: "Skills",
-  //   icon: ActivityIcon,
-  //   path: "/skills",
-  // },
+  {
+    id: 5,
+    title: "Skills",
+    icon: ActivityIcon,
+    path: "/profile/#skills",
+  },
 ];
 
 const Navbar = () => {
   const pathname = usePathname();
   const { user } = useUser();
   const router = useRouter();
-
-  const [query, setQuery] = useState("");
-
-  const go = () => {
-    const q = query.trim().toLowerCase();
-    if (!q) return; // ignore empty
-    router.push(`/${encodeURIComponent(q)}`); // e.g.  /projects
-  };
 
   return (
     <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b bg-white dark:bg-dark flex items-center fixed top-0 z-50">
@@ -86,17 +77,7 @@ const Navbar = () => {
             height={34.17}
             className="rounded-[3px]"
           />
-          <div className="relative rounded-full w-[280px] h-[34px] border border-neutral-600 pl-[40px] pr-[16px] hidden sm:flex items-center justify-center">
-            <SearchIcon className="size-4 absolute top-2 left-5" onClick={go} />
-            <Input
-              className="bg-transparent text-gray-500 dark:text-gray-400 text-lg border-none focus:border-none focus:outline-none active:border-none"
-              placeholder="Search page..."
-              style={{ background: "none", boxShadow: "none" }}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && go()}
-            />
-          </div>
+          <SearhPage />
         </div>
 
         {/* menu items - large screen */}
@@ -131,7 +112,6 @@ const Navbar = () => {
               </Link>
             );
           })}
-          <SkillsModal view="desktop" />
         </div>
 
         {/* menu items - small screen */}
@@ -151,6 +131,14 @@ const Navbar = () => {
                 Navigate through pages and view more about me.
               </SheetDescription>
               <div className="flex flex-col gap-4">
+                <SearhPage
+                  forMobile={true}
+                  additionalClassName="!w-full"
+                  contentClassName="!w-full border border-neutral-900 dark:border-neutral-100"
+                />
+
+                <Separator />
+
                 {/* Menu Items */}
                 <div className="space-y-4 mt-2">
                   {menuItems.map((item) => {
@@ -172,7 +160,6 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
-                  <SkillsModal view="mobile" />
                 </div>
 
                 <Separator className="my-4" />

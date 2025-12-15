@@ -1,6 +1,7 @@
-import { relations, sql } from "drizzle-orm";
+import { InferSelectModel, relations, sql } from "drizzle-orm";
 import {
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -8,6 +9,36 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+
+type SkillsType = {
+  id: string;
+  title: string;
+  description: string;
+  items: string[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type TopVoicesType = {
+  id: string;
+  name: string;
+  profileImg: string;
+  company: string;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type ExperiencesType = {
+  id: string;
+  title: string;
+  description: string;
+  bannerImg: string;
+  dateFrom: string;
+  dateTo: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export const Users = pgTable(
   "users",
@@ -99,6 +130,48 @@ export const Certificates = pgTable("certificates", {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+
+export const PersonalInfo = pgTable("personalInfo", {
+  id: uuid().defaultRandom().primaryKey(),
+
+  name: varchar("name").default("John Carlo S. Misa").notNull(),
+  email: varchar("email").default("johncarlomisa399@gmail.com").notNull(),
+  city: varchar("city").default("San Pablo City").notNull(),
+  province: varchar("province").default("Laguna").notNull(),
+  country: varchar("country").default("Philippines").notNull(),
+
+  contactNumber: varchar("contactNumber").notNull(),
+  industryRole: varchar("industryRole").notNull(),
+
+  profileImg: text("profileImg"),
+  itResumeLink: text("itResumeLink").notNull(),
+  vaResumeLink: text("vaResumeLink").notNull(),
+  linkedinLink: text("linkedinLink").notNull(),
+  portfolioLink: text("portfolioLink").notNull(),
+  githubLink: text("githubLink").notNull(),
+  facebookLink: text("facebookLink").notNull(),
+  instagramLink: text("instagramLink").notNull(),
+  xLink: text("xLink").notNull(),
+  about: text("about").notNull(),
+
+  skills: jsonb("skills")
+    .$type<SkillsType[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+  topVoices: jsonb("topVoices")
+    .$type<TopVoicesType[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+  experiences: jsonb("experiences")
+    .$type<ExperiencesType[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+  services: jsonb("services")
+    .$type<string[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+});
+export type PersonalInfoType = InferSelectModel<typeof PersonalInfo>;
 
 // ------------------------------------------- SCHEMA RELATIONSHIPS -------------------------------------------
 

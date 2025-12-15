@@ -159,9 +159,17 @@ const AIChatbot = () => {
   const Trigger = !user ? (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="w-[40px] h-[40px] rounded-full bg-neutral-100 dark:bg-neutral-900 shadow-xl flex items-center justify-center flex-none">
-          <XCircleIcon className="size-5 text-red-600" />
-        </div>
+        <Image
+          src="/machine.webp"
+          alt="Pixel art pumpkin computer with bat wings"
+          width={50}
+          height={50}
+          className="image-pixelated opacity-50 grayscale hover:cursor-not-allowed "
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+          }}
+        />
       </TooltipTrigger>
       <TooltipContent
         side="left"

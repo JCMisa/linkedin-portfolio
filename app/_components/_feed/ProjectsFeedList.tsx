@@ -2,7 +2,6 @@ import Loader from "@/components/custom/Loader";
 import ProjectCard from "./ProjectCard";
 import ProjectsSkeletonCard from "./ProjectsSkeletonCard";
 import { Button } from "@/components/ui/button";
-import React from "react";
 
 const ProjectsFeedList = ({
   projects,
@@ -21,8 +20,12 @@ const ProjectsFeedList = ({
     <div className="flex flex-col items-center gap-2 w-full">
       {projects && projects.length > 0 ? (
         <>
-          {projects.map((project, index) => (
-            <ProjectCard key={index} project={project} userRole={userRole} />
+          {projects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              userRole={userRole}
+            />
           ))}
           {isFetchingProjects && <Loader />}
           {!isFetchingProjects && hasMore && (

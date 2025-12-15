@@ -10,7 +10,6 @@ const useTradingViewWidget = (
 
   useEffect(() => {
     const current = containerRef.current;
-
     if (!current) return;
 
     // Clear previous widget
@@ -19,18 +18,23 @@ const useTradingViewWidget = (
     const script = document.createElement("script");
     script.src = scriptUrl;
     script.async = true;
+    script.type = "text/javascript";
     script.innerHTML = JSON.stringify(config);
 
-    current.appendChild(script);
-    current.dataset.loaded = "true";
+    // Append script after a tick to ensure DOM is ready
+    const timer = setTimeout(() => {
+      current.appendChild(script);
+      current.dataset.loaded = "true";
+    }, 0);
 
     return () => {
+      clearTimeout(timer);
       if (current) {
         current.innerHTML = "";
         delete current.dataset.loaded;
       }
     };
-  }, [scriptUrl, JSON.stringify(config), height]); // Stringify config for proper comparison
+  }, [scriptUrl, JSON.stringify(config), height]);
 
   return containerRef;
 };

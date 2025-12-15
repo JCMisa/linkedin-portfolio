@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
+const ProfileBasicInfo = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleImageClick = () => {
@@ -78,9 +78,7 @@ const ProfileBasicInfo = ({ numberOfUsers }: { numberOfUsers: number }) => {
             </p>
 
             {/* number of users signed in */}
-            <p className="text-sm font-bold text-blue-400">
-              {numberOfUsers || 0}+ portfolio connections
-            </p>
+            <p className="text-sm font-bold text-blue-400">500+ connections</p>
           </div>
 
           {/* experience and education */}

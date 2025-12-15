@@ -7,6 +7,7 @@ import { getFilteredProjects } from "@/lib/actions/projects";
 import { toast } from "sonner";
 import Loader from "@/components/custom/Loader";
 import { useDebounce } from "@/utils/useDebounce";
+import ProjectsSkeletonCard from "@/app/_components/_feed/ProjectsSkeletonCard";
 
 export default function ProjectsList({
   currentUser,
@@ -58,9 +59,12 @@ export default function ProjectsList({
               />
             ))
           ) : (
-            <p className="text-center text-sm text-gray-500 font-semibold">
-              No projects found
-            </p>
+            <div className="flex flex-col items-center gap-2 w-full">
+              {[1, 2, 3].map((project) => (
+                // skeleton effect
+                <ProjectsSkeletonCard key={project} />
+              ))}
+            </div>
           )}
         </div>
       ) : (
