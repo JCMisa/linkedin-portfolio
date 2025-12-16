@@ -43,6 +43,13 @@
       "when": 1756631330189,
       "tag": "0005_married_mandarin",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1765861648991,
+      "tag": "0006_awesome_black_panther",
+      "breakpoints": true
     }
   ]
 }

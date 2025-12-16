@@ -28,6 +28,7 @@ const PreferenceAndProfileLink = () => {
       <Image
         src="/profile-banner.gif"
         alt="pixelated gif of person working"
+        unoptimized
         width={1000}
         height={1000}
         className="image-pixelated rounded-t-lg object-cover"

@@ -234,7 +234,11 @@ const ProjectCard = ({
 
       {/* content caption */}
       <div className="flex flex-col gap-1">
-        <div className={`text-xs w-[90%] ${isExpanded ? "" : "line-clamp-5"}`}>
+        <div
+          className={`whitespace-pre-wrap text-xs w-[90%] ${
+            isExpanded ? "" : "line-clamp-5"
+          }`}
+        >
           {project.description || "No description provided"}
         </div>
         <button

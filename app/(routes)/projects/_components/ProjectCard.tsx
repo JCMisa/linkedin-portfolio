@@ -38,7 +38,7 @@ const ProjectCard = ({
         </div>
         <div className="flex flex-col gap-1">
           <div
-            className={`text-neutral-500 text-sm mt-2 dark:text-neutral-300 ${
+            className={`text-neutral-500 text-sm mt-2 dark:text-neutral-300 whitespace-pre-wrap ${
               isExpanded ? "" : "line-clamp-2"
             }`}
           >

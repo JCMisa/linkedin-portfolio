@@ -144,6 +144,7 @@ export const PersonalInfo = pgTable("personalInfo", {
   industryRole: varchar("industryRole").notNull(),
 
   profileImg: text("profileImg"),
+  coverImg: text("coverImg"),
   itResumeLink: text("itResumeLink").notNull(),
   vaResumeLink: text("vaResumeLink").notNull(),
   linkedinLink: text("linkedinLink").notNull(),
