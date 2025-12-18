@@ -2,6 +2,8 @@ import Loader from "@/components/custom/Loader";
 import ProjectCard from "./ProjectCard";
 import ProjectsSkeletonCard from "./ProjectsSkeletonCard";
 import { Button } from "@/components/ui/button";
+import { getPersonalInfo } from "@/lib/actions/profileInfo";
+import { PersonalInfoType } from "@/config/schema";
 
 const ProjectsFeedList = ({
   projects,
@@ -9,12 +11,14 @@ const ProjectsFeedList = ({
   userRole,
   hasMore,
   loadMore,
+  personalInfo,
 }: {
   projects: ProjectType[];
   isFetchingProjects: boolean;
   userRole: string;
   hasMore: boolean;
   loadMore: () => void;
+  personalInfo: PersonalInfoType;
 }) => {
   return (
     <div className="flex flex-col items-center gap-2 w-full">
@@ -25,6 +29,7 @@ const ProjectsFeedList = ({
               key={project.id}
               project={project}
               userRole={userRole}
+              personalInfo={personalInfo}
             />
           ))}
           {isFetchingProjects && <Loader />}

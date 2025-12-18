@@ -8,6 +8,8 @@ import { getCurrentUser } from "@/lib/actions/users";
 import { getProjectsPaginated } from "@/lib/actions/projects";
 import { ThemedTradingViewWidget } from "@/components/custom/ThemedTradingViewWidget";
 import { TOP_STORIES_WIDGET_CONFIG } from "@/lib/constants";
+import { getPersonalInfo } from "@/lib/actions/profileInfo";
+import { PersonalInfoType } from "@/config/schema";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Feed | JCM Portfolio";
@@ -92,9 +94,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [currentUser, initialProjects] = await Promise.all([
+  const [currentUser, initialProjects, personalInfo] = await Promise.all([
     getCurrentUser(),
     getProjectsPaginated({ limit: 5 }), // first 5 projects
+    getPersonalInfo(),
   ]);
 
   const userRole = currentUser && currentUser.role ? currentUser.role : "user";
@@ -106,7 +109,7 @@ export default async function Home() {
     <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto relative">
         <div className="hidden lg:block fixed w-[240px] rounded-lg">
-          <ProfileSection />
+          <ProfileSection personalInfo={personalInfo as PersonalInfoType} />
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6 py-5 lg:py-0 lg:pl-[265px]">
@@ -116,11 +119,14 @@ export default async function Home() {
               initialProjects={initialProjects.data ?? []}
               initialCursor={initialProjects.nextCursor ?? undefined}
               initialHasMore={!!initialProjects.nextCursor}
+              personalInfo={personalInfo as PersonalInfoType}
             />
           </div>
 
           <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
-            <ProfessionalActivities />
+            <ProfessionalActivities
+              personalInfo={personalInfo as PersonalInfoType}
+            />
             <ThemedTradingViewWidget
               scriptUrl={`${scriptUrl}timeline.js`}
               config={TOP_STORIES_WIDGET_CONFIG}

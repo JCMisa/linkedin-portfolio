@@ -137,10 +137,12 @@ const ExperiencesPage = async () => {
 
         {/* profile and latest certificates and footer - fixed */}
         <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
-          <ProfileCard />
+          <ProfileCard personalInfo={personalInfo as PersonalInfoType} />
 
           <div className="sticky top-[73px]">
-            <ProfessionalActivities />
+            <ProfessionalActivities
+              personalInfo={personalInfo as PersonalInfoType}
+            />
             <div className="mt-4">
               <Footer />
             </div>

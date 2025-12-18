@@ -22,22 +22,22 @@ const ProfileLeftInfo = ({
   userRole: string;
 }) => {
   return (
-    <div className="flex flex-col gap-2 py-5 lg:py-0 w-full rounded-lg">
+    <div className="flex flex-col gap-2 py-5 lg:py-0 w-full min-w-0 rounded-lg">
       <ProfileBasicInfo userRole={userRole} />
       <ProfileAnalytics
         numberOfUsers={numberOfUsers}
         numberOfPostLikes={numberOfPostLikes}
         numberOfPostComments={numberOfPostComments}
       />
-      <ProfileAboutMessage />
-      <ProfileServices />
+      <ProfileAboutMessage userRole={userRole} />
+      <ProfileServices userRole={userRole} />
       <LatestProjects
         latestProject1={latestProject1}
         latestProject2={latestProject2}
         userRole={userRole}
       />
-      <ProfileSkills />
-      <ProfileTestimonials />
+      <ProfileSkills userRole={userRole} />
+      <ProfileTestimonials userRole={userRole} />
     </div>
   );
 };

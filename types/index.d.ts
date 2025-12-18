@@ -81,3 +81,18 @@ declare interface ChatErrorBody {
   error?: string;
   retryAfterSeconds?: number;
 }
+
+declare interface ContactInfoType {
+  id: string;
+  city: string;
+  province: string;
+  country: string;
+  email: string;
+  contactNumber: string;
+  linkedinLink: string;
+  portfolioLink: string;
+  githubLink: string;
+  facebookLink: string;
+  instagramLink: string;
+  xLink: string;
+}

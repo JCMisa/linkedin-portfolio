@@ -35,13 +35,16 @@ import CreateComment from "@/components/custom/CreateComment";
 import { useUser } from "@clerk/nextjs";
 import EditProject from "@/components/custom/EditProject";
 import DeleteProject from "@/components/custom/DeleteProject";
+import { PersonalInfoType } from "@/config/schema";
 
 const ProjectCard = ({
   project,
   userRole,
+  personalInfo,
 }: {
   project: ProjectType;
   userRole: string;
+  personalInfo: PersonalInfoType;
 }) => {
   const { user } = useUser();
 
@@ -170,8 +173,8 @@ const ProjectCard = ({
       <div className="flex items-center justify-between w-full px-2">
         <div className="flex items-start gap-2">
           <Image
-            src={"/profile-img.png"}
-            alt="profile-img"
+            src={personalInfo.profileImg || "/empty-img.webp"}
+            alt={personalInfo.name}
             width={1000}
             height={1000}
             className="w-[48px] h-[48px] object-fill rounded-full flex-none"

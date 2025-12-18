@@ -1,8 +1,11 @@
 import { Metadata } from "next";
 import SendMessageForm from "./_components/SendMessageForm";
+import { getPersonalInfo } from "@/lib/actions/profileInfo";
+import { PersonalInfoType } from "@/config/schema";
+import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Contact";
+  const title = "Contact | John Carlo Misa";
 
   const description =
     "Get in touch with John Carlo Misa – based in San Pablo City, Philippines. " +
@@ -96,22 +99,112 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const ContactPage = () => {
-  return (
-    <section className="text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-900 body-font relative mt-13">
-      <div className="absolute inset-0 bg-gray-100 dark:bg-gray-900">
-        <iframe
-          title="map"
-          width="100%"
-          height="100%"
-          src="https://maps.google.com/maps?q=Laguna,Philippines&t=&z=9&ie=UTF8&iwloc=&output=embed"
-          style={{ filter: "grayscale(1) contrast(1.2) opacity(0.16)" }}
-        />
-      </div>
+const ContactPage = async () => {
+  const personalInfo: PersonalInfoType | null = await getPersonalInfo();
 
-      {/* form */}
-      <SendMessageForm />
-    </section>
+  if (!personalInfo) {
+    return null;
+  }
+
+  return (
+    <main className="min-h-screen pt-16 bg-neutral-200/50 dark:bg-black/90">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Left Side: Map & Contact Info */}
+          <div className="lg:w-2/3 space-y-6">
+            <div className="bg-neutral-100 dark:bg-dark rounded-xl overflow-hidden shadow-sm border border-neutral-200 dark:border-neutral-800 h-[400px] lg:h-[500px] relative">
+              <iframe
+                title="map"
+                width="100%"
+                height="100%"
+                src={`https://maps.google.com/maps?q=${personalInfo.city},${personalInfo.country}&t=&z=11&ie=UTF8&iwloc=&output=embed`}
+                style={{ filter: "grayscale(0.5) contrast(1.1) opacity(0.8)" }}
+                className="border-0"
+              />
+              <div className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-dark/90 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-neutral-900 dark:text-neutral-100">
+                    Location
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {personalInfo.city}, {personalInfo.province},{" "}
+                    {personalInfo.country}
+                  </p>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <p className="font-semibold text-neutral-500">
+                    Available remotely worldwide
+                  </p>
+                  <p className="text-primary font-medium">
+                    Timezone: UTC+8 (Manila)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-neutral-100 dark:bg-dark p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
+                <h3 className="text-sm font-bold text-neutral-500 uppercase tracking-wider mb-4">
+                  Direct Contact
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-neutral-500">Email</span>
+                    <a
+                      href={`mailto:${personalInfo.email}`}
+                      className="text-neutral-900 dark:text-neutral-100 font-medium hover:text-primary transition-colors"
+                    >
+                      {personalInfo.email}
+                    </a>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-neutral-500">Phone</span>
+                    <a
+                      href={`tel:${personalInfo.contactNumber}`}
+                      className="text-neutral-900 dark:text-neutral-100 font-medium hover:text-primary transition-colors"
+                    >
+                      {personalInfo.contactNumber}
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-neutral-100 dark:bg-dark p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
+                <h3 className="text-sm font-bold text-neutral-500 uppercase tracking-wider mb-4">
+                  Follow Me
+                </h3>
+                <div className="flex flex-wrap gap-4">
+                  {[
+                    { label: "LinkedIn", href: personalInfo.linkedinLink },
+                    { label: "GitHub", href: personalInfo.githubLink },
+                    { label: "Twitter", href: personalInfo.xLink },
+                    { label: "Portfolio", href: personalInfo.portfolioLink },
+                  ].map(
+                    (social) =>
+                      social.href && (
+                        <Link
+                          key={social.label}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-primary hover:underline"
+                        >
+                          {social.label}
+                        </Link>
+                      )
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side: Form */}
+          <div className="lg:w-1/3">
+            <SendMessageForm personalInfo={personalInfo} />
+          </div>
+        </div>
+      </div>
+    </main>
   );
 };
 

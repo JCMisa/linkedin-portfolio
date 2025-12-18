@@ -9,10 +9,14 @@ import Loader from "@/components/custom/Loader";
 import { useDebounce } from "@/utils/useDebounce";
 import ProjectsSkeletonCard from "@/app/_components/_feed/ProjectsSkeletonCard";
 
+import { PersonalInfoType } from "@/config/schema";
+
 export default function ProjectsList({
   currentUser,
+  personalInfo,
 }: {
   currentUser: UserType;
+  personalInfo: PersonalInfoType;
 }) {
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [search, setSearch] = useState("");
@@ -46,6 +50,7 @@ export default function ProjectsList({
         setSearch={setSearch}
         category={category}
         setCategory={setCategory}
+        personalInfo={personalInfo}
       />
 
       {!loading ? (

@@ -1,19 +1,21 @@
-"use client";
+import { getPersonalInfo } from "@/lib/actions/profileInfo";
+import { PersonalInfoType } from "@/config/schema";
+import SkillsContent from "./SkillsContent";
 
-import { cn } from "@/lib/utils";
-import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
-import { useState } from "react";
-
-const skills = [
+const FALLBACK_SKILLS = [
   {
-    id: 1,
+    id: "1",
     title: "Programming Languages",
-    skills: ["JavaScript", "TypeScript", "C#", "SQL", "Java", "PHP", "Python"],
+    description: "",
+    items: ["JavaScript", "TypeScript", "C#", "SQL", "Java", "PHP", "Python"],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 2,
+    id: "2",
     title: "Frameworks & Libraries",
-    skills: [
+    description: "",
+    items: [
       "Next.js",
       "React Native",
       ".NET Core MVC",
@@ -21,11 +23,14 @@ const skills = [
       "Spring Boot",
       "Pandas",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 3,
+    id: "3",
     title: "Databases & Tools",
-    skills: [
+    description: "",
+    items: [
       "MySQL",
       "PostgreSQL",
       "SQL Server",
@@ -36,11 +41,14 @@ const skills = [
       "Jupyter Notebook",
       "Google Colab",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 4,
+    id: "4",
     title: "Platforms & APIs",
-    skills: [
+    description: "",
+    items: [
       "Vercel",
       "Clerk Auth",
       "Stripe",
@@ -48,125 +56,119 @@ const skills = [
       "YouTube API",
       "Next Auth",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 5,
+    id: "5",
     title: "Soft Skills",
-    skills: [
+    description: "",
+    items: [
       "Problem-solving",
       "Effective Communication",
       "Adaptability",
       "Time Management",
       "Creative Solution Design",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 6,
+    id: "6",
     title: "Virtual Assistance",
-    skills: [
+    description: "",
+    items: [
       "Canva Design",
       "Social Media Management",
       "Video & Podcast Editing",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 7,
+    id: "7",
     title: "Data & Analytics",
-    skills: [
+    description: "",
+    items: [
       "Excel (Basic-Intermediate)",
       "Google Colab (Data Analysis, Machine Learning)",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 8,
+    id: "8",
     title: "Web & Mobile Development",
-    skills: [
+    description: "",
+    items: [
       "Next.js",
       "React Native",
       "No-Code (Lovable)",
       "Payment Integration (Stripe, Clerk, Lemonsqueezy)",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 9,
+    id: "9",
     title: "Administrative Support",
-    skills: [
+    description: "",
+    items: [
       "Admin Dashboards",
       "Clickup (Minimal)",
       "Bookkeeping",
       "Financial Statements",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 10,
+    id: "10",
     title: "Communication",
-    skills: [
+    description: "",
+    items: [
       "Client Connectivity",
       "Insights via YouTube, Email, Facebook, LinkedIn",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 11,
+    id: "11",
     title: "SEO",
-    skills: ["Keyword Implementation in Website Metadata (Next.js)"],
+    description: "",
+    items: ["Keyword Implementation in Website Metadata (Next.js)"],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    id: 12,
+    id: "12",
     title: "Eagerness to Learn",
-    skills: [
+    description: "",
+    items: [
       "CMS (WordPress, Wix)",
       "E-commerce (Shopify, GoHigh Level, Hubspot)",
       "Marketing Campaigns",
     ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
 ];
 
-const ProfileSkills = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
+const ProfileSkills = async ({ userRole }: { userRole: string }) => {
+  const personalInfo: PersonalInfoType | null = await getPersonalInfo();
 
-  return (
-    <div
-      id="skills"
-      className={`rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col justify-between p-[10px] overflow-hidden relative ${
-        isExpanded ? "h-full" : "h-[277px]"
-      }`}
-    >
-      <h2 className="text-2xl font-medium">Skills</h2>
+  if (!personalInfo) {
+    return null;
+  }
 
-      <div className="mt-5 flex flex-col gap-2 w-full">
-        {skills.map((skill) => (
-          <div
-            key={skill.id}
-            className={`w-full flex flex-col py-2 ${
-              skill.id === skills.length - 1 ? "" : "border-b"
-            }`}
-          >
-            <p className="font-bold text-sm">{skill.title}</p>
-            <span className="text-xs italic text-muted-foreground">
-              {skill.skills.join(", ")}
-            </span>
-          </div>
-        ))}
-      </div>
+  // Use stored skills if they exist and the array is not empty
+  const displaySkills =
+    personalInfo.skills && personalInfo.skills.length > 0
+      ? personalInfo.skills
+      : FALLBACK_SKILLS;
 
-      <div
-        className={cn(
-          "cursor-pointer  flex items-center gap-1 justify-center h-[44px]  border-t  bg-white dark:bg-dark z-10  w-full",
-          !isExpanded && "absolute bottom-0"
-        )}
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <p className="text-sm font-semibold hover:opacity-[0.5] transition-opacity duration-200 ease-linear">
-          {isExpanded ? "See Less" : "Show all skills"}
-        </p>
-        {isExpanded ? (
-          <ArrowUpIcon className="size-4" />
-        ) : (
-          <ArrowDownIcon className="size-4" />
-        )}
-      </div>
-    </div>
-  );
+  return <SkillsContent skills={displaySkills as any} userRole={userRole} />;
 };
 
 export default ProfileSkills;

@@ -25,6 +25,7 @@ import {
   updateName,
   updateIndustryRole,
   updateResume,
+  updateContactInfo,
 } from "@/lib/actions/profileInfo";
 import { PersonalInfoType } from "@/config/schema";
 import NameEditorDialog from "./dialogs/NameEditorDialog";
@@ -33,6 +34,7 @@ import ResumeEditorDialog from "./dialogs/ResumeEditorDialog";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { showConfetti } from "@/lib/utils";
+import ContactInfoEditorDialog from "./dialogs/ContactInfoEditorDialog";
 
 interface ProfileBasicInfoProps {
   userRole?: string;
@@ -47,6 +49,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
   const [isIndustryRoleDialogOpen, setIsIndustryRoleDialogOpen] =
     useState(false);
   const [isResumeDialogOpen, setIsResumeDialogOpen] = useState(false);
+  const [isContactInfoDialogOpen, setIsContactInfoDialogOpen] = useState(false);
   const [personalInfo, setPersonalInfo] = useState<PersonalInfoType | null>(
     null
   );
@@ -317,7 +320,63 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
     }
   };
 
-  // todo: handle address update
+  const handleContactInfoSave = async (updatedContactInfo: ContactInfoType) => {
+    try {
+      const result = await updateContactInfo(updatedContactInfo);
+
+      // Check if result is an error string (from withErrorHandling)
+      if (typeof result === "string") {
+        console.error("Error updating contact info:", result);
+        throw new Error(result);
+      }
+
+      if (
+        result &&
+        typeof result === "object" &&
+        "success" in result &&
+        result.success
+      ) {
+        // Update local state
+        setPersonalInfo((prev) =>
+          prev
+            ? {
+                ...prev,
+                city: result.city || updatedContactInfo.city,
+                province: result.province || updatedContactInfo.province,
+                country: result.country || updatedContactInfo.country,
+                email: result.email || updatedContactInfo.email,
+                contactNumber:
+                  result.contactNumber || updatedContactInfo.contactNumber,
+                linkedinLink:
+                  result.linkedinLink || updatedContactInfo.linkedinLink,
+                portfolioLink:
+                  result.portfolioLink || updatedContactInfo.portfolioLink,
+                githubLink: result.githubLink || updatedContactInfo.githubLink,
+                facebookLink:
+                  result.facebookLink || updatedContactInfo.facebookLink,
+                instagramLink:
+                  result.instagramLink || updatedContactInfo.instagramLink,
+                xLink: result.xLink || updatedContactInfo.xLink,
+              }
+            : null
+        );
+        // Refetch to ensure consistency
+        const data = await getPersonalInfo();
+        if (data && typeof data === "object" && "id" in data) {
+          setPersonalInfo(data as PersonalInfoType);
+        }
+        toast.success("Contact info updated successfully");
+        showConfetti();
+      } else {
+        const errorMsg = result?.error || "Failed to update contact info";
+        console.error("Error updating contact info:", errorMsg);
+        throw new Error(errorMsg);
+      }
+    } catch (error) {
+      console.error("Error in handleContactInfoSave:", error);
+      throw error;
+    }
+  };
 
   const displayCoverImage = personalInfo?.coverImg || "/empty-img.webp";
   const displayProfileImage = personalInfo?.profileImg || "/empty-img.webp";
@@ -342,7 +401,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
   }
 
   return (
-    <div className="rounded-lg w-full md:h-[400px] h-full bg-neutral-100 dark:bg-dark flex flex-col items-center relative">
+    <div className="rounded-lg w-full lg:h-[400px] h-full bg-neutral-100 dark:bg-dark flex flex-col items-center relative">
       {/* cover photo */}
       <div className="h-[35%] w-full relative">
         <Image
@@ -370,14 +429,14 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
         )}
       </div>
 
+      {/* profile photo */}
       <div
         onClick={() => setIsProfileOpen(true)}
         className="cursor-pointer sm:mt-[-100px] mt-[-70px] flex items-start justify-start self-start ml-[20px] z-10 relative"
       >
-        {/* profile photo */}
         <Image
           src={displayProfileImage}
-          alt="profile-img"
+          alt="avatar"
           width={1000}
           height={1000}
           className="sm:w-[152px] sm:h-[152px] w-[100px] h-[100px] object-fill rounded-full border-3 border-white dark:border-dark "
@@ -455,41 +514,48 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
               </p>
             )}
 
-            <p className=" my-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 my-2">
               <span className="text-sm text-muted-foreground">
-                San Pablo, Calabarzon, Philippines
-              </span>{" "}
-              •{" "}
-              <Link
-                href={"/contact"}
-                className="text-sm underline cursor-pointer text-blue-300"
-              >
-                Contact Info
-              </Link>
-            </p>
+                {personalInfo?.city}, {personalInfo?.province},{" "}
+                {personalInfo?.country}
+              </span>
+              <span className="text-sm text-muted-foreground hidden sm:block">
+                •
+              </span>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={"/contact"}
+                  className="text-sm underline cursor-pointer text-blue-300"
+                >
+                  Contact Info
+                </Link>
+                {isOwner && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsContactInfoDialogOpen(true);
+                        }}
+                        className="flex-none flex items-center justify-center rounded-full w-5 h-5 cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out shadow-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black "
+                      >
+                        <PenBoxIcon className="size-3" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Edit Address & Contact Info</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
+            </div>
 
-            {/* number of users signed in */}
+            {/* number of connections */}
             <p className="text-sm font-bold text-blue-400">500+ connections</p>
           </div>
 
           {/* experience and education */}
-          <div className="flex flex-col gap-2 relative">
-            {isOwner && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div
-                    onClick={() => setIsExperiencesDialogOpen(true)}
-                    className="flex-none flex items-center justify-center rounded-full w-6 h-6 cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out shadow-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black absolute -top-1 -right-1 z-10"
-                  >
-                    <PenBoxIcon className="size-3" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Edit Experiences</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-
+          <div className="flex flex-col gap-2">
             {/* latest experience */}
             {latestExperience ? (
               <div
@@ -507,18 +573,24 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                 ) : (
                   <div className="w-[20px] h-[20px] rounded-md bg-neutral-300 dark:bg-neutral-700" />
                 )}
-                <Link
-                  href={`/experiences`}
-                  className="font-bold text-sm max-w-[300px] truncate hover:text-blue-400 transition-all duration-200 ease-in-out hover:underline"
-                >
-                  {latestExperience.title || "Untitled Experience"}
-                </Link>
+                {isOwner ? (
+                  <div
+                    onClick={() => setIsExperiencesDialogOpen(true)}
+                    className="font-bold text-sm hover:opacity-[0.8] transition-all duration-200 ease-in-out cursor-pointer"
+                  >
+                    {latestExperience.title || "Untitled Experience"}
+                  </div>
+                ) : (
+                  <p className="font-bold text-sm ">
+                    {latestExperience.title || "Untitled Experience"}
+                  </p>
+                )}
               </div>
             ) : (
               // fallback latest experience
               <div className="flex items-center gap-1">
                 <Image
-                  src={"/ptp.webp"}
+                  src={"/empty-img.webp"}
                   alt="school-img"
                   width={1000}
                   height={1000}
@@ -526,7 +598,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                 />
                 <p className="font-bold text-sm uppercase">
                   PHILADELPHIA TRUCK PARTS{" "}
-                  <span className="text-[9px] text-muted-foreground italic">
+                  <span className="text-sm text-muted-foreground italic">
                     (current)
                   </span>
                 </p>
@@ -614,7 +686,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
             </button>
             <Image
               src={displayProfileImage}
-              alt="profile-img"
+              alt="avatar"
               width={1000}
               height={1000}
               className="max-w-screen-lg max-h-screen-lg p-8"
@@ -668,6 +740,24 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
             currentITResumeLink={personalInfo?.itResumeLink || ""}
             currentVAResumeLink={personalInfo?.vaResumeLink || ""}
             onSave={handleResumeSave}
+          />
+          <ContactInfoEditorDialog
+            open={isContactInfoDialogOpen}
+            onOpenChange={setIsContactInfoDialogOpen}
+            // address
+            currentCity={personalInfo?.city || ""}
+            currentProvince={personalInfo?.province || ""}
+            currentCountry={personalInfo?.country || ""}
+            // contact
+            currentEmail={personalInfo?.email || ""}
+            currentContactNumber={personalInfo?.contactNumber || ""}
+            currentLinkedinLink={personalInfo?.linkedinLink || ""}
+            currentPortfolioLink={personalInfo?.portfolioLink || ""}
+            currentGithubLink={personalInfo?.githubLink || ""}
+            currentFacebookLink={personalInfo?.facebookLink || ""}
+            currentInstagramLink={personalInfo?.instagramLink || ""}
+            currentXLink={personalInfo?.xLink || ""}
+            onSave={handleContactInfoSave}
           />
         </>
       )}

@@ -7,17 +7,20 @@ import CreateProject from "@/components/custom/CreateProject";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/utils/useDebounce";
 import { getProjectsPaginated } from "@/lib/actions/projects";
+import { PersonalInfoType } from "@/config/schema";
 
 export default function ProjectsFeed({
   userRole,
   initialProjects,
   initialCursor,
   initialHasMore,
+  personalInfo,
 }: {
   userRole: string;
   initialProjects: ProjectType[];
   initialCursor?: string;
   initialHasMore: boolean;
+  personalInfo: PersonalInfoType;
 }) {
   const [projects, setProjects] = useState(initialProjects);
   const [search, setSearch] = useState("");
@@ -64,6 +67,7 @@ export default function ProjectsFeed({
         setSearch={setSearch}
         category={category}
         setCategory={setCategory}
+        personalInfo={personalInfo}
       />
 
       <div className="flex items-center gap-2 w-full">
@@ -81,6 +85,7 @@ export default function ProjectsFeed({
         userRole={userRole}
         hasMore={hasMore}
         loadMore={loadMore}
+        personalInfo={personalInfo}
       />
     </div>
   );

@@ -1,8 +1,10 @@
 import { Input } from "@/components/ui/input";
+import { PersonalInfoType } from "@/config/schema";
 import {
   BrainCircuitIcon,
   LayoutDashboardIcon,
   PaletteIcon,
+  UserIcon,
 } from "lucide-react";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
@@ -18,6 +20,7 @@ interface Props {
   setSearch: Dispatch<SetStateAction<string>>;
   category: string | null;
   setCategory: Dispatch<SetStateAction<string | null>>;
+  personalInfo: PersonalInfoType;
 }
 
 export default function ProjectSearchAndCategorize({
@@ -25,20 +28,28 @@ export default function ProjectSearchAndCategorize({
   setSearch,
   category,
   setCategory,
+  personalInfo,
 }: Props) {
   return (
     <div className="w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-4 rounded-lg py-3 px-5">
       {/* Search */}
       <div className="flex items-center gap-2 w-full">
-        <Image
-          src="/profile-img.png"
-          alt="avatar"
-          width={48} // real pixels
-          height={44} // real pixels
-          className="rounded-full object-cover"
-          style={{ width: 48, height: 44, maxWidth: 48, maxHeight: 44 }}
-          draggable={false}
-        />
+        {personalInfo?.profileImg ? (
+          <Image
+            src={personalInfo.profileImg}
+            alt={personalInfo.name || "avatar"}
+            width={48} // real pixels
+            height={44} // real pixels
+            className="rounded-full object-cover"
+            style={{ width: 48, height: 44, maxWidth: 48, maxHeight: 44 }}
+            draggable={false}
+          />
+        ) : (
+          <div className="w-[48px] h-[44px] rounded-full bg-neutral-100 dark:bg-dark flex items-center justify-center">
+            <UserIcon className="size-4 text-neutral-500 dark:text-neutral-400" />
+          </div>
+        )}
+
         <Input
           placeholder="Search a project"
           value={search}

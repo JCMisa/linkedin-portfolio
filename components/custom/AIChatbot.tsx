@@ -27,6 +27,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Message = {
   id: string;
@@ -148,7 +150,7 @@ const AIChatbot = () => {
   );
   const BotAvatar = () => (
     <Avatar className="h-6 w-6">
-      <AvatarImage src="/profile-img.png" />
+      <AvatarImage src="/logo.png" />
       <AvatarFallback className="text-[10px] bg-blue-500 text-white">
         B
       </AvatarFallback>
@@ -227,7 +229,47 @@ const AIChatbot = () => {
                   : "bg-muted text-foreground"
               }`}
             >
-              {msg.text}
+              {msg.sender === "bot" ? (
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p: ({ children }) => (
+                      <p className="mb-0 last:mb-0">{children}</p>
+                    ),
+                    strong: ({ children }) => (
+                      <strong className="font-bold text-blue-500 dark:text-blue-400">
+                        {children}
+                      </strong>
+                    ),
+                    ul: ({ children }) => (
+                      <ul className="list-disc ml-4 my-2">{children}</ul>
+                    ),
+                    ol: ({ children }) => (
+                      <ol className="list-decimal ml-4 my-2">{children}</ol>
+                    ),
+                    li: ({ children }) => <li className="mb-1">{children}</li>,
+                    a: ({ href, children }) => (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        {children}
+                      </a>
+                    ),
+                    code: ({ children }) => (
+                      <code className="bg-neutral-200 dark:bg-neutral-800 px-1 rounded text-xs font-mono">
+                        {children}
+                      </code>
+                    ),
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
+              ) : (
+                msg.text
+              )}
             </div>
             {msg.sender === "user" && <UserAvatar />}
           </div>

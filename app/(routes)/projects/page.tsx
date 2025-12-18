@@ -98,18 +98,27 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+import { getPersonalInfo } from "@/lib/actions/profileInfo";
+import { PersonalInfoType } from "@/config/schema";
+
 const ProjectsPage = async () => {
-  const [currentUser] = await Promise.all([getCurrentUser()]);
+  const [currentUser, personalInfo] = await Promise.all([
+    getCurrentUser(),
+    getPersonalInfo(),
+  ]);
 
   return (
     <main className="relative py-18 px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row gap-6">
         {/* projects list */}
-        <ProjectsList currentUser={currentUser} />
+        <ProjectsList
+          currentUser={currentUser as any}
+          personalInfo={personalInfo as PersonalInfoType}
+        />
 
         {/* profile and latest certificates and footer - fixed */}
         <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
-          <ProfileCard />
+          <ProfileCard personalInfo={personalInfo as PersonalInfoType} />
 
           <div className="sticky top-[73px]">
             <CertificatesPreview />

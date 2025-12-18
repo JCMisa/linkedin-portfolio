@@ -5,6 +5,8 @@ import CertificatesList from "./_components/CertificatesList";
 import { getCurrentUser } from "@/lib/actions/users";
 import { getAllCertificates } from "@/lib/actions/certificates";
 import { Metadata } from "next";
+import { PersonalInfoType } from "@/config/schema";
+import { getPersonalInfo } from "@/lib/actions/profileInfo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Certificates";
@@ -99,17 +101,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const CertificatesPage = async () => {
-  const [currentUser, { data: certificates }] = await Promise.all([
-    getCurrentUser(),
-    getAllCertificates(),
-  ]);
+  const [currentUser, { data: certificates }, personalInfo] = await Promise.all(
+    [getCurrentUser(), getAllCertificates(), getPersonalInfo()]
+  );
 
   return (
     <main className="relative py-18 px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row gap-6">
         {/* profile and latest certificates and footer - fixed */}
         <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
-          <ProfileCard />
+          <ProfileCard personalInfo={personalInfo as PersonalInfoType} />
 
           <div className="sticky top-[73px]">
             <CertificatesPreview />
