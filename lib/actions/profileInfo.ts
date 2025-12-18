@@ -22,8 +22,8 @@ export const getPersonalInfo = unstable_cache(
   }),
   ["personal-info"], // Key parts (cache tag)
   {
-    // revalidate: 3600, // Cache for 1 hour (adjust as needed)
-    revalidate: false, // Cache forever until manual revalidation
+    revalidate: 3600, // Cache for 1 hour (adjust as needed)
+    // revalidate: false, // Cache forever until manual revalidation
     tags: ["personalInfo"], // Tag for manual revalidation later
   }
 );

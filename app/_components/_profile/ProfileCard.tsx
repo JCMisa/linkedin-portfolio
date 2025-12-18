@@ -4,7 +4,7 @@ import { PersonalInfoType } from "@/config/schema";
 
 const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
   return (
-    <div className="h-[210px] w-full bg-neutral-100 dark:bg-dark flex flex-col items-center rounded-lg">
+    <div className=" w-full bg-neutral-100 dark:bg-dark flex flex-col items-center rounded-lg">
       {/* cover photo */}
       <div className="h-[30%] w-full">
         <Image
