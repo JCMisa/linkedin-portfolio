@@ -3,6 +3,7 @@ import SendMessageForm from "./_components/SendMessageForm";
 import { getPersonalInfo } from "@/lib/actions/profileInfo";
 import { PersonalInfoType } from "@/config/schema";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Contact | John Carlo Misa";
@@ -199,8 +200,11 @@ const ContactPage = async () => {
           </div>
 
           {/* Right Side: Form */}
-          <div className="lg:w-1/3">
+          <div className="lg:w-1/3 flex flex-col space-y-6">
             <SendMessageForm personalInfo={personalInfo} />
+            <Button asChild className="cursor-pointer">
+              <Link href={"/contact/assistant"}>Talk to JCM Assistant</Link>
+            </Button>
           </div>
         </div>
       </div>

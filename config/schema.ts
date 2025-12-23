@@ -1,5 +1,6 @@
 import { InferSelectModel, relations, sql } from "drizzle-orm";
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -173,6 +174,27 @@ export const PersonalInfo = pgTable("personalInfo", {
     .default(sql`'[]'::jsonb`),
 });
 export type PersonalInfoType = InferSelectModel<typeof PersonalInfo>;
+
+export const ContactInquiries = pgTable("contact_inquiries", {
+  id: uuid("id").defaultRandom().primaryKey(),
+
+  // Extracted Info
+  visitorName: varchar("visitor_name").default("Guest"),
+  email: varchar("email"),
+  phoneNumber: varchar("phone_number"),
+  purpose: text("purpose"), // Project, Job, General, etc.
+
+  // Meta
+  summary: text("summary"), // AI generated summary
+  rawTranscript: jsonb("raw_transcript").notNull(), // The full conversation logs
+
+  // Status tracking for you (the owner)
+  isReviewed: boolean("is_reviewed").default(false), // Have you seen this?
+  actionTaken: varchar("action_taken").default("pending"), // pending, emailed, called
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+export type ContactInquiryType = typeof ContactInquiries.$inferSelect;
 
 // ------------------------------------------- SCHEMA RELATIONSHIPS -------------------------------------------
 

@@ -8,7 +8,7 @@ const isPublicRoute = createRouteMatcher([
   "/projects(.*)",
   "/experiences(.*)",
   "/profile(.*)",
-  "/contact(.*)",
+  "/contact",
   "/Resume-IT.pdf(.*)",
   "/Resume-VA-General.pdf(.*)",
 ]);

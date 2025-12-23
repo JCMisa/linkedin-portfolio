@@ -32,6 +32,7 @@
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@tabler/icons-react": "^3.35.0",
     "@types/canvas-confetti": "^1.9.0",
+    "@vapi-ai/web": "^2.5.2",
     "ai": "^5.0.108",
     "axios": "^1.13.2",
     "canvas-confetti": "^1.9.4",
