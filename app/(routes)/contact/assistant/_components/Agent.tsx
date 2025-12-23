@@ -13,7 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 // Utility to merge Tailwind classes conditionally
-import { cn } from "@/lib/utils";
+import { cn, formatTime } from "@/lib/utils";
 // Shadcn UI components
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -32,6 +32,8 @@ import { useRouter } from "next/navigation";
 // Define what information the parent component must provide
 interface AgentProps {
   userName: string;
+  userId: string;
+  credits: number;
 }
 
 // Enumeration of all possible visual states of this component
@@ -50,7 +52,7 @@ interface Message {
   content: string;
 }
 
-const Agent = ({ userName }: AgentProps) => {
+const Agent = ({ userName, userId, credits }: AgentProps) => {
   const router = useRouter();
 
   // --- REFS (Mutable variables that don't trigger re-renders) ---
@@ -180,6 +182,11 @@ const Agent = ({ userName }: AgentProps) => {
 
   // Initiates the Vapi connection
   const startCall = async () => {
+    if (credits <= 0) {
+      toast.error("You have reached the limit for voice calls.");
+      return;
+    }
+
     isProcessingRef.current = false; // Reset lock
     setStatus("connecting");
     setTranscript("Connecting to JCM...");
@@ -200,39 +207,40 @@ const Agent = ({ userName }: AgentProps) => {
 
   // The bridge between Voice Interaction and Database Storage
   const handleProcessCall = async () => {
-    // 1. Guard: If we are already talking to the API, don't start again
-    if (isProcessingRef.current) {
-      console.log("Already processing, skipping duplicate call-end event.");
-      return;
-    }
-
-    // 2. Set the Lock
+    if (isProcessingRef.current) return;
     isProcessingRef.current = true;
+
     setStatus("processing");
 
-    // 3. Guard: If no words were spoken, don't waste API credits
     if (messagesRef.current.length === 0) {
       setStatus("idle");
       return;
     }
 
     try {
-      // 4. Send the conversation history to our Next.js API route
-      // This route calls Gemini to turn the text into a JSON object (Name, Email, etc.)
+      // UPDATE: Include userId in the payload
       const response = await axios.post("/api/process-inquiry", {
         messages: messagesRef.current,
         userName: userNameRef.current,
+        userId: userId, // <--- Add this line
       });
 
       if (response.status === 200) {
-        setExtractedData(response.data); // Save the JSON
-        setStatus("review"); // Show the edit form
+        setExtractedData(response.data);
+        setStatus("review");
+        toast.success("Inquiry processed successfully!");
       } else {
         toast.error("Failed to process conversation.");
         setStatus("idle");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      // Handle the specific 403 Insufficient Credits error
+      if (axios.isAxiosError(error) && error.response?.status === 403) {
+        toast.error("You have no contact credits remaining.");
+      } else {
+        toast.error("An error occurred processing the call.");
+      }
       setStatus("idle");
     }
   };
@@ -263,15 +271,6 @@ const Agent = ({ userName }: AgentProps) => {
     const newState = !isMicOn;
     setIsMicOn(newState);
     vapi.setMuted(!newState); // Tells Vapi to stop listening to the user's mic
-  };
-
-  // Utility to turn seconds (e.g. 75) into readable string (e.g. "01:15")
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
   };
 
   // Calculates the CSS scale (size) of the center orb

@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "remainingContactReq" integer DEFAULT 3 NOT NULL;

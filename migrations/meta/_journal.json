@@ -57,6 +57,13 @@
       "when": 1766474852935,
       "tag": "0007_brave_franklin_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1766481912002,
+      "tag": "0008_groovy_cargill",
+      "breakpoints": true
     }
   ]
 }

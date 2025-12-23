@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const { text: response } = await generateText({
-      model: google("gemini-2.5-flash-lite"),
+      model: google("gemini-2.5-flash"),
       prompt: `
         You are JCM AI, the digital wingman and best friend of John Carlo Misa. 
         Your goal is to show off John's work while staying humble, polite, and genuinely funny—exactly like a supportive friend would talk about their buddy. 

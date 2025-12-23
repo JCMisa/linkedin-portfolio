@@ -50,6 +50,7 @@ export const Users = pgTable(
     email: varchar({ length: 255 }).notNull().unique(),
     image: text("image"),
     role: varchar("role").default("user").notNull(),
+    remainingContactReq: integer("remainingContactReq").default(3).notNull(),
     createdAt: timestamp("createdAt")
       .$defaultFn(() => /* @__PURE__ */ new Date())
       .notNull(),

@@ -5,6 +5,7 @@ declare interface UserType {
   email: string;
   image?: string | null;
   role: string;
+  remainingContactReq: number;
   createdAt: Date;
   updatedAt: Date;
 }

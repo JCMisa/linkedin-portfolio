@@ -21,7 +21,11 @@ const ContactAssistant = async () => {
           </p>
         </div>
 
-        <Agent userName={user.name} />
+        <Agent
+          userName={user.name}
+          userId={user.userId}
+          credits={user.remainingContactReq}
+        />
       </div>
     </main>
   );

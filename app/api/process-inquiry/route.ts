@@ -1,13 +1,20 @@
+// app/api/process-inquiry/route.ts
+
 import { db } from "@/config/db";
-import { ContactInquiries } from "@/config/schema";
+import { ContactInquiries, Users } from "@/config/schema";
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
+import { eq, sql } from "drizzle-orm"; // We need 'sql' for the atomic decrement logic
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, userName } = await req.json();
+    // ---------------------------------------------------------
+    // 1. INPUT VALIDATION
+    // ---------------------------------------------------------
+    const { messages, userName, userId } = await req.json();
 
+    // Ensure we have a conversation history to process
     if (!messages || messages.length === 0) {
       return NextResponse.json(
         { error: "No conversation data found" },
@@ -15,9 +22,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Generate Structured Data with Gemini
+    // Ensure we know WHO is making the request (for credit tracking)
+    if (!userId) {
+      return NextResponse.json({ error: "User ID required" }, { status: 401 });
+    }
+
+    // ---------------------------------------------------------
+    // 2. CREDIT CHECK (READ OPERATION)
+    // ---------------------------------------------------------
+    // We check the user's balance BEFORE calling Gemini to save costs.
+    const userCheck = await db
+      .select({ credits: Users.remainingContactReq })
+      .from(Users)
+      .where(eq(Users.userId, userId))
+      .limit(1);
+
+    // If user doesn't exist or has 0 credits, stop here.
+    if (!userCheck.length || userCheck[0].credits <= 0) {
+      return NextResponse.json(
+        { error: "Insufficient contact credits" },
+        { status: 403 } // 403 Forbidden is standard for "quota exceeded"
+      );
+    }
+
+    // ---------------------------------------------------------
+    // 3. AI EXTRACTION (GEMINI)
+    // ---------------------------------------------------------
+    // We send the transcript to Gemini to get structured JSON data.
     const { text: aiResponse } = await generateText({
-      model: google("gemini-2.5-flash-lite"),
+      model: google("gemini-2.5-flash"), // Fast, cost-effective model
       prompt: `
         You are an intelligent secretary for a Software Developer's portfolio. 
         Analyze the following transcript between the AI Assistant (JCM) and a visitor named "${userName}".
@@ -42,12 +75,15 @@ export async function POST(req: NextRequest) {
           "summary": "string"
         }
       `,
-      temperature: 0.2, // Low temperature for factual extraction
+      temperature: 0.2, // Low temperature ensures factual consistency
     });
 
-    // 2. Parse JSON safely
+    // ---------------------------------------------------------
+    // 4. PARSE AI RESPONSE
+    // ---------------------------------------------------------
     let structuredData;
     try {
+      // Remove markdown code blocks if Gemini adds them (e.g., ```json ... ```)
       const cleanJson = aiResponse.replace(/```json\n?|```/g, "").trim();
       structuredData = JSON.parse(cleanJson);
     } catch (e) {
@@ -58,7 +94,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Save to NeonDB
+    // ---------------------------------------------------------
+    // 5. DATABASE OPERATIONS (SEQUENTIAL)
+    // ---------------------------------------------------------
+    // Since your DB driver doesn't support transactions, we run these in order.
+    // If Step 5A succeeds but 5B fails, the user gets a "free" record.
+    // This is an acceptable trade-off for this specific feature.
+
+    // A. INSERT THE INQUIRY (Write 1)
     const [savedRecord] = await db
       .insert(ContactInquiries)
       .values({
@@ -67,10 +110,25 @@ export async function POST(req: NextRequest) {
         phoneNumber: structuredData.phoneNumber,
         purpose: structuredData.purpose,
         summary: structuredData.summary,
-        rawTranscript: messages,
+        rawTranscript: messages, // Save raw chat for debugging/reference
+        // status: "draft" // (Optional) Explicitly marks this as AI-generated
+        // isReviewed: false // (Optional) Default is false in schema
       })
       .returning();
 
+    // B. DECREMENT USER CREDITS (Write 2)
+    // We use `sql` to perform an ATOMIC update. This prevents race conditions.
+    // It says: "Set the new value to (current value - 1)" directly in the DB engine.
+    await db
+      .update(Users)
+      .set({
+        remainingContactReq: sql`${Users.remainingContactReq} - 1`,
+      })
+      .where(eq(Users.userId, userId));
+
+    // ---------------------------------------------------------
+    // 6. RETURN SUCCESS
+    // ---------------------------------------------------------
     return NextResponse.json(savedRecord, { status: 200 });
   } catch (error) {
     console.error("Process Inquiry Error:", error);
