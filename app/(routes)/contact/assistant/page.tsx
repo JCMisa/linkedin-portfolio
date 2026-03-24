@@ -17,7 +17,7 @@ const ContactAssistant = async () => {
             Let Me Help You With Your Concern
           </h3>
           <p className="text-neutral-500 dark:text-neutral-400">
-            Speak naturally. I'll take notes and notify the John Carlo.
+            Speak naturally. I'll take notes and notify John Carlo.
           </p>
         </div>
 
