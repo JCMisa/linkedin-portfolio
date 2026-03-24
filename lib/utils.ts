@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const withErrorHandling = <T, A extends unknown[]>(
-  fn: (...args: A) => Promise<T>
+  fn: (...args: A) => Promise<T>,
 ) => {
   return async (...args: A): Promise<T> => {
     try {

@@ -10,14 +10,13 @@ import { ThemedTradingViewWidget } from "@/components/custom/ThemedTradingViewWi
 import { TOP_STORIES_WIDGET_CONFIG } from "@/lib/constants";
 import { getPersonalInfo } from "@/lib/actions/profileInfo";
 import { PersonalInfoType } from "@/config/schema";
+import { OptimizedProject } from "./_components/_feed/ProjectsFeedList"; // Import the type you defined
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Feed | JCM Portfolio";
-
   const description =
     "Explore real-world projects, open-source contributions, and professional certificates " +
     "built with Next.js, TypeScript, Javascript, Tailwindcss, AWS, Serverless database (Neon), Drizzle ORM, .NET Web API, FastAPI (Modal), with modern cloud and software developer tools.";
-
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
 
@@ -48,10 +47,10 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "John Carlo Misa – Portfolio & Feed",
       images: [
         {
-          url: `${siteUrl}/og/logo.png`, // 1200×630, < 500 kB
+          url: `${siteUrl}/og/logo.png`,
           width: 1200,
           height: 630,
-          alt: "Preview of latest projects and certificates",
+          alt: "Preview",
         },
       ],
       locale: "en_US",
@@ -59,7 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      site: "@jcmisa_dev", // your Twitter handle
+      site: "@jcmisa_dev",
       title,
       description,
       images: [`${siteUrl}/og/logo.png`],
@@ -77,9 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     alternates: {
       canonical: siteUrl,
-      types: {
-        "application/pdf": `${siteUrl}/Resume-IT.pdf`,
-      },
+      types: { "application/pdf": `${siteUrl}/Resume-IT.pdf` },
     },
     manifest: "/site.webmanifest",
     other: {
@@ -100,8 +97,11 @@ export default async function Home() {
     getPersonalInfo(),
   ]);
 
-  const userRole = currentUser && currentUser.role ? currentUser.role : "user";
+  // Handle the type cast here so the data passed to ProjectsFeed is correct
+  const typedProjects = (initialProjects.data ??
+    []) as unknown as OptimizedProject[];
 
+  const userRole = currentUser && currentUser.role ? currentUser.role : "user";
   const scriptUrl =
     "https://s3.tradingview.com/external-embedding/embed-widget-";
 
@@ -116,7 +116,7 @@ export default async function Home() {
           <div className="w-full lg:max-w-[640px] rounded-lg">
             <ProjectsFeed
               userRole={userRole}
-              initialProjects={initialProjects.data ?? []}
+              initialProjects={typedProjects}
               initialCursor={initialProjects.nextCursor ?? undefined}
               initialHasMore={!!initialProjects.nextCursor}
               personalInfo={personalInfo as PersonalInfoType}

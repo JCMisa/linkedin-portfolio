@@ -58,8 +58,9 @@ export const Users = pgTable(
       .$defaultFn(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [uniqueIndex("users_userId_idx").on(table.userId)]
+  (table) => [uniqueIndex("users_userId_idx").on(table.userId)],
 );
+export type UsersType = InferSelectModel<typeof Users>;
 
 export const Projects = pgTable("projects", {
   id: uuid().defaultRandom().primaryKey(),
@@ -79,6 +80,7 @@ export const Projects = pgTable("projects", {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+export type ProjectsType = InferSelectModel<typeof Projects>;
 
 export const Likes = pgTable("likes", {
   id: uuid().defaultRandom().primaryKey(),
@@ -98,6 +100,7 @@ export const Likes = pgTable("likes", {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+export type LikesType = InferSelectModel<typeof Likes>;
 
 export const Comments = pgTable("comments", {
   id: uuid().defaultRandom().primaryKey(),
@@ -118,6 +121,7 @@ export const Comments = pgTable("comments", {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+export type CommentsType = InferSelectModel<typeof Comments>;
 
 export const Certificates = pgTable("certificates", {
   id: uuid().defaultRandom().primaryKey(),
@@ -132,6 +136,7 @@ export const Certificates = pgTable("certificates", {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+export type CertificatesType = InferSelectModel<typeof Certificates>;
 
 export const PersonalInfo = pgTable("personalInfo", {
   id: uuid().defaultRandom().primaryKey(),

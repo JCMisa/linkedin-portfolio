@@ -4,40 +4,32 @@ import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function POST() {
-  const user = await currentUser();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export async function GET() {
   try {
-    // check if user already exist in the database
-    const users = await db
-      .select()
-      .from(Users)
-      .where(eq(Users.userId, user.id));
+    const user = await currentUser();
 
-    // if not exist, add to database
-    if (users.length === 0) {
-      const now = new Date();
-      const newUser = {
-        userId: user.id,
-        name: user.fullName || user.firstName || "Unknown",
-        email: user.primaryEmailAddress?.emailAddress || "",
-        image: user.imageUrl || null,
-        role: "user",
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      await db.insert(Users).values(newUser);
-
-      // Return the user instance itself
-      return NextResponse.json({ user: newUser }, { status: 201 });
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    return NextResponse.json({ user: users[0] || null }, { status: 200 });
+    // Fetch the specific record from Neon using the Clerk ID
+    const dbUser = await db
+      .select()
+      .from(Users)
+      .where(eq(Users.userId, user.id))
+      .limit(1);
+
+    if (dbUser.length === 0) {
+      // In case the webhook hasn't finished yet, return null
+      return NextResponse.json(null);
+    }
+
+    return NextResponse.json(dbUser[0]);
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.error("GET_USER_ERROR", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

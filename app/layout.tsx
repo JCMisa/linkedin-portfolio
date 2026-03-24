@@ -4,10 +4,12 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/custom/theme-provider";
 import Navbar from "@/components/custom/Navbar";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 import { Toaster } from "@/components/ui/sonner";
-import SyncUserProvider from "@/providers/SyncUserProvider";
 import AIChatbot from "@/components/custom/AIChatbot";
+import { UserStoreWatcher } from "@/providers/UserStoreWatcher";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { shadcn } from "@clerk/ui/themes";
+
 const sourceSans3 = Source_Sans_3({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -29,15 +31,11 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        baseTheme: dark,
-        layout: {
-          logoImageUrl: "/logo.png",
-          socialButtonsVariant: "iconButton",
-        },
+        theme: shadcn,
         variables: { colorPrimary: "#0a66c2" },
       }}
     >
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className={`${sourceSans3.variable} antialiased`}>
           <ThemeProvider
             attribute="class"
@@ -45,11 +43,14 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
-            <SyncUserProvider>{children}</SyncUserProvider>
-            <div className="fixed bottom-3 right-3">
-              <AIChatbot />
-            </div>
+            <TooltipProvider>
+              <Navbar />
+              <UserStoreWatcher />
+              {children}
+              <div className="fixed bottom-3 right-3">
+                <AIChatbot />
+              </div>
+            </TooltipProvider>
             <Toaster />
           </ThemeProvider>
         </body>
