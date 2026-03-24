@@ -211,7 +211,7 @@ export const getProjectsPaginated = withErrorHandling(
     }
 
     // 2. THE BIG QUERY
-    // Instead of just getting projects, we use "Subqueries" (the sql`` parts).
+    // Instead of just getting projects, we use "Subqueries" (the sql parts).
     // This asks the database to calculate counts and info in one single trip.
     let q = db
       .select({
