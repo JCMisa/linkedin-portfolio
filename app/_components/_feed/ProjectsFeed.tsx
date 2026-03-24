@@ -2,7 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import ProjectSearchAndCategorize from "./ProjectSearchAndCategorize";
-import ProjectsFeedList from "./ProjectsFeedList";
+import ProjectsFeedList, { OptimizedProject } from "./ProjectsFeedList"; // Import the type
 import CreateProject from "@/components/custom/CreateProject";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/utils/useDebounce";
@@ -17,12 +17,12 @@ export default function ProjectsFeed({
   personalInfo,
 }: {
   userRole: string;
-  initialProjects: ProjectType[];
+  initialProjects: OptimizedProject[];
   initialCursor?: string;
   initialHasMore: boolean;
   personalInfo: PersonalInfoType;
 }) {
-  const [projects, setProjects] = useState(initialProjects);
+  const [projects, setProjects] = useState<OptimizedProject[]>(initialProjects);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [cursor, setCursor] = useState(initialCursor);
@@ -36,11 +36,11 @@ export default function ProjectsFeed({
     setLoading(true);
     getProjectsPaginated({ query: debouncedSearch, category, limit: 5 }).then(
       ({ data, nextCursor }) => {
-        setProjects(data ?? []);
+        setProjects((data as unknown as OptimizedProject[]) ?? []);
         setCursor(nextCursor ?? undefined);
         setHasMore(!!nextCursor);
         setLoading(false);
-      }
+      },
     );
   }, [debouncedSearch, category]);
 
@@ -53,7 +53,10 @@ export default function ProjectsFeed({
       cursor,
       limit: 5,
     }).then(({ data, nextCursor }) => {
-      setProjects((prev) => [...prev, ...(data ?? [])]);
+      setProjects((prev) => [
+        ...prev,
+        ...((data as unknown as OptimizedProject[]) ?? []),
+      ]);
       setCursor(nextCursor ?? undefined);
       setHasMore(!!nextCursor);
       setLoading(false);

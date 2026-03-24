@@ -18,12 +18,10 @@ import {
   MailIcon,
   PhoneIcon,
   LinkIcon,
-  LinkedinIcon,
-  GithubIcon,
-  FacebookIcon,
-  InstagramIcon,
   XIcon,
 } from "lucide-react";
+import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -262,7 +260,7 @@ const ContactInfoEditorDialog = ({
                       LinkedIn Profile
                     </Label>
                     <div className="relative">
-                      <LinkedinIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <FaLinkedin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                       <Input
                         id="linkedin"
                         className="pl-9"
@@ -279,7 +277,7 @@ const ContactInfoEditorDialog = ({
                       GitHub Profile
                     </Label>
                     <div className="relative">
-                      <GithubIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <FaGithub className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                       <Input
                         id="github"
                         className="pl-9"
@@ -299,7 +297,7 @@ const ContactInfoEditorDialog = ({
                       Facebook Profile
                     </Label>
                     <div className="relative">
-                      <FacebookIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <FaFacebook className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                       <Input
                         id="facebook"
                         className="pl-9"
@@ -316,7 +314,7 @@ const ContactInfoEditorDialog = ({
                       Instagram Profile
                     </Label>
                     <div className="relative">
-                      <InstagramIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <FaInstagram className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                       <Input
                         id="instagram"
                         className="pl-9"

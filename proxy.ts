@@ -11,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
   "/contact",
   "/Resume-IT.pdf(.*)",
   "/Resume-VA-General.pdf(.*)",
+  "/api/webhooks(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

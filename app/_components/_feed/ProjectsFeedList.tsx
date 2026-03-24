@@ -2,8 +2,14 @@ import Loader from "@/components/custom/Loader";
 import ProjectCard from "./ProjectCard";
 import ProjectsSkeletonCard from "./ProjectsSkeletonCard";
 import { Button } from "@/components/ui/button";
-import { getPersonalInfo } from "@/lib/actions/profileInfo";
-import { PersonalInfoType } from "@/config/schema";
+import { PersonalInfoType, ProjectsType } from "@/config/schema";
+
+export interface OptimizedProject extends ProjectsType {
+  likesCount: number;
+  hasLiked: boolean;
+  commentsCount: number;
+  latestCommenter: { name: string; image: string } | null;
+}
 
 const ProjectsFeedList = ({
   projects,
@@ -13,7 +19,7 @@ const ProjectsFeedList = ({
   loadMore,
   personalInfo,
 }: {
-  projects: ProjectType[];
+  projects: OptimizedProject[];
   isFetchingProjects: boolean;
   userRole: string;
   hasMore: boolean;
@@ -44,11 +50,16 @@ const ProjectsFeedList = ({
           )}
         </>
       ) : (
+        /* If no projects exist AND we aren't fetching, 
+           we only show skeletons during initial load. */
         <div className="flex flex-col items-center gap-2 w-full">
-          {[1, 2, 3].map((project) => (
-            // skeleton effect
-            <ProjectsSkeletonCard key={project} />
-          ))}
+          {isFetchingProjects &&
+            [1, 2, 3].map((id) => <ProjectsSkeletonCard key={id} />)}
+          {!isFetchingProjects && (
+            <p className="text-sm text-muted-foreground mt-4">
+              No projects found.
+            </p>
+          )}
         </div>
       )}
     </div>

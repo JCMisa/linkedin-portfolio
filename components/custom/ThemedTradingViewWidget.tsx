@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react"; // Use useTransition for smoother theme shifts
 import { useTheme } from "next-themes";
 import TradingViewWidget from "@/components/custom/TradingViewWidget";
 
@@ -14,53 +14,37 @@ export function ThemedTradingViewWidget({
 }: ThemedTradingViewWidgetProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [widgetKey, setWidgetKey] = useState(0);
+  const [isPending, startTransition] = useTransition(); // Better than setTimeout for hydration
+  const [currentTheme, setCurrentTheme] = useState(resolvedTheme);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Handle theme change with loading state
   useEffect(() => {
-    if (mounted) {
-      setIsLoading(true);
-      // Small delay to show loading state
-      const timer = setTimeout(() => {
-        setWidgetKey((prev) => prev + 1);
-        setIsLoading(false);
-      }, 150);
-
-      return () => clearTimeout(timer);
+    if (mounted && resolvedTheme !== currentTheme) {
+      startTransition(() => {
+        setCurrentTheme(resolvedTheme);
+      });
     }
-  }, [resolvedTheme, mounted]);
+  }, [resolvedTheme, mounted, currentTheme]);
 
-  if (!mounted) {
-    return null;
-  }
-
-  const widgetTheme = resolvedTheme === "dark" ? "dark" : "light";
+  if (!mounted) return <div style={{ height: 600 }} />; // Maintain aspect ratio to prevent layout shift
 
   return (
     <div className="relative">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-10 rounded-[8px]">
-          <div className="flex flex-col items-center gap-2">
-            <div className="loader"></div>
-            <span className="text-sm text-muted-foreground">
-              Updating theme...
-            </span>
-          </div>
+      {isPending && (
+        <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-10">
+          <div className="loader"></div>
         </div>
       )}
       <TradingViewWidget
-        key={widgetKey}
+        key={currentTheme} // Using theme as key is cleaner than a numeric counter
         scriptUrl={scriptUrl}
         config={{
-          colorTheme: widgetTheme,
           ...config,
+          colorTheme: currentTheme === "dark" ? "dark" : "light",
         }}
-        className="custom-chart"
         height={600}
       />
     </div>

@@ -14,18 +14,13 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  getProjectLikes,
-  hasUserLikedProject,
-  toggleProjectLike,
-} from "@/lib/actions/likes";
-import { getProjectComments } from "@/lib/actions/comments";
+import { toggleProjectLike } from "@/lib/actions/likes";
 import {
   Tooltip,
   TooltipContent,
@@ -35,108 +30,77 @@ import CreateComment from "@/components/custom/CreateComment";
 import { useUser } from "@clerk/nextjs";
 import EditProject from "@/components/custom/EditProject";
 import DeleteProject from "@/components/custom/DeleteProject";
-import { PersonalInfoType } from "@/config/schema";
+import { PersonalInfoType, ProjectsType } from "@/config/schema";
+
+// Define the extended type that comes from your optimized server action
+interface OptimizedProject extends ProjectsType {
+  likesCount: number;
+  hasLiked: boolean;
+  commentsCount: number;
+  latestCommenter: { name: string; image: string } | null;
+}
 
 const ProjectCard = ({
   project,
   userRole,
   personalInfo,
 }: {
-  project: ProjectType;
+  project: OptimizedProject;
   userRole: string;
   personalInfo: PersonalInfoType;
 }) => {
   const { user } = useUser();
 
+  // 1. Initialize state directly from Server Props (No useEffect needed!)
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
-  const [commentsCount, setCommentsCount] = useState(0);
+  const [isLiked, setIsLiked] = useState(project.hasLiked);
+  const [likesCount, setLikesCount] = useState(project.likesCount);
   const [isLoading, setIsLoading] = useState(false);
-  const [latestCommenter, setLatestCommenter] =
-    useState<CommentUserType | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const [likesResult, userLikeStatus, commentsResult] = await Promise.all([
-        getProjectLikes(project.id),
-        hasUserLikedProject(project.id),
-        getProjectComments(project.id),
-      ]);
-
-      if (likesResult.success && likesResult.data) {
-        setLikesCount(likesResult.data.length);
-      }
-
-      if (userLikeStatus.success) {
-        setIsLiked(userLikeStatus.data);
-      }
-
-      if (commentsResult.success && commentsResult.data) {
-        const comments = commentsResult.data;
-        setCommentsCount(comments.length);
-
-        // Set latest commenter if comments exist
-        if (comments.length > 0) {
-          const latestComment = comments[0];
-          if (latestComment.user) {
-            setLatestCommenter({
-              id: latestComment.user.id,
-              name: latestComment.user.name,
-              image: latestComment.user.image,
-              role: latestComment.user.role,
-            });
-          }
-        }
-      }
-    };
-
-    fetchData();
-  }, [project.id, user]);
 
   const handleLikeClick = async () => {
     if (!user || isLoading) return;
 
     setIsLoading(true);
     // Optimistic update
-    setIsLiked((prev) => !prev);
-    setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    const previousIsLiked = isLiked;
+    const previousCount = likesCount;
+
+    setIsLiked(!previousIsLiked);
+    setLikesCount((prev) => (previousIsLiked ? prev - 1 : prev + 1));
 
     try {
       const result = await toggleProjectLike(project.id);
       if (!result.success) {
-        // Revert optimistic update if failed
-        setIsLiked((prev) => !prev);
-        setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
+        // Revert on failure
+        setIsLiked(previousIsLiked);
+        setLikesCount(previousCount);
       }
     } catch (error) {
       console.error("Error toggling like:", error);
-      // Revert optimistic update if failed
-      setIsLiked((prev) => !prev);
-      setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
+      setIsLiked(previousIsLiked);
+      setLikesCount(previousCount);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-3 rounded-lg py-2 px-3 overflow-hidden">
-      {/* header */}
+    <div className="w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-3 rounded-lg py-2 px-3 overflow-hidden border border-transparent hover:border-border transition-all">
+      {/* 2. Header: Latest Commenter (Now instant from Props) */}
       <div className="flex items-center gap-2 justify-between w-full">
-        {/* latest commenter */}
         <div className="flex items-center gap-2">
-          {latestCommenter ? (
+          {project.latestCommenter ? (
             <>
               <Image
-                src={latestCommenter?.image || "/empty-img.webp"}
+                src={project.latestCommenter.image || "/empty-img.webp"}
                 alt="commenter"
-                width={1000}
-                height={1000}
-                className="w-[24px] h-[24px] object-fill rounded-full"
+                width={24}
+                height={24}
+                className="w-6 h-6 object-cover rounded-full"
               />
               <p className="text-[9px]">
-                {latestCommenter.name}{" "}
+                {project.latestCommenter.name}{" "}
                 <span className="text-muted-foreground">
                   recently commented on this
                 </span>
@@ -148,7 +112,7 @@ const ProjectCard = ({
         </div>
 
         <div className="flex items-center gap-2">
-          {userRole && userRole === "admin" && (
+          {userRole === "admin" && (
             <>
               <EditProject project={project} />
               <DeleteProject project={project} />
@@ -169,15 +133,15 @@ const ProjectCard = ({
 
       <Separator />
 
-      {/* content header */}
+      {/* 3. Content Header */}
       <div className="flex items-center justify-between w-full px-2">
         <div className="flex items-start gap-2">
           <Image
             src={personalInfo.profileImg || "/empty-img.webp"}
             alt={personalInfo.name}
-            width={1000}
-            height={1000}
-            className="w-[48px] h-[48px] object-fill rounded-full flex-none"
+            width={48}
+            height={48}
+            className="w-12 h-12 object-cover rounded-full flex-none"
           />
           <div className="flex flex-col max-w-[80%]">
             <p className="text-sm font-bold capitalize ">{project.title}</p>
@@ -186,10 +150,10 @@ const ProjectCard = ({
                 ? project.techStacks.join(" | ")
                 : "No tech stacks"}
             </span>
-            <span className="text-xs text-muted-foreground  flex items-center mt-1">
+            <span className="text-xs text-muted-foreground flex items-center mt-1">
               {Math.ceil(
                 (Date.now() - new Date(project.createdAt).getTime()) /
-                  (1000 * 60 * 60 * 24)
+                  (1000 * 60 * 60 * 24),
               )}
               d <DotIcon className="size-4" /> <EarthIcon className="size-4" />
             </span>
@@ -203,30 +167,30 @@ const ProjectCard = ({
                 <MoreHorizontalIcon className="size-4 cursor-pointer" />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Github & Live Links</p>
+                <p>Links</p>
               </TooltipContent>
             </Tooltip>
           </PopoverTrigger>
           <PopoverContent
             align="end"
-            className="border-none flex flex-col items-center gap-2 w-auto bg-neutral-100 dark:bg-neutral-900"
+            className="border-none flex flex-col items-center gap-2 w-auto bg-neutral-100 dark:bg-neutral-900 shadow-xl"
           >
             <Link
-              href={project.githubLink ? project.githubLink : ""}
+              href={project.githubLink || ""}
               target="_blank"
-              className={`text-xs py-1 px-5 rounded-md cursor-pointer min-w-32 max-w-32 flex items-center justify-center border bg-background/20 ${
+              className={`text-xs py-1 px-5 rounded-md cursor-pointer min-w-32 text-center border bg-background/20 ${
                 !project.githubLink &&
-                "text-muted-foreground line-through pointer-events-none opacity-[0.5]"
+                "text-muted-foreground line-through pointer-events-none opacity-50"
               }`}
             >
               Github
             </Link>
             <Link
-              href={project.liveLink ? project.liveLink : ""}
+              href={project.liveLink || ""}
               target="_blank"
-              className={`text-xs py-1 px-5 rounded-md cursor-pointer min-w-32 max-w-32 flex items-center justify-center border-none bg-primary ${
+              className={`text-xs py-1 px-5 rounded-md cursor-pointer min-w-32 text-center bg-primary text-primary-foreground ${
                 !project.liveLink &&
-                "text-muted-foreground line-through pointer-events-none opacity-[0.5]"
+                "text-muted-foreground line-through pointer-events-none opacity-50"
               }`}
             >
               Live
@@ -235,10 +199,10 @@ const ProjectCard = ({
         </Popover>
       </div>
 
-      {/* content caption */}
-      <div className="flex flex-col gap-1">
+      {/* 4. Description */}
+      <div className="flex flex-col gap-1 px-2">
         <div
-          className={`whitespace-pre-wrap text-xs w-[90%] ${
+          className={`whitespace-pre-wrap text-xs w-[95%] transition-all ${
             isExpanded ? "" : "line-clamp-5"
           }`}
         >
@@ -246,67 +210,67 @@ const ProjectCard = ({
         </div>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-200 flex items-center gap-1 w-fit cursor-pointer"
+          className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 w-fit cursor-pointer mt-1"
         >
-          {isExpanded ? (
-            <>
-              less
-              <ChevronDownIcon className="size-3 rotate-180" />
-            </>
-          ) : (
-            <>
-              more
-              <ChevronDownIcon className="size-3" />
-            </>
-          )}
+          {isExpanded ? "less" : "more"}
+          <ChevronDownIcon
+            className={`size-3 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+          />
         </button>
       </div>
 
-      {/* content image */}
-      <Image
-        src={project.image || "/empty-img.webp"}
-        alt="project-img"
-        width={1000}
-        height={1000}
-        className="w-full h-full object-cover rounded-md"
-      />
+      {/* 5. Main Project Image (Optimized Sizes) */}
+      <div className="w-full px-1">
+        <Image
+          src={project.image || "/empty-img.webp"}
+          alt="project-img"
+          width={800}
+          height={600}
+          sizes="(max-width: 768px) 100vw, 640px"
+          className="w-full h-auto object-cover rounded-md border border-border/50"
+          priority={false}
+        />
+      </div>
 
-      {/* project stats */}
-      <div className="flex items-center justify-between w-full gap-2">
-        {/* likes */}
+      {/* 6. Stats Section */}
+      <div className="flex items-center justify-between w-full gap-2 px-2">
         <div className="flex items-center gap-1">
           <div
-            className={`w-4 h-4 rounded-full flex items-center justify-center p-[3px] ${
-              isLiked ? "bg-primary" : "bg-blue-500"
-            }`}
+            className={`w-4 h-4 rounded-full flex items-center justify-center p-[3px] ${isLiked ? "bg-primary" : "bg-blue-500"}`}
           >
             <ThumbsUpIcon className="size-3 text-white" />
           </div>
           <p className="text-xs text-muted-foreground">{likesCount}</p>
         </div>
 
-        {/* comments */}
         <p
-          className="text-xs text-muted-foreground hover:underline hover:opacity-[0.8] cursor-pointer transition-all duration-200 ease-linear"
+          className="text-xs text-muted-foreground hover:underline cursor-pointer"
           onClick={() => setShowComments(!showComments)}
         >
-          {commentsCount} {commentsCount === 1 ? "comment" : "comments"}
+          {project.commentsCount}{" "}
+          {project.commentsCount === 1 ? "comment" : "comments"}
         </p>
       </div>
 
       <Separator />
 
-      {/* actions */}
-      <div className="w-full flex items-center gap-2 justify-between px-10">
+      {/* 7. Action Buttons */}
+      <div className="w-full flex items-center justify-between px-10 py-1">
         <Tooltip>
-          <TooltipTrigger>
-            <ThumbsUpIcon
+          <TooltipTrigger asChild>
+            <button
               onClick={handleLikeClick}
-              className={`size-5 cursor-pointer hover:opacity-[0.8] transition-all duration-200 ease-in-out
-                ${isLiked ? "text-primary fill-primary" : ""}
-                ${isLoading ? "opacity-50" : ""}
-              `}
-            />
+              disabled={isLoading}
+              className="group"
+            >
+              <ThumbsUpIcon
+                className={`size-5 transition-all group-hover:scale-110 ${
+                  isLiked
+                    ? "text-primary fill-primary"
+                    : "text-muted-foreground"
+                } ${isLoading ? "opacity-50" : ""}`}
+              />
+            </button>
           </TooltipTrigger>
           <TooltipContent>
             <p>{isLiked ? "Unlike" : "Like"}</p>
@@ -314,10 +278,10 @@ const ProjectCard = ({
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <MessageSquareMoreIcon
               onClick={() => setShowComments(!showComments)}
-              className="size-5 cursor-pointer hover:opacity-[0.8] transition-opacity duration-200 ease-in-out"
+              className={`size-5 cursor-pointer transition-colors ${showComments ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
             />
           </TooltipTrigger>
           <TooltipContent>
@@ -326,8 +290,8 @@ const ProjectCard = ({
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger>
-            <SendIcon className="size-5 cursor-pointer hover:opacity-[0.8] transition-opacity duration-200 ease-in-out" />
+          <TooltipTrigger asChild>
+            <SendIcon className="size-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
           </TooltipTrigger>
           <TooltipContent>
             <p>Share</p>
@@ -335,8 +299,8 @@ const ProjectCard = ({
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger>
-            <EyeIcon className="size-5 cursor-pointer hover:opacity-[0.8] transition-opacity duration-200 ease-in-out" />
+          <TooltipTrigger asChild>
+            <EyeIcon className="size-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
           </TooltipTrigger>
           <TooltipContent>
             <p>View Details</p>
@@ -344,7 +308,6 @@ const ProjectCard = ({
         </Tooltip>
       </div>
 
-      {/* Comments Section */}
       {showComments && <CreateComment projectId={project.id} />}
     </div>
   );
