@@ -95,7 +95,7 @@ export async function POST(req: Request) {
           });
 
         console.log(
-          `✅ User ${id} ${eventType === "user.created" ? "created" : "updated"}`,
+          `✅ User: ${id} ${eventType === "user.created" ? "created" : "updated"}`,
         );
         break;
       }
