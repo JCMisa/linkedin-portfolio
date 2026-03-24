@@ -6,7 +6,6 @@ import {
   Mic,
   MicOff,
   PhoneOff,
-  Video,
   Settings,
   Activity,
   Phone,
@@ -313,7 +312,7 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
                   status === "listening" ||
                   status === "speaking"
                   ? "bg-emerald-500 animate-pulse"
-                  : "bg-destructive"
+                  : "bg-destructive",
               )}
             />
           )}
@@ -321,8 +320,8 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
             {status === "processing"
               ? "Analyzing..."
               : status === "idle"
-              ? "Disconnected"
-              : "Live Agent"}
+                ? "Disconnected"
+                : "Live Agent"}
           </span>
         </div>
 
@@ -334,7 +333,7 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
               // Turn timer red when user has less than 30 seconds left
               status !== "idle" && MAX_DURATION - secondsActive < 30
                 ? "bg-red-500/20 text-red-500 border-red-500/30 animate-pulse"
-                : "bg-background/80 dark:bg-black/50 text-muted-foreground"
+                : "bg-background/80 dark:bg-black/50 text-muted-foreground",
             )}
           >
             {status === "idle"
@@ -402,7 +401,7 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
                   "absolute -inset-8 md:-inset-12 rounded-full blur-3xl transition-all duration-200",
                   status === "speaking"
                     ? "bg-primary/40 opacity-80"
-                    : "bg-emerald-500/20 opacity-40"
+                    : "bg-emerald-500/20 opacity-40",
                 )}
                 style={{ transform: `scale(${1 + volumeLevel})` }}
               />
@@ -412,7 +411,7 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
                   "relative h-32 w-32 md:h-48 md:w-48 rounded-full flex items-center justify-center border-2 transition-all duration-300",
                   status === "speaking"
                     ? "border-primary/50 bg-primary/10"
-                    : "border-emerald-500/30 bg-emerald-500/5"
+                    : "border-emerald-500/30 bg-emerald-500/5",
                 )}
                 style={{ transform: `scale(${getOrbScale()})` }}
               >
@@ -425,15 +424,15 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
                 {status === "listening"
                   ? "Listening..."
                   : status === "speaking"
-                  ? "Speaking..."
-                  : "Connecting..."}
+                    ? "Speaking..."
+                    : "Connecting..."}
               </p>
               <p
                 className={cn(
                   "text-lg md:text-2xl font-medium leading-relaxed transition-all duration-300",
                   status === "listening"
                     ? "text-zinc-400 italic"
-                    : "text-zinc-100"
+                    : "text-zinc-100",
                 )}
               >
                 "{transcript}"
@@ -449,7 +448,7 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
           {/* Identity info */}
           <div className="hidden md:flex items-center gap-3 text-left">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border border-primary/20">
-              {userName.charAt(0)}
+              {userName?.charAt(0) || "J"}
             </div>
             <div>
               <p className="text-sm font-semibold text-foreground">
@@ -472,7 +471,7 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
                 className={cn(
                   "h-12 w-12 md:h-14 md:w-14 rounded-full transition-all shadow-sm border border-border",
                   !isMicOn &&
-                    "bg-destructive/10 text-destructive border-destructive/20"
+                    "bg-destructive/10 text-destructive border-destructive/20",
                 )}
               >
                 {isMicOn ? (
