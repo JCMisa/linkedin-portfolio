@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import confetti from "canvas-confetti";
+import { toast } from "sonner";
+import { OptimizedProject } from "@/app/_components/_feed/ProjectsFeedList";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -57,4 +59,26 @@ export const formatTime = (seconds: number) => {
   return `${mins.toString().padStart(2, "0")}:${secs
     .toString()
     .padStart(2, "0")}`;
+};
+
+export const handleShare = async (project: OptimizedProject) => {
+  const shareData = {
+    title: project.title,
+    text: `Check out this project: ${project.title}`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}projects/${project.id}`,
+  };
+
+  try {
+    // Check if the browser supports the Share API
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      // Fallback: Copy to clipboard if Share API is unavailable (e.g., older desktop browsers)
+      await navigator.clipboard.writeText(shareData.url);
+      toast.success("Link copied to clipboard!");
+      // Pro-tip: Use a toast.success() here instead of alert!
+    }
+  } catch (err) {
+    console.error("Error sharing:", err);
+  }
 };

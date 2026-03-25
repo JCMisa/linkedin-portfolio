@@ -74,8 +74,8 @@ export default function ProjectSearchAndCategorize({
                   c.id === 1
                     ? "text-green-400"
                     : c.id === 2
-                    ? "text-blue-400"
-                    : "text-red-400"
+                      ? "text-blue-400"
+                      : "text-red-400"
                 }`}
               />
               <p

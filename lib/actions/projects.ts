@@ -302,3 +302,18 @@ export const getProjectsPaginated = withErrorHandling(
     return { data, nextCursor, success: true };
   },
 );
+
+export const getProjectById = withErrorHandling(async (projectId: string) => {
+  const user = await getCurrentUser();
+  if (!user) return { data: null, success: false };
+
+  const data = await db
+    .select()
+    .from(Projects)
+    .where(eq(Projects.id, projectId))
+    .limit(1);
+
+  return data.length > 0
+    ? { data: data[0], success: true }
+    : { data: null, success: false };
+});

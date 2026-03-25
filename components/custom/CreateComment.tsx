@@ -1,3 +1,5 @@
+"use client";
+
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -9,6 +11,18 @@ import {
 import { getCurrentUser } from "@/lib/actions/users";
 import { LoaderCircleIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const CreateComment = ({ projectId }: { projectId: string }) => {
   const { user, isLoaded } = useUser();
@@ -157,26 +171,40 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
           className="space-y-4 max-h-[300px] overflow-y-auto"
         >
           {comments && comments.length > 0 ? (
-            comments.map((comment) => (
-              <div key={comment.id} className="flex items-center gap-2 group">
-                <Image
-                  src={comment.user.image || "/empty-img.webp"}
-                  alt="commenter-img"
-                  width={1000}
-                  height={1000}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <div className="flex-1">
-                  <div className="rounded-lg p-2">
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold">
-                        {comment.user.name}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-muted-foreground">
-                          {formatDate(comment.createdAt)}
-                        </span>
-                        {user &&
+            comments.map((comment) => {
+              const isCommentOwner =
+                user &&
+                (comment.user.id === currentUser?.id ||
+                  currentUser?.role === "admin")
+                  ? true
+                  : false;
+
+              return isCommentOwner ? (
+                <AlertDialog key={comment.id}>
+                  <AlertDialogTrigger asChild>
+                    <div
+                      className={cn(
+                        "flex items-start gap-2 group  rounded-lg p-2 hover:bg-red-500/5 cursor-pointer transition-all duration-200 ease-in-out",
+                      )}
+                    >
+                      <Image
+                        src={comment.user.image || "/empty-img.webp"}
+                        alt="commenter-img"
+                        width={1000}
+                        height={1000}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="rounded-lg px-2">
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs font-semibold">
+                              {comment.user.name}
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] text-muted-foreground">
+                                {formatDate(comment.createdAt)}
+                              </span>
+                              {/* {user &&
                           (comment.user.id === currentUser?.id ||
                             currentUser?.role === "admin") && (
                             <button
@@ -190,14 +218,70 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
                             >
                               <TrashIcon className="size-3 text-red-500 hover:text-red-600" />
                             </button>
-                          )}
+                          )} */}
+                            </div>
+                          </div>
+                          <p className="text-xs mt-1 whitespace-pre-wrap">
+                            {comment.content}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <p className="text-xs mt-1">{comment.content}</p>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete your comment for this project.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() =>
+                          isCommentOwner ? handleDelete(comment.id) : {}
+                        }
+                      >
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              ) : (
+                <div
+                  key={comment.id}
+                  className={cn("flex items-start gap-2 group  rounded-lg p-2")}
+                >
+                  <Image
+                    src={comment.user.image || "/empty-img.webp"}
+                    alt="commenter-img"
+                    width={1000}
+                    height={1000}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div className="flex-1">
+                    <div className="rounded-lg px-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-semibold">
+                          {comment.user.name}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-muted-foreground">
+                            {formatDate(comment.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-xs mt-1 whitespace-pre-wrap">
+                        {comment.content}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="flex items-center justify-center">
               <p className="text-xs text-muted-foreground">No comments yet</p>

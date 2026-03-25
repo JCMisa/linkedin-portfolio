@@ -31,6 +31,7 @@ import { useUser } from "@clerk/nextjs";
 import EditProject from "@/components/custom/EditProject";
 import DeleteProject from "@/components/custom/DeleteProject";
 import { PersonalInfoType, ProjectsType } from "@/config/schema";
+import { handleShare } from "@/lib/utils";
 
 // Define the extended type that comes from your optimized server action
 interface OptimizedProject extends ProjectsType {
@@ -291,7 +292,12 @@ const ProjectCard = ({
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <SendIcon className="size-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+            <button
+              onClick={() => handleShare(project)}
+              className="outline-none"
+            >
+              <SendIcon className="size-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+            </button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Share</p>
@@ -300,7 +306,9 @@ const ProjectCard = ({
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <EyeIcon className="size-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+            <Link href={`/projects/${project.id}`} className="outline-none">
+              <EyeIcon className="size-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+            </Link>
           </TooltipTrigger>
           <TooltipContent>
             <p>View Details</p>

@@ -2,8 +2,8 @@
 
 import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
-import { Likes } from "@/config/schema";
-import { and, desc, eq } from "drizzle-orm";
+import { Likes, Users } from "@/config/schema";
+import { and, count, desc, eq } from "drizzle-orm";
 import { getCurrentUser } from "./users";
 import { revalidatePath } from "next/cache";
 
@@ -55,7 +55,7 @@ export const toggleProjectLike = withErrorHandling(
 
     revalidatePath("/");
     return { data: { ...newLike, action: "liked" }, success: true };
-  }
+  },
 );
 
 export const getProjectLikes = withErrorHandling(async (projectId: string) => {
@@ -78,6 +78,25 @@ export const getProjectLikes = withErrorHandling(async (projectId: string) => {
   return { data: likes, success: true };
 });
 
+export const getProjectLikesWithUserDetails = withErrorHandling(
+  async (projectId: string) => {
+    const likes = await db
+      .select({
+        userId: Users.id,
+        userName: Users.name,
+        userImage: Users.image,
+        userRole: Users.role,
+        likedAt: Likes.createdAt,
+      })
+      .from(Likes)
+      .leftJoin(Users, eq(Likes.userId, Users.id))
+      .where(eq(Likes.projectId, projectId))
+      .orderBy(desc(Likes.createdAt));
+
+    return { data: likes ?? [], success: true };
+  },
+);
+
 export const hasUserLikedProject = withErrorHandling(
   async (projectId: string) => {
     const user = await getCurrentUser();
@@ -93,5 +112,5 @@ export const hasUserLikedProject = withErrorHandling(
       .limit(1);
 
     return { data: like.length > 0, success: true };
-  }
+  },
 );
