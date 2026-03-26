@@ -13,7 +13,6 @@ import {
   ilike,
   lt,
   or,
-  sql,
 } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { deleteImageFromCloudinary } from "../cloudinary";

@@ -10,7 +10,7 @@ import { ThemedTradingViewWidget } from "@/components/custom/ThemedTradingViewWi
 import { TOP_STORIES_WIDGET_CONFIG } from "@/lib/constants";
 import { getPersonalInfo } from "@/lib/actions/profileInfo";
 import { PersonalInfoType } from "@/config/schema";
-import { OptimizedProject } from "./_components/_feed/ProjectsFeedList"; // Import the type you defined
+import { OptimizedProject } from "@/types/index.e";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Feed | JCM Portfolio";

@@ -2,14 +2,8 @@ import Loader from "@/components/custom/Loader";
 import ProjectCard from "./ProjectCard";
 import ProjectsSkeletonCard from "./ProjectsSkeletonCard";
 import { Button } from "@/components/ui/button";
-import { PersonalInfoType, ProjectsType } from "@/config/schema";
-
-export interface OptimizedProject extends ProjectsType {
-  likesCount: number;
-  hasLiked: boolean;
-  commentsCount: number;
-  latestCommenter: { name: string; image: string } | null;
-}
+import { PersonalInfoType } from "@/config/schema";
+import { OptimizedProject } from "@/types/index.e";
 
 const ProjectsFeedList = ({
   projects,

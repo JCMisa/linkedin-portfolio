@@ -32,14 +32,7 @@ import EditProject from "@/components/custom/EditProject";
 import DeleteProject from "@/components/custom/DeleteProject";
 import { PersonalInfoType, ProjectsType } from "@/config/schema";
 import { handleShare } from "@/lib/utils";
-
-// Define the extended type that comes from your optimized server action
-interface OptimizedProject extends ProjectsType {
-  likesCount: number;
-  hasLiked: boolean;
-  commentsCount: number;
-  latestCommenter: { name: string; image: string } | null;
-}
+import { OptimizedProject } from "@/types/index.e";
 
 const ProjectCard = ({
   project,

@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
-import { OptimizedProject } from "@/app/_components/_feed/ProjectsFeedList";
+import { OptimizedProject } from "@/types/index.e";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -45,7 +45,7 @@ const CertificatePreviewCard = ({ cert }: { cert: any }) => {
         {mounted ? (
           <Dialog>
             <DialogTrigger asChild>
-              <button className="cursor-pointer mt-1 text-xs text-muted-foreground py-[6px] px-5 rounded-full border border-black dark:border-white flex items-center justify-center gap-1 hover:bg-accent transition-colors">
+              <button className="cursor-pointer mt-1 text-xs text-muted-foreground flex items-center justify-center gap-1 hover:underline transition-transform ease-linear duration-200">
                 <EyeIcon className="size-3" />
                 View
               </button>

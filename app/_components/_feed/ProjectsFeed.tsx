@@ -2,12 +2,13 @@
 
 import { Separator } from "@/components/ui/separator";
 import ProjectSearchAndCategorize from "./ProjectSearchAndCategorize";
-import ProjectsFeedList, { OptimizedProject } from "./ProjectsFeedList"; // Import the type
+import ProjectsFeedList from "./ProjectsFeedList"; // Import the type
 import CreateProject from "@/components/custom/CreateProject";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/utils/useDebounce";
 import { getProjectsPaginated } from "@/lib/actions/projects";
 import { PersonalInfoType } from "@/config/schema";
+import { OptimizedProject } from "@/types/index.e";
 
 export default function ProjectsFeed({
   userRole,

@@ -117,7 +117,7 @@ const Navbar = () => {
         {/* menu items - small screen */}
         <Sheet>
           <SheetTrigger>
-            <MenuIcon className="block md:hidden cursor-pointer" />
+            <MenuIcon className="block md:hidden mr-2 cursor-pointer" />
           </SheetTrigger>
           <SheetContent
             side="left"
