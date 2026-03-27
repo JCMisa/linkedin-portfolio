@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useDebounce } from "@/utils/useDebounce";
 import ProjectsSkeletonCard from "@/app/_components/_feed/ProjectsSkeletonCard";
 import { PersonalInfoType, ProjectsType } from "@/config/schema";
+import { cn } from "@/lib/utils";
 
 const ROW_HEIGHT = 500; // Fixed height to keep Grid stable
 const GAP = 20;
@@ -102,7 +103,7 @@ export default function ProjectsList({
   const columnWidth = containerWidth / columnCount;
 
   return (
-    <div className="flex flex-col items-center gap-5 w-full h-[85vh]">
+    <div className="flex flex-col items-center gap-5 w-full h-[800px]">
       <div className="px-[10px] w-full flex flex-col gap-4">
         <ProjectSearchAndCategorize
           search={search}
@@ -149,7 +150,7 @@ export default function ProjectsList({
 
       <div
         ref={containerRef}
-        className="w-full flex-1 min-h-0 overflow-hidden "
+        className="w-full flex-1 min-h-0 overflow-hidden relative group"
       >
         {loading ? (
           <div className="flex flex-col gap-4 w-full">
@@ -157,25 +158,35 @@ export default function ProjectsList({
             <ProjectsSkeletonCard />
           </div>
         ) : projects.length > 0 ? (
-          <Grid
-            cellComponent={CellComponent}
-            cellProps={{ data: { projects, columnCount, userRole } }}
-            columnCount={columnCount}
-            // Use containerWidth directly to match the Search bar's parent
-            columnWidth={columnWidth}
-            rowCount={rowCount}
-            rowHeight={ROW_HEIGHT + GAP}
-            className="no-scrollbar" // 👈 Add the class here
-            style={{
-              width: "100%",
-              height: "auto", // 👈 Change from fixed height to auto if you want it to expand
-              overflowX: "hidden",
-              overflowY: "auto", // 👈 This removes the scrollbar
-              paddingRight: "0px",
-              paddingLeft: "0px",
-              // marginLeft: "-10px",
-            }}
-          />
+          <>
+            <Grid
+              cellComponent={CellComponent}
+              cellProps={{ data: { projects, columnCount, userRole } }}
+              columnCount={columnCount}
+              // Use containerWidth directly to match the Search bar's parent
+              columnWidth={columnWidth}
+              rowCount={rowCount}
+              rowHeight={ROW_HEIGHT + GAP}
+              className="no-scrollbar" // 👈 Add the class here
+              style={{
+                width: "100%",
+                height: "auto", // 👈 Change from fixed height to auto if you want it to expand
+                overflowX: "hidden",
+                overflowY: "auto", // 👈 This removes the scrollbar
+                paddingRight: "0px",
+                paddingLeft: "0px",
+                // marginLeft: "-10px",
+              }}
+            />
+
+            <div
+              className={cn(
+                "pointer-events-none absolute bottom-0 left-0 z-20 h-24 w-full",
+                "bg-gradient-to-t from-background via-background/80 to-transparent",
+                "dark:from-background dark:via-background/70 dark:to-transparent",
+              )}
+            />
+          </>
         ) : (
           <div className="flex flex-col items-center justify-center h-40 opacity-50">
             <p>No projects found matching your criteria.</p>
