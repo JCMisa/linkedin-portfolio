@@ -98,7 +98,7 @@ const AIChatbot = () => {
       const { data } = await axios.post<{ response: string }>(
         "/api/chat",
         { message: trimmed },
-        { timeout: 30000 }
+        { timeout: 30000 },
       );
 
       const botMsg: Message = {
@@ -166,7 +166,7 @@ const AIChatbot = () => {
           alt="Pixel art pumpkin computer with bat wings"
           width={50}
           height={50}
-          className="image-pixelated opacity-50 grayscale hover:cursor-not-allowed "
+          className="image-pixelated opacity-50 grayscale hover:cursor-not-allowed"
           style={{
             maxWidth: "100%",
             height: "auto",
@@ -323,7 +323,11 @@ const AIChatbot = () => {
 
   return (
     <>
-      {!isMobile && (
+      {/* No user — show disabled trigger only, no popover/dialog */}
+      {!user && Trigger}
+
+      {/* Desktop */}
+      {user && !isMobile && (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>{Trigger}</PopoverTrigger>
           <PopoverContent
@@ -337,7 +341,8 @@ const AIChatbot = () => {
         </Popover>
       )}
 
-      {isMobile && (
+      {/* Mobile */}
+      {user && isMobile && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger>{Trigger}</DialogTrigger>
           <DialogContent className="h-screen w-screen max-w-none max-h-none p-0 gap-0 rounded-none">
