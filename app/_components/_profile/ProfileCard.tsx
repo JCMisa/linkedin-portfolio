@@ -4,6 +4,10 @@ import Link from "next/link";
 import { PersonalInfoType } from "@/config/schema";
 
 const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
+  const currentExperience = personalInfo.experiences.find(
+    (e) => !e.dateTo || e.dateTo === "",
+  );
+
   return (
     <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
       {/* Cover photo */}
@@ -55,21 +59,23 @@ const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
         </p>
 
         {/* Current role */}
-        <div className="mt-3 pt-3 border-t border-border">
-          <p className="text-xs text-muted-foreground">Current</p>
-          <div className="flex items-center gap-2">
-            <Image
-              src={personalInfo.experiences[1].bannerImg || "/empty-img.webp"}
-              alt={personalInfo.experiences[1].title}
-              width={1000}
-              height={1000}
-              className="size-4 sm:size-5 md:size-6 lg:size-7 rounded-sm object-cover"
-            />
-            <p className="text-sm font-medium text-foreground mt-0.5">
-              {personalInfo.experiences[1].title}
-            </p>
+        {currentExperience && (
+          <div className="mt-3 pt-3 border-t border-border">
+            <p className="text-xs text-muted-foreground">Current</p>
+            <div className="flex items-center gap-2">
+              <Image
+                src={currentExperience.bannerImg || "/empty-img.webp"}
+                alt={currentExperience.title}
+                width={1000}
+                height={1000}
+                className="size-4 sm:size-5 md:size-6 lg:size-7 rounded-sm object-cover"
+              />
+              <p className="text-sm font-medium text-foreground mt-0.5">
+                {currentExperience.title}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         <Link
           href="/profile"
