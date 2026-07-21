@@ -14,7 +14,9 @@ const LatestWorkExperience = ({
 }: {
   personalInfo: PersonalInfoType;
 }) => {
-  const latestExp = personalInfo.experiences[1];
+  const latestExp = personalInfo.experiences.find(
+    (e) => !e.dateTo || e.dateTo === "",
+  );
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "Present";
