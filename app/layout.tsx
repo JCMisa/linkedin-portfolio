@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { shadcn } from "@clerk/ui/themes";
 import { siteConfig } from "@/lib/seo";
+import { ACCENT_INIT_SCRIPT } from "@/lib/accent";
 
 // Icons come from app/favicon.ico, app/icon.svg and app/apple-icon.png;
 // social previews from app/opengraph-image.tsx and app/twitter-image.tsx;
@@ -74,6 +75,10 @@ export default function RootLayout({
       }}
     >
       <html lang="en" suppressHydrationWarning>
+        <head>
+          {/* Saved theme color, applied before paint (no flash of the default) */}
+          <script dangerouslySetInnerHTML={{ __html: ACCENT_INIT_SCRIPT }} />
+        </head>
         <body>
           <a
             href="#main-content"

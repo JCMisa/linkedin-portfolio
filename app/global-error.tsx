@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { TriangleAlertIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { ACCENT_INIT_SCRIPT } from "@/lib/accent";
 import "./globals.css";
 
 // Runs before paint so the fallback page matches the visitor's theme
@@ -27,6 +28,7 @@ export default function GlobalError({
       <head>
         <title>Something went wrong | John Carlo Misa</title>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: ACCENT_INIT_SCRIPT }} />
       </head>
       <body>
         <main

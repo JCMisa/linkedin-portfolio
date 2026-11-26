@@ -382,7 +382,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
         {/* UI before the call starts */}
         {status === "idle" ? (
           <div className="animate-fadeIn z-30 flex flex-col items-center gap-6">
-            <div className="flex h-32 w-32 items-center justify-center rounded-full border-2 border-primary/20 bg-primary/10 shadow-[0_0_30px_rgba(var(--primary),0.2)]">
+            <div className="flex h-32 w-32 items-center justify-center rounded-full border-2 border-primary/20 bg-primary/10 shadow-[0_0_30px_color-mix(in_oklch,var(--primary)_20%,transparent)]">
               <Phone className="h-12 w-12 text-primary" />
             </div>
             <Button

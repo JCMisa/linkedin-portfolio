@@ -125,6 +125,51 @@
   --ring: var(--primary);
 }
 
+/* --------------------------------------------------------------------------
+   Accent presets (visitor-selectable, see lib/accent.ts).
+   Each one only swaps the four accent variables; every brand tint, button,
+   link and ring derives from them. All pairs pass WCAG AA (>= 4.5:1):
+   white text on the light accent, black text on the dark accent.
+   Blue (LinkedIn) is the :root default; it is repeated here so a swatch
+   element with data-accent="blue" shows blue whatever the page accent is.
+   -------------------------------------------------------------------------- */
+[data-accent="blue"] {
+  --accent-light: #0a66c2;
+  --accent-light-hover: #004182;
+  --accent-dark: #71b7fb;
+  --accent-dark-hover: #a8d4ff;
+}
+[data-accent="green"] {
+  --accent-light: #057642;
+  --accent-light-hover: #045a32;
+  --accent-dark: #6fcf97;
+  --accent-dark-hover: #a3e2bd;
+}
+[data-accent="purple"] {
+  --accent-light: #7c3aed;
+  --accent-light-hover: #6025c9;
+  --accent-dark: #b9a2ff;
+  --accent-dark-hover: #d6c9ff;
+}
+[data-accent="rose"] {
+  --accent-light: #be123c;
+  --accent-light-hover: #9f1239;
+  --accent-dark: #fb7185;
+  --accent-dark-hover: #fda4af;
+}
+[data-accent="amber"] {
+  --accent-light: #b45309;
+  --accent-light-hover: #92400e;
+  --accent-dark: #f5b942;
+  --accent-dark-hover: #fbd38d;
+}
+[data-accent="teal"] {
+  --accent-light: #0f766e;
+  --accent-light-hover: #115e59;
+  --accent-dark: #4fd1c5;
+  --accent-dark-hover: #8eeae0;
+}
+
 .dark {
   --primary: var(--accent-dark);
   --primary-hover: var(--accent-dark-hover);
