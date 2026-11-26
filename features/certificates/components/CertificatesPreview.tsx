@@ -1,4 +1,4 @@
-import CertificateFormDialog from "./CertificateFormDialog";
+import { CertificateFormDialog } from "./admin-dialogs";
 
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";

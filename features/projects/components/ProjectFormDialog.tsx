@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { applyActionResult } from "@/lib/form-errors";
-import { showConfetti } from "@/lib/utils";
+import { showConfetti } from "@/lib/confetti";
 import { addProject, updateProject } from "../actions/projects";
 import {
   PROJECT_CATEGORIES,

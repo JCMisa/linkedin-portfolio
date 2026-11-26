@@ -8,20 +8,26 @@ cloudinary.config({
   api_secret: env.CLOUDINARY_API_SECRET,
 });
 
-/** Uploads an image and returns its HTTPS URL. Throws on failure. */
-export async function uploadImage(file: File, folder: string): Promise<string> {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const dataUri = `data:${file.type};base64,${buffer.toString("base64")}`;
+/** Formats Cloudinary accepts for direct uploads (enforced via the signature). */
+export const ALLOWED_IMAGE_FORMATS = "jpg,jpeg,png,webp,svg";
 
-  const result = await cloudinary.uploader.upload(dataUri, {
-    folder,
-    resource_type: "image",
-    allowed_formats: ["jpg", "jpeg", "png", "webp", "svg"],
-    transformation: [{ quality: "auto", fetch_format: "auto" }],
-  });
-
-  if (!result.secure_url) throw new Error("Cloudinary returned no URL");
-  return result.secure_url;
+/**
+ * Signs a direct browser-to-Cloudinary upload. Every signed parameter is
+ * enforced by Cloudinary, so the client can't change the folder or formats.
+ */
+export function signUpload(folder: string) {
+  const timestamp = Math.round(Date.now() / 1000);
+  const params = { timestamp, folder, allowed_formats: ALLOWED_IMAGE_FORMATS };
+  const signature = cloudinary.utils.api_sign_request(
+    params,
+    env.CLOUDINARY_API_SECRET,
+  );
+  return {
+    ...params,
+    signature,
+    apiKey: env.CLOUDINARY_API_KEY,
+    cloudName: env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  };
 }
 
 /**

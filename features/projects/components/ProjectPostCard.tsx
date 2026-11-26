@@ -28,10 +28,9 @@ import {
 } from "@/components/ui/tooltip";
 import CreateComment from "./CreateComment";
 import { useUser } from "@clerk/nextjs";
-import ProjectFormDialog from "./ProjectFormDialog";
-import DeleteProject from "./DeleteProject";
+import { DeleteProject, ProjectFormDialog } from "./admin-dialogs";
 import { PersonalInfoType } from "@/db/schema";
-import { handleShare } from "@/lib/utils";
+import { shareProject } from "../lib/share";
 import { OptimizedProject } from "@/features/projects/types";
 
 const ProjectPostCard = ({
@@ -290,7 +289,7 @@ const ProjectPostCard = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              onClick={() => handleShare(project)}
+              onClick={() => shareProject(project)}
               className="outline-none"
             >
               <SendIcon className="size-5 cursor-pointer text-muted-foreground transition-colors hover:text-foreground" />

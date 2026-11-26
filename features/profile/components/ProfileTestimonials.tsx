@@ -8,7 +8,7 @@ import {
 import Image from "next/image";
 import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
-import TestimonialsEditorDialog from "@/features/profile/components/dialogs/TestimonialsEditorDialog";
+import { TestimonialsEditorDialog } from "@/features/profile/components/dialogs/admin-dialogs";
 
 export const fallbackTestimonials = [
   {

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
 import { useTheme } from "next-themes";
+import { useInView } from "@/hooks/use-in-view";
+import { useIsClient } from "@/hooks/use-is-client";
 import TradingViewWidget from "./TradingViewWidget";
 
 const SCRIPT_URL =
@@ -20,45 +21,32 @@ const TOP_STORIES_CONFIG = {
 
 const HEIGHT = 600;
 
-/** TradingView "Top Stories" news timeline that follows the site theme. */
+/**
+ * TradingView "Top Stories" news timeline that follows the site theme.
+ * The third-party embed (script + iframe) only loads once the widget is
+ * near the viewport.
+ */
 export function MarketNewsWidget() {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const [currentTheme, setCurrentTheme] = useState(resolvedTheme);
+  const isClient = useIsClient();
+  const [ref, inView] = useInView<HTMLDivElement>();
 
-  // TODO(v3 phase 6): replace setState-in-effect with a mount-safe pattern
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted && resolvedTheme !== currentTheme) {
-      startTransition(() => {
-        setCurrentTheme(resolvedTheme);
-      });
-    }
-  }, [resolvedTheme, mounted, currentTheme]);
-
-  // Reserve space before mount to prevent layout shift
-  if (!mounted) return <div style={{ height: HEIGHT }} />;
+  // Same-size placeholder until we can render (prevents layout shift)
+  const ready = isClient && inView && resolvedTheme;
 
   return (
-    <div className="relative">
-      {isPending && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50 backdrop-blur-sm">
-          <div className="loader"></div>
-        </div>
+    <div ref={ref} style={{ minHeight: HEIGHT }}>
+      {ready && (
+        <TradingViewWidget
+          key={resolvedTheme} // re-mount the embed when the theme changes
+          scriptUrl={SCRIPT_URL}
+          config={{
+            ...TOP_STORIES_CONFIG,
+            colorTheme: resolvedTheme === "dark" ? "dark" : "light",
+          }}
+          height={HEIGHT}
+        />
       )}
-      <TradingViewWidget
-        key={currentTheme} // re-mount the embed when the theme changes
-        scriptUrl={SCRIPT_URL}
-        config={{
-          ...TOP_STORIES_CONFIG,
-          colorTheme: currentTheme === "dark" ? "dark" : "light",
-        }}
-        height={HEIGHT}
-      />
     </div>
   );
 }

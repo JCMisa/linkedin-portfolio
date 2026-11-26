@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { useState } from "react";
-import SkillsEditorDialog from "@/features/profile/components/dialogs/SkillsEditorDialog";
+import { SkillsEditorDialog } from "@/features/profile/components/dialogs/admin-dialogs";
 
 type SkillCategory = {
   id: string;

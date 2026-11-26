@@ -9,7 +9,8 @@ export const CERTIFICATES_TAG = "certificates";
 
 const cacheOptions = { revalidate: 3600, tags: [CERTIFICATES_TAG] };
 
-// TODO(v3 phase 6): migrate unstable_cache to "use cache" + cacheTag()
+// unstable_cache is deliberate: "use cache" needs cacheComponents, which
+// requires Suspense boundaries around every session read (not worth it yet).
 export const getAllCertificates = unstable_cache(
   async () =>
     db.select().from(Certificates).orderBy(desc(Certificates.acquiredDate)),

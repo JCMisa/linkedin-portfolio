@@ -10,6 +10,8 @@ const useTradingViewWidget = (
   const containerRef = useRef<HTMLDivElement | null>(null);
   // Track if we are currently cleaning up to prevent race conditions
   const isDestroying = useRef(false);
+  // Serialized config: a stable effect dependency and the script's payload
+  const configJson = JSON.stringify(config);
 
   useEffect(() => {
     const current = containerRef.current;
@@ -34,7 +36,7 @@ const useTradingViewWidget = (
     script.src = scriptUrl;
     script.async = true;
     script.type = "text/javascript";
-    script.innerHTML = JSON.stringify(config);
+    script.innerHTML = configJson;
 
     // 4. Use requestAnimationFrame instead of setTimeout(0)
     // This ensures the browser has painted the container before the script runs
@@ -51,8 +53,7 @@ const useTradingViewWidget = (
         current.innerHTML = "";
       }
     };
-    // Use a stable key for the config to avoid unnecessary re-runs
-  }, [scriptUrl, JSON.stringify(config), height]);
+  }, [scriptUrl, configJson, height]);
 
   return containerRef;
 };

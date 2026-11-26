@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { applyActionResult } from "@/lib/form-errors";
-import { showConfetti } from "@/lib/utils";
+import { showConfetti } from "@/lib/confetti";
 import { updateServices } from "../../actions";
 import { servicesSchema } from "../../schemas";
 

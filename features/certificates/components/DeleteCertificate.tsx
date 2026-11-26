@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { deleteCertificate } from "@/features/certificates/actions";
-import { showConfetti } from "@/lib/utils";
+import { showConfetti } from "@/lib/confetti";
 import { LoaderCircleIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";

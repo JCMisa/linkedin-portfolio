@@ -18,8 +18,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ImageEditorDialog } from "@/features/profile/components/dialogs/ImageEditorDialog";
-import { ExperiencesEditorDialog } from "@/features/profile/components/dialogs/ExperiencesEditorDialog";
 import {
   updateProfileImage,
   updateCoverImage,
@@ -30,12 +28,16 @@ import {
   updateContactInfo,
 } from "@/features/profile/actions";
 import { PersonalInfoType } from "@/db/schema";
-import { TextFieldEditorDialog } from "@/features/profile/components/dialogs/TextFieldEditorDialog";
-import ResumeEditorDialog from "@/features/profile/components/dialogs/ResumeEditorDialog";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { showConfetti } from "@/lib/utils";
-import ContactInfoEditorDialog from "@/features/profile/components/dialogs/ContactInfoEditorDialog";
+import { showConfetti } from "@/lib/confetti";
+import {
+  ContactInfoEditorDialog,
+  ExperiencesEditorDialog,
+  ImageEditorDialog,
+  ResumeEditorDialog,
+  TextFieldEditorDialog,
+} from "@/features/profile/components/dialogs/admin-dialogs";
 import type { ExperiencesType } from "@/db/schema";
 import type { ContactInfoInput } from "../schemas";
 

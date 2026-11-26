@@ -27,8 +27,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import dynamic from "next/dynamic";
+
+// Markdown renderer is only needed once the bot replies
+const BotMarkdown = dynamic(() => import("./BotMarkdown"), {
+  loading: () => <span className="text-muted-foreground">…</span>,
+});
 
 type Message = {
   id: string;
@@ -230,43 +234,7 @@ const AIChatbot = () => {
               }`}
             >
               {msg.sender === "bot" ? (
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    p: ({ children }) => (
-                      <p className="mb-0 last:mb-0">{children}</p>
-                    ),
-                    strong: ({ children }) => (
-                      <strong className="font-bold text-blue-500 dark:text-blue-400">
-                        {children}
-                      </strong>
-                    ),
-                    ul: ({ children }) => (
-                      <ul className="my-2 ml-4 list-disc">{children}</ul>
-                    ),
-                    ol: ({ children }) => (
-                      <ol className="my-2 ml-4 list-decimal">{children}</ol>
-                    ),
-                    li: ({ children }) => <li className="mb-1">{children}</li>,
-                    a: ({ href, children }) => (
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        {children}
-                      </a>
-                    ),
-                    code: ({ children }) => (
-                      <code className="rounded bg-neutral-200 px-1 font-mono text-xs dark:bg-neutral-800">
-                        {children}
-                      </code>
-                    ),
-                  }}
-                >
-                  {msg.text}
-                </ReactMarkdown>
+                <BotMarkdown text={msg.text} />
               ) : (
                 msg.text
               )}

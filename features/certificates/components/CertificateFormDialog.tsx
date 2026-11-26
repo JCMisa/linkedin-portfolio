@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { applyActionResult } from "@/lib/form-errors";
-import { showConfetti } from "@/lib/utils";
+import { showConfetti } from "@/lib/confetti";
 import { addCertificate, updateCertificate } from "../actions";
 import { certificateInputSchema, type CertificateInput } from "../schemas";
 

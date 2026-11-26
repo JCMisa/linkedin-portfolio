@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +12,7 @@ import {
   PenBoxIcon,
   PlusIcon,
 } from "lucide-react";
-import { SingleExperienceEditorDialog } from "@/features/profile/components/dialogs/SingleExperienceEditorDialog";
+import { SingleExperienceEditorDialog } from "@/features/profile/components/dialogs/admin-dialogs";
 import { updateExperiences } from "@/features/profile/actions";
 import { toast } from "sonner";
 import { getActionError } from "@/lib/action-result";
@@ -168,11 +170,15 @@ const ExperienceItem = ({
           {/* Banner image */}
           {experience.bannerImg && (
             <div className="mt-3 pl-0 sm:pl-[60px]">
-              <img
-                src={experience.bannerImg}
-                alt={experience.title}
-                className="max-h-48 w-full rounded-lg border border-border object-cover"
-              />
+              <div className="relative h-48 w-full overflow-hidden rounded-lg border border-border">
+                <Image
+                  src={experience.bannerImg}
+                  alt={experience.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, 640px"
+                  className="object-cover"
+                />
+              </div>
             </div>
           )}
         </div>

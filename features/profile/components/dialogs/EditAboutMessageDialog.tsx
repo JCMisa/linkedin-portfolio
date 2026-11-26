@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { getActionError } from "@/lib/action-result";
-import { showConfetti } from "@/lib/utils";
+import { showConfetti } from "@/lib/confetti";
 import { toast } from "sonner";
 import { updateAboutMessage } from "../../actions";
 import { TextFieldEditorDialog } from "./TextFieldEditorDialog";

@@ -12,7 +12,7 @@ import {
   Loader2,
 } from "lucide-react";
 // Utility to merge Tailwind classes conditionally
-import { cn, formatTime } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 // Shadcn UI components
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -28,6 +28,10 @@ import InquiryReview, { InquiryData } from "./InquiryReview";
 import { updateInquiry } from "@/features/contact/actions";
 import { useRouter } from "next/navigation";
 import { getActionError } from "@/lib/action-result";
+
+/** Seconds -> "mm:ss" for the call timer. */
+const formatTime = (seconds: number) =>
+  `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 
 /** The subset of Vapi client messages this component handles. */
 type VapiMessage = {
@@ -101,21 +105,25 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
       status === "listening" ||
       status === "speaking"
     ) {
-      interval = setInterval(() => {
-        setSecondsActive((prev) => {
-          // Auto-kill the call if it exceeds the credit-saving limit
-          if (prev >= MAX_DURATION) {
-            endCall();
-            toast.warning("Call ended due to time limit.");
-            return prev;
-          }
-          return prev + 1;
-        });
-      }, 1000);
+      interval = setInterval(() => setSecondsActive((prev) => prev + 1), 1000);
     }
     // Cleanup function: clears the interval when the component updates or unmounts
     return () => clearInterval(interval);
   }, [status]);
+
+  // Auto-end the call at the credit-saving limit (side effects stay out of
+  // the state updater above)
+  const isLive =
+    status === "active" || status === "listening" || status === "speaking";
+  useEffect(() => {
+    if (isLive && secondsActive >= MAX_DURATION) {
+      vapi.stop();
+      toast.warning("Call ended due to time limit.");
+    }
+  }, [isLive, secondsActive]);
+
+  // Latest handleProcessCall for the Vapi listeners registered once below
+  const processCallRef = useRef<() => void>(() => {});
 
   // --- VAPI EVENT LISTENERS ---
   // This effect runs ONCE when the component mounts to set up the voice engine
@@ -132,7 +140,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
     // Fired when call is hung up or disconnected
     const onCallEnd = () => {
       console.log("Call ended event received");
-      handleProcessCall(); // Move to Gemini extraction phase
+      processCallRef.current(); // Move to Gemini extraction phase
     };
 
     // Visual state updates based on who is talking
@@ -279,13 +287,17 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
     vapi.setMuted(!newState); // Tells Vapi to stop listening to the user's mic
   };
 
+  useEffect(() => {
+    processCallRef.current = handleProcessCall;
+  });
+
   // Calculates the CSS scale (size) of the center orb
   // High volume = bigger orb. No volume = steady pulse.
   const getOrbScale = () => {
     if (status === "idle" || status === "review" || status === "processing")
       return 1;
     if (status === "listening") return 1 + volumeLevel * 1.5;
-    if (status === "speaking") return 1.1 + Math.sin(Date.now() / 300) * 0.05;
+    if (status === "speaking") return 1.1 + volumeLevel * 0.5;
     return 1;
   };
 

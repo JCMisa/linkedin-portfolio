@@ -3,46 +3,16 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
+import dynamic from "next/dynamic";
+import { paths } from "./search-paths";
 
-const paths = [
-  {
-    value: "",
-    label: "Home",
-  },
-  {
-    value: "projects",
-    label: "Projects",
-  },
-  {
-    value: "experiences",
-    label: "Experience",
-  },
-  {
-    value: "certificates",
-    label: "Certificates",
-  },
-  {
-    value: "profile",
-    label: "Profile",
-  },
-  {
-    value: "contact",
-    label: "Contact",
-  },
-];
+// cmdk is only needed once the popover opens
+const SearchCommandList = dynamic(() => import("./SearchCommandList"));
 
 const SearchDialog = ({
   forMobile = false,
@@ -85,33 +55,16 @@ const SearchDialog = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className={cn("w-[280px] p-0", contentClassName)}>
-        <Command>
-          <CommandInput placeholder="Search page..." className="h-9" />
-          <CommandList>
-            <CommandEmpty>No path found.</CommandEmpty>
-            <CommandGroup>
-              {paths.map((path) => (
-                <CommandItem
-                  key={path.value}
-                  value={path.value}
-                  onSelect={(currentValue) => {
-                    setQuery(currentValue === query ? "" : currentValue);
-                    setOpen(false);
-                    goToPath(currentValue);
-                  }}
-                >
-                  {path.label}
-                  <Check
-                    className={cn(
-                      "ml-auto",
-                      query === path.value ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
+        {open && (
+          <SearchCommandList
+            query={query}
+            onSelect={(currentValue) => {
+              setQuery(currentValue === query ? "" : currentValue);
+              setOpen(false);
+              goToPath(currentValue);
+            }}
+          />
+        )}
       </PopoverContent>
     </Popover>
   );

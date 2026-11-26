@@ -2,8 +2,7 @@
 
 import { memo } from "react";
 import Image from "next/image";
-import DeleteCertificate from "./DeleteCertificate";
-import CertificateFormDialog from "./CertificateFormDialog";
+import { CertificateFormDialog, DeleteCertificate } from "./admin-dialogs";
 import {
   Dialog,
   DialogContent,

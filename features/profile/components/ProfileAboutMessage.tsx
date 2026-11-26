@@ -2,7 +2,7 @@ import { LinkPreview } from "@/components/ui/link-preview";
 import { PersonalInfoType } from "@/db/schema";
 import { getPersonalInfo } from "@/features/profile/queries";
 import React from "react";
-import EditAboutMessageDialog from "@/features/profile/components/dialogs/EditAboutMessageDialog";
+import { EditAboutMessageDialog } from "@/features/profile/components/dialogs/admin-dialogs";
 
 const FALLBACK_ABOUT = `My journey in tech began with a passion for building things that matter. I've had the opportunity to develop responsive web and mobile applications for clients, achieving a 90% client retention rate by utilizing Next.js, React Native, and .NET frameworks. I enjoy architecting solutions from the ground up, whether it's optimizing database schemas with tools like MySQL and PostgreSQL or developing robust RESTful APIs with .NET Web API and FastAPI with Modal to ensure seamless service integration.
 

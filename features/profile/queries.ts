@@ -6,7 +6,8 @@ import { PersonalInfo } from "@/db/schema";
 /** Cache tag for the single PersonalInfo row; profile actions call updateTag(). */
 export const PERSONAL_INFO_TAG = "personalInfo";
 
-// TODO(v3 phase 6): migrate unstable_cache to "use cache" + cacheTag()
+// unstable_cache is deliberate: "use cache" needs cacheComponents, which
+// requires Suspense boundaries around every session read (not worth it yet).
 export const getPersonalInfo = unstable_cache(
   async () => {
     const [row] = await db.select().from(PersonalInfo).limit(1);

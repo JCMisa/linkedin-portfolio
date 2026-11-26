@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import DeleteProject from "./DeleteProject";
-import ProjectFormDialog from "./ProjectFormDialog";
+import { DeleteProject, ProjectFormDialog } from "./admin-dialogs";
 import { Button } from "@/components/ui/button";
 import { LinkPreview } from "@/components/ui/link-preview";
 import { EyeIcon, GlobeIcon, MoreHorizontalIcon } from "lucide-react";

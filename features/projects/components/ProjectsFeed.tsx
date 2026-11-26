@@ -7,7 +7,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { useProjectsFeed } from "../hooks";
 import type { ProjectCategory } from "../schemas";
 import type { OptimizedProject } from "../types";
-import ProjectFormDialog from "./ProjectFormDialog";
+import { ProjectFormDialog } from "./admin-dialogs";
 import ProjectSearchFilter from "./ProjectSearchFilter";
 import ProjectsFeedList from "./ProjectsFeedList";
 
