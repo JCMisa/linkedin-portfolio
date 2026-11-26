@@ -59,8 +59,8 @@ const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
     <Card className="relative flex h-[80vh] max-h-[800px] min-h-[500px] w-full animate-in flex-col overflow-y-auto rounded-3xl border border-border bg-card p-6 shadow-2xl duration-300 zoom-in-95 fade-in">
       {/* Header */}
       <div className="mb-6 flex shrink-0 flex-col items-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 ring-4 ring-emerald-500/5">
-          <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10 ring-4 ring-success/5">
+          <CheckCircle2 className="h-8 w-8 text-success" />
         </div>
         <h2 className="text-2xl font-bold text-foreground">Review Details</h2>
         <p className="max-w-xs text-center text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
 
       {/* Footer Actions */}
       <div className="mt-6 flex shrink-0 justify-end gap-3 border-t border-border/50 pt-4">
-        <Button variant="outline" onClick={onCancel} disabled={isSaving}>
+        <Button variant="secondary" onClick={onCancel} disabled={isSaving}>
           <X className="mr-2 h-4 w-4" /> Discard
         </Button>
         <Button

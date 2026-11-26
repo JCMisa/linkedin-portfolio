@@ -24,10 +24,10 @@ const ProjectGridCard = memo(
   }) => {
     return (
       <div className="inter-var h-full">
-        <div className="group/card relative flex h-full w-full flex-col rounded-xl border border-black/[0.1] bg-neutral-200 p-6 dark:border-white/[0.2] dark:bg-dark dark:hover:shadow-2xl dark:hover:shadow-primary-500/[0.1]">
+        <div className="group/card relative flex h-full w-full flex-col rounded-lg border bg-card p-6 transition-shadow hover:shadow-md">
           {/* Header */}
           <div className="flex items-center justify-between gap-4">
-            <div className="line-clamp-1 text-xl font-bold text-neutral-600 dark:text-white">
+            <div className="line-clamp-1 text-base font-semibold text-foreground">
               {project.title}
             </div>
             {currentUserRole === "admin" && (
@@ -39,7 +39,7 @@ const ProjectGridCard = memo(
           </div>
 
           {/* Description - Fixed height via line-clamp */}
-          <div className="mt-2 h-[40px] text-sm text-neutral-500 dark:text-neutral-300">
+          <div className="mt-2 h-[40px] text-sm text-muted-foreground">
             <p className="line-clamp-2 whitespace-pre-wrap">
               {project.description || "No description provided"}
             </p>
@@ -67,7 +67,9 @@ const ProjectGridCard = memo(
                 <LinkPreview
                   url={project.githubLink || "#"}
                   className={
-                    !project.githubLink ? "text-gray-400 line-through" : ""
+                    !project.githubLink
+                      ? "text-muted-foreground line-through"
+                      : ""
                   }
                 >
                   <FaGithub className="size-3" />
@@ -77,12 +79,14 @@ const ProjectGridCard = memo(
 
               <Button
                 asChild
-                className="min-w-[100px] flex-1 cursor-pointer rounded-md bg-primary px-4 py-2 text-xs font-bold text-white"
+                className="min-w-[100px] flex-1 cursor-pointer rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover"
               >
                 <LinkPreview
                   url={project.liveLink || "#"}
                   className={
-                    !project.liveLink ? "text-gray-400 line-through" : ""
+                    !project.liveLink
+                      ? "text-muted-foreground line-through"
+                      : ""
                   }
                 >
                   <GlobeIcon className="size-3" />
@@ -108,7 +112,7 @@ const ProjectGridCard = memo(
 
             <div className="flex items-center justify-between gap-2">
               <Popover>
-                <PopoverTrigger className="flex cursor-pointer items-center gap-1 text-blue-400 transition-opacity hover:opacity-[0.8]">
+                <PopoverTrigger className="flex cursor-pointer items-center gap-1 text-primary transition-opacity hover:opacity-[0.8]">
                   <p className="text-sm underline">Tech Stack</p>
                 </PopoverTrigger>
                 <PopoverContent align="start">

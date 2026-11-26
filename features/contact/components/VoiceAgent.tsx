@@ -330,7 +330,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
                 status === "active" ||
                   status === "listening" ||
                   status === "speaking"
-                  ? "animate-pulse bg-emerald-500"
+                  ? "animate-pulse bg-success"
                   : "bg-destructive",
               )}
             />
@@ -351,7 +351,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
               "hidden items-center justify-center rounded-full border border-border/50 px-3 py-1.5 font-mono text-xs font-medium backdrop-blur-md transition-colors md:flex",
               // Turn timer red when user has less than 30 seconds left
               status !== "idle" && MAX_DURATION - secondsActive < 30
-                ? "animate-pulse border-red-500/30 bg-red-500/20 text-red-500"
+                ? "animate-pulse border-destructive/30 bg-destructive/20 text-destructive"
                 : "bg-background/80 text-muted-foreground dark:bg-black/50",
             )}
           >
@@ -375,7 +375,8 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "radial-gradient(#4b5563 1px, transparent 1px)",
+            backgroundImage:
+              "radial-gradient(color-mix(in oklch, var(--muted-foreground) 50%, transparent) 1px, transparent 1px)",
             backgroundSize: "30px 30px",
           }}
         />
@@ -387,7 +388,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
             <h3 className="text-xl font-bold text-white">
               Analyzing Conversation
             </h3>
-            <p className="mt-2 max-w-sm text-zinc-400">
+            <p className="mt-2 max-w-sm text-muted-foreground">
               JCM is organizing your details...
             </p>
           </div>
@@ -420,7 +421,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
                   "absolute -inset-8 rounded-full blur-3xl transition-all duration-200 md:-inset-12",
                   status === "speaking"
                     ? "bg-primary/40 opacity-80"
-                    : "bg-emerald-500/20 opacity-40",
+                    : "bg-success/20 opacity-40",
                 )}
                 style={{ transform: `scale(${1 + volumeLevel})` }}
               />
@@ -430,7 +431,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
                   "relative flex h-32 w-32 items-center justify-center rounded-full border-2 transition-all duration-300 md:h-48 md:w-48",
                   status === "speaking"
                     ? "border-primary/50 bg-primary/10"
-                    : "border-emerald-500/30 bg-emerald-500/5",
+                    : "border-success/30 bg-success/5",
                 )}
                 style={{ transform: `scale(${getOrbScale()})` }}
               >
@@ -439,7 +440,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
             </div>
             {/* The real-time transcript subtitles */}
             <div className="mx-auto min-h-[100px] w-full max-w-xl space-y-3 text-center">
-              <p className="text-xs font-bold tracking-widest text-zinc-500 uppercase md:text-sm">
+              <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase md:text-sm">
                 {status === "listening"
                   ? "Listening..."
                   : status === "speaking"
@@ -450,7 +451,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
                 className={cn(
                   "text-lg leading-relaxed font-medium transition-all duration-300 md:text-2xl",
                   status === "listening"
-                    ? "text-zinc-400 italic"
+                    ? "text-muted-foreground italic"
                     : "text-zinc-100",
                 )}
               >

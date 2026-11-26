@@ -27,7 +27,7 @@ const SkillsContent = ({ skills, userRole }: SkillsContentProps) => {
     <div
       id="skills"
       className={cn(
-        "relative flex w-full flex-col justify-between overflow-hidden rounded-lg bg-neutral-100 p-[10px] px-5 transition-all duration-300 ease-in-out dark:bg-dark",
+        "relative flex w-full flex-col justify-between overflow-hidden rounded-lg bg-card p-[10px] px-5 transition-all duration-300 ease-in-out",
         isExpanded ? "max-h-[2000px]" : "max-h-[277px]",
       )}
     >
@@ -42,14 +42,10 @@ const SkillsContent = ({ skills, userRole }: SkillsContentProps) => {
             key={skill.id}
             className={cn(
               "flex w-full flex-col py-3",
-              index === skills.length - 1
-                ? ""
-                : "border-b border-neutral-200 dark:border-neutral-800",
+              index === skills.length - 1 ? "" : "border-b border-border",
             )}
           >
-            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
-              {skill.title}
-            </p>
+            <p className="text-sm font-bold text-foreground">{skill.title}</p>
             <span className="mt-1 text-xs text-muted-foreground italic">
               {skill.items.join(", ")}
             </span>
@@ -59,7 +55,7 @@ const SkillsContent = ({ skills, userRole }: SkillsContentProps) => {
 
       <div
         className={cn(
-          "z-10 flex h-[44px] w-full cursor-pointer items-center justify-center gap-1 border-t border-neutral-200 bg-neutral-100 dark:border-neutral-800 dark:bg-dark",
+          "z-10 flex h-[44px] w-full cursor-pointer items-center justify-center gap-1 border-t border-border bg-card",
           !isExpanded ? "absolute bottom-0 left-0" : "mt-2",
         )}
         onClick={() => setIsExpanded(!isExpanded)}

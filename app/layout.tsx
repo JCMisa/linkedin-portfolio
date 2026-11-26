@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
@@ -9,11 +8,6 @@ import AIChatbot from "@/features/chatbot/components/AIChatbot";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { shadcn } from "@clerk/ui/themes";
-
-const sourceSans3 = Source_Sans_3({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: {
@@ -32,11 +26,10 @@ export default function RootLayout({
     <ClerkProvider
       appearance={{
         theme: shadcn,
-        variables: { colorPrimary: "#0a66c2" },
       }}
     >
       <html lang="en" suppressHydrationWarning>
-        <body className={`${sourceSans3.variable} antialiased`}>
+        <body>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

@@ -38,10 +38,10 @@ export function DatePicker({
         <PopoverTrigger asChild>
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             {...buttonProps}
             className={cn(
-              "flex-1 justify-start text-left font-normal",
+              "flex-1 justify-start rounded-md text-left font-normal",
               !value && "text-muted-foreground",
             )}
           >

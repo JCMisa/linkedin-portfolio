@@ -102,7 +102,7 @@ const CreateComment = ({
             onChange={(e) => setContent(e.target.value)}
             maxLength={COMMENT_MAX}
             aria-label="Comment"
-            className="min-h-[60px] w-full resize-none rounded-lg border border-gray-600 p-2 text-xs focus:ring-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-400"
+            className="min-h-[60px] w-full resize-none rounded-lg border border-input bg-transparent p-2 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           />
           <div className="mt-2 flex items-center justify-end gap-3">
             {content.length > COMMENT_MAX * 0.8 && (
@@ -145,7 +145,7 @@ const CreateComment = ({
                   <AlertDialogTrigger asChild>
                     <div
                       className={cn(
-                        "group flex cursor-pointer items-start gap-2 rounded-lg p-2 transition-all duration-200 ease-in-out hover:bg-red-500/5",
+                        "group flex cursor-pointer items-start gap-2 rounded-lg p-2 transition-all duration-200 ease-in-out hover:bg-destructive/5",
                       )}
                     >
                       <Image
@@ -177,7 +177,7 @@ const CreateComment = ({
                                   : "Delete your comment"
                               }
                             >
-                              <TrashIcon className="size-3 text-red-500 hover:text-red-600" />
+                              <TrashIcon className="size-3 text-destructive hover:text-destructive" />
                             </button>
                           )} */}
                             </div>

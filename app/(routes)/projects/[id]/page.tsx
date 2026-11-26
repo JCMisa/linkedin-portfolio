@@ -124,7 +124,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                   <Link
                     href={project.liveLink}
                     target="_blank"
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-2.5 font-semibold text-white transition-colors hover:bg-primary-600"
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-2.5 font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
                   >
                     <Globe className="size-4" />
                     Live Demo
@@ -186,7 +186,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                         className="size-9 rounded-full border border-border object-cover transition-colors group-hover:border-primary"
                       />
                       {/* Small blue dot/badge for "Connection" feel */}
-                      {/* <div className="absolute -bottom-0.5 -right-0.5 size-2.5 bg-green-500 border-2 border-card rounded-full" /> */}
+                      {/* <div className="absolute -bottom-0.5 -right-0.5 size-2.5 bg-success border-2 border-card rounded-full" /> */}
                     </div>
 
                     <div className="flex flex-col overflow-hidden">

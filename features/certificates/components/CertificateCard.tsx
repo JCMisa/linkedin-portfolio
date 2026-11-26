@@ -22,12 +22,12 @@ const CertificateCard = memo(
     currentUser: UserType | null;
   }) => {
     return (
-      <div className="flex h-full w-full flex-col space-y-4 rounded-lg border border-transparent bg-neutral-200 p-4 transition-all hover:border-border dark:bg-dark/80">
+      <div className="flex h-full w-full flex-col space-y-4 rounded-lg border border-transparent bg-muted p-4 transition-all hover:border-border">
         {/* header view and actions */}
         <div className="flex w-full items-center justify-between gap-4">
           <Dialog>
             <DialogTrigger asChild>
-              <div className="flex cursor-pointer items-center justify-center gap-1 rounded-full border border-neutral-400 px-4 py-1 text-[10px] font-bold tracking-tight text-muted-foreground uppercase transition-all hover:border-primary hover:bg-primary hover:text-white dark:border-neutral-600">
+              <div className="flex cursor-pointer items-center justify-center gap-1 rounded-full border border-input px-4 py-1 text-[10px] font-bold tracking-tight text-muted-foreground uppercase transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground">
                 <EyeIcon className="size-3" />
                 View
               </div>

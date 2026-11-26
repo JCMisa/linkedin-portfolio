@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const EducationPreview = () => {
   return (
-    <div className="no-scrollbar flex h-[250px] w-full flex-col items-start gap-4 overflow-hidden rounded-lg bg-neutral-100 dark:bg-dark">
+    <div className="no-scrollbar flex h-[250px] w-full flex-col items-start gap-4 overflow-hidden rounded-lg bg-card">
       {/* cover photo */}
       <div className="h-[30%] w-full">
         <Image
@@ -22,14 +22,14 @@ const EducationPreview = () => {
             alt="cover-img"
             width={1000}
             height={1000}
-            className="h-[72px] w-[72px] rounded-full border-2 border-white object-fill"
+            className="h-[72px] w-[72px] rounded-full border-2 border-card object-fill"
           />
           <Image
             src={"/lspu-logo.png"}
             alt="cover-img"
             width={1000}
             height={1000}
-            className="h-[72px] w-[72px] rounded-full border-2 border-white object-fill"
+            className="h-[72px] w-[72px] rounded-full border-2 border-card object-fill"
           />
         </div>
         <div className="mt-3 flex flex-col gap-[2px] px-2">

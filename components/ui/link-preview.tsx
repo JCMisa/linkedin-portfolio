@@ -70,7 +70,7 @@ export const LinkPreview = ({
       <HoverCardPrimitive.Trigger
         onMouseEnter={prefetch}
         onMouseMove={handleMouseMove}
-        className={cn("text-black dark:text-white", className)}
+        className={cn("text-foreground", className)}
         href={url}
         target="_blank"
         rel="noopener noreferrer"

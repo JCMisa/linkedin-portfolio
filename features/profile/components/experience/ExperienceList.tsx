@@ -325,10 +325,10 @@ const ExperienceContentWrapper = ({
           <Tooltip>
             <TooltipTrigger asChild>
               <div
-                className="h-8 w-8 flex-none rounded-full p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                className="h-8 w-8 flex-none rounded-full p-2 hover:bg-accent"
                 onClick={() => setIsDialogOpen(true)}
               >
-                <PenBoxIcon className="size-4 text-neutral-500" />
+                <PenBoxIcon className="size-4 text-muted-foreground" />
               </div>
             </TooltipTrigger>
             <TooltipContent>

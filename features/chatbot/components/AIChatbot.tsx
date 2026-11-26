@@ -155,7 +155,7 @@ const AIChatbot = () => {
   const BotAvatar = () => (
     <Avatar className="h-6 w-6">
       <AvatarImage src="/logo.png" />
-      <AvatarFallback className="bg-blue-500 text-[10px] text-white">
+      <AvatarFallback className="bg-primary text-[10px] text-primary-foreground">
         B
       </AvatarFallback>
     </Avatar>
@@ -177,10 +177,7 @@ const AIChatbot = () => {
           }}
         />
       </TooltipTrigger>
-      <TooltipContent
-        side="left"
-        className="bg-neutral-100 dark:bg-neutral-900"
-      >
+      <TooltipContent side="left" className="bg-card">
         <p>Sign in to unlock JCM AI</p>
       </TooltipContent>
     </Tooltip>
@@ -229,7 +226,7 @@ const AIChatbot = () => {
             <div
               className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
                 msg.sender === "user"
-                  ? "bg-blue-400 text-white"
+                  ? "bg-primary text-primary-foreground"
                   : "bg-muted text-foreground"
               }`}
             >
@@ -281,9 +278,9 @@ const AIChatbot = () => {
           type="submit"
           size="icon"
           disabled={loading || rateLimit.blocked}
-          className="shrink-0 rounded-full bg-blue-400 hover:bg-primary"
+          className="shrink-0 rounded-full bg-primary hover:bg-primary"
         >
-          <SendIcon className="h-4 w-4 text-white" />
+          <SendIcon className="h-4 w-4 text-primary-foreground" />
         </Button>
       </form>
     </>

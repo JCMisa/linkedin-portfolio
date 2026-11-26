@@ -38,11 +38,11 @@ const SearchDialog = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="secondary"
           role="combobox"
           aria-expanded={open}
           className={cn(
-            `h-[34px] w-[280px] items-center justify-start rounded-full border border-neutral-600 pr-[16px] pl-[40px]`,
+            `h-[34px] w-[280px] items-center justify-start rounded-full border border-input pr-[16px] pl-[40px]`,
             forMobile ? "flex sm:hidden" : "hidden sm:flex",
             query ? "text-foreground" : "text-muted-foreground",
             additionalClassName,

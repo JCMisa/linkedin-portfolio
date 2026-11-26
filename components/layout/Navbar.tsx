@@ -66,7 +66,7 @@ const Navbar = () => {
   const router = useRouter();
 
   return (
-    <div className="fixed top-0 z-50 flex h-[53px] w-full items-center border border-b bg-white px-4 lg:pr-[24px] lg:pl-[80px] dark:bg-dark">
+    <div className="fixed top-0 z-50 flex h-[53px] w-full items-center border-b bg-card px-4 lg:pr-[24px] lg:pl-[80px]">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           <Image
@@ -91,7 +91,7 @@ const Navbar = () => {
                 className={
                   "flex h-[52px] w-[80px] flex-col items-center justify-center border-b " +
                   (isActive
-                    ? "border-b-[2px] border-b-black text-black dark:border-b-white dark:text-white"
+                    ? "border-b-2 border-b-foreground text-foreground"
                     : "border-b-transparent text-muted-foreground")
                 }
               >
@@ -118,10 +118,7 @@ const Navbar = () => {
           <SheetTrigger>
             <MenuIcon className="mr-2 block cursor-pointer md:hidden" />
           </SheetTrigger>
-          <SheetContent
-            side="left"
-            className="w-[300px] bg-neutral-100 sm:w-[400px] dark:bg-dark"
-          >
+          <SheetContent side="left" className="w-[300px] bg-card sm:w-[400px]">
             <SheetHeader className="space-y-4">
               <SheetTitle className="text-left text-lg font-bold">
                 Explore My Portfolio
@@ -133,7 +130,7 @@ const Navbar = () => {
                 <SearchDialog
                   forMobile={true}
                   additionalClassName="!w-full"
-                  contentClassName="!w-full border border-neutral-900 dark:border-neutral-100"
+                  contentClassName="!w-full border border-border"
                 />
 
                 <Separator />

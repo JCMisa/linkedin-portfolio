@@ -83,7 +83,7 @@ const ProjectPostCard = ({
   };
 
   return (
-    <div className="flex w-full flex-col items-start gap-3 overflow-hidden rounded-lg border border-transparent bg-neutral-100 px-3 py-2 transition-all hover:border-border dark:bg-dark">
+    <div className="flex w-full flex-col items-start gap-3 overflow-hidden rounded-lg border border-transparent bg-card px-3 py-2 transition-all hover:border-border">
       {/* 2. Header: Latest Commenter (Now instant from Props) */}
       <div className="flex w-full items-center justify-between gap-2">
         <div className="flex items-center gap-2">
@@ -170,7 +170,7 @@ const ProjectPostCard = ({
           </PopoverTrigger>
           <PopoverContent
             align="end"
-            className="flex w-auto flex-col items-center gap-2 border-none bg-neutral-100 shadow-xl dark:bg-neutral-900"
+            className="flex w-auto flex-col items-center gap-2 border-none bg-card shadow-xl"
           >
             <Link
               href={project.githubLink || ""}
@@ -233,9 +233,9 @@ const ProjectPostCard = ({
       <div className="flex w-full items-center justify-between gap-2 px-2">
         <div className="flex items-center gap-1">
           <div
-            className={`flex h-4 w-4 items-center justify-center rounded-full p-[3px] ${isLiked ? "bg-primary" : "bg-blue-500"}`}
+            className={`flex h-4 w-4 items-center justify-center rounded-full bg-primary p-[3px]`}
           >
-            <ThumbsUpIcon className="size-3 text-white" />
+            <ThumbsUpIcon className="size-3 text-primary-foreground" />
           </div>
           <p className="text-xs text-muted-foreground">{likesCount}</p>
         </div>

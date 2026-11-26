@@ -31,7 +31,7 @@ export default function ProjectSearchFilter({
   personalInfo,
 }: Props) {
   return (
-    <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-neutral-100 px-5 py-3 dark:bg-dark">
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-card px-5 py-3">
       {/* Search */}
       <div className="flex w-full items-center gap-2">
         {personalInfo?.profileImg ? (
@@ -45,8 +45,8 @@ export default function ProjectSearchFilter({
             draggable={false}
           />
         ) : (
-          <div className="flex h-[44px] w-[48px] items-center justify-center rounded-full bg-neutral-100 dark:bg-dark">
-            <UserIcon className="size-4 text-neutral-500 dark:text-neutral-400" />
+          <div className="flex h-[44px] w-[48px] items-center justify-center rounded-full bg-card">
+            <UserIcon className="size-4 text-muted-foreground" />
           </div>
         )}
 
@@ -54,7 +54,7 @@ export default function ProjectSearchFilter({
           placeholder="Search a project"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-[48px] rounded-full border-black bg-transparent dark:border-white"
+          className="h-[48px] rounded-full border-input bg-transparent"
         />
       </div>
 
@@ -72,15 +72,15 @@ export default function ProjectSearchFilter({
               <Icon
                 className={`size-4 ${
                   c.id === 1
-                    ? "text-green-400"
+                    ? "text-success"
                     : c.id === 2
-                      ? "text-blue-400"
-                      : "text-red-400"
+                      ? "text-primary"
+                      : "text-destructive"
                 }`}
               />
               <p
                 className={`hidden text-xs font-bold sm:block ${
-                  active ? "text-white" : "text-muted-foreground"
+                  active ? "text-foreground" : "text-muted-foreground"
                 }`}
               >
                 {c.title}

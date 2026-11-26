@@ -52,13 +52,13 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
   });
 
   return (
-    <div className="space-y-6 rounded-xl border border-neutral-200 bg-neutral-100 p-6 shadow-sm sm:p-8 dark:border-neutral-800 dark:bg-dark">
+    <div className="space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
       <div className="space-y-1">
-        <h2 className="flex items-center gap-2 text-xl font-bold text-neutral-900 dark:text-neutral-100">
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
           <MessageSquareIcon className="size-5 text-primary" />
           Send Message
         </h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="text-sm text-muted-foreground">
           I typically respond within 24 hours. Let&apos;s build something
           amazing!
         </p>
@@ -70,7 +70,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             htmlFor="name"
             className="flex items-center gap-2 text-sm font-semibold"
           >
-            <UserIcon className="size-3.5 text-neutral-500" />
+            <UserIcon className="size-3.5 text-muted-foreground" />
             Full Name
           </Label>
           <Input
@@ -79,7 +79,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             placeholder="John Doe"
             {...register("name")}
             aria-invalid={!!errors.name}
-            className="border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
+            className="border-border bg-muted focus-visible:ring-primary"
           />
           {errors.name && (
             <p className="text-xs text-destructive">{errors.name.message}</p>
@@ -91,7 +91,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             htmlFor="email"
             className="flex items-center gap-2 text-sm font-semibold"
           >
-            <MailIcon className="size-3.5 text-neutral-500" />
+            <MailIcon className="size-3.5 text-muted-foreground" />
             Email Address
           </Label>
           <Input
@@ -100,7 +100,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             placeholder="your@email.com"
             {...register("email")}
             aria-invalid={!!errors.email}
-            className="border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
+            className="border-border bg-muted focus-visible:ring-primary"
           />
           {errors.email && (
             <p className="text-xs text-destructive">{errors.email.message}</p>
@@ -112,7 +112,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             htmlFor="message"
             className="flex items-center gap-2 text-sm font-semibold"
           >
-            <MessageSquareIcon className="size-3.5 text-neutral-500" />
+            <MessageSquareIcon className="size-3.5 text-muted-foreground" />
             Your Message
           </Label>
           <Textarea
@@ -120,7 +120,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             placeholder="What project or collaboration do you have in mind?"
             {...register("message")}
             aria-invalid={!!errors.message}
-            className="min-h-[150px] resize-none border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
+            className="min-h-[150px] resize-none border-border bg-muted focus-visible:ring-primary"
           />
           {errors.message && (
             <p className="text-xs text-destructive">{errors.message.message}</p>
@@ -131,7 +131,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
       <Button
         onClick={handleSend}
         disabled={isSending}
-        className="h-11 w-full cursor-pointer bg-primary font-bold text-white transition-all hover:bg-primary-600 active:scale-[0.98]"
+        className="h-11 w-full cursor-pointer bg-primary font-bold text-primary-foreground transition-all hover:bg-primary-hover active:scale-[0.98]"
       >
         {isSending ? (
           "Preparing..."
@@ -145,7 +145,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
 
       <div className="flex items-start gap-2 rounded-lg border border-primary/10 bg-primary/5 p-3 dark:bg-primary/10">
         <InfoIcon className="mt-0.5 size-4 shrink-0 text-primary" />
-        <p className="text-[11px] leading-relaxed text-neutral-600 dark:text-neutral-400">
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
           Clicking send will open your default email client with a pre-filled
           draft. You can then review and send it directly to{" "}
           <span className="font-bold text-primary">{personalInfo.email}</span>.

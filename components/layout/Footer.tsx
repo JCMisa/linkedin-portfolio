@@ -5,37 +5,37 @@ const Footer = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-2">
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           About Me
         </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           Accessibility
         </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           Need Help?
         </span>
       </div>
 
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           Privacy & Terms
         </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           Cookie Choices
         </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           Collaborate
         </span>
       </div>
 
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           Download Resume
         </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           Get My Details
         </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-blue-400 hover:underline">
+        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
           More
         </span>
       </div>

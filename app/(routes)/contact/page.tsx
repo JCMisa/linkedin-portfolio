@@ -108,12 +108,12 @@ const ContactPage = async () => {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-200/50 pt-16 dark:bg-black/90">
+    <main className="min-h-screen bg-muted pt-16">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left Side: Map & Contact Info */}
           <div className="space-y-6 lg:w-2/3">
-            <div className="relative h-[400px] overflow-hidden rounded-xl border border-neutral-200 bg-neutral-100 shadow-sm lg:h-[500px] dark:border-neutral-800 dark:bg-dark">
+            <div className="relative h-[400px] overflow-hidden rounded-xl border border-border bg-card shadow-sm lg:h-[500px]">
               <iframe
                 title="map"
                 width="100%"
@@ -122,18 +122,16 @@ const ContactPage = async () => {
                 style={{ filter: "grayscale(0.5) contrast(1.1) opacity(0.8)" }}
                 className="border-0"
               />
-              <div className="absolute right-4 bottom-4 left-4 flex flex-col justify-between gap-4 rounded-lg border border-neutral-200 bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:flex-row sm:items-center dark:border-neutral-800 dark:bg-dark/90">
+              <div className="absolute right-4 bottom-4 left-4 flex flex-col justify-between gap-4 rounded-lg border border-border bg-card/90 p-4 shadow-lg backdrop-blur-sm sm:flex-row sm:items-center">
                 <div className="space-y-1">
-                  <h3 className="font-bold text-neutral-900 dark:text-neutral-100">
-                    Location
-                  </h3>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  <h3 className="font-bold text-foreground">Location</h3>
+                  <p className="text-sm text-muted-foreground">
                     {personalInfo.city}, {personalInfo.province},{" "}
                     {personalInfo.country}
                   </p>
                 </div>
                 <div className="space-y-1 text-sm">
-                  <p className="font-semibold text-neutral-500">
+                  <p className="font-semibold text-muted-foreground">
                     Available remotely worldwide
                   </p>
                   <p className="font-medium text-primary">
@@ -144,25 +142,25 @@ const ContactPage = async () => {
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="rounded-xl border border-neutral-200 bg-neutral-100 p-6 shadow-sm dark:border-neutral-800 dark:bg-dark">
-                <h3 className="mb-4 text-sm font-bold tracking-wider text-neutral-500 uppercase">
+              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                <h3 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
                   Direct Contact
                 </h3>
                 <div className="space-y-3">
                   <div className="flex flex-col">
-                    <span className="text-xs text-neutral-500">Email</span>
+                    <span className="text-xs text-muted-foreground">Email</span>
                     <a
                       href={`mailto:${personalInfo.email}`}
-                      className="font-medium text-neutral-900 transition-colors hover:text-primary dark:text-neutral-100"
+                      className="font-medium text-foreground transition-colors hover:text-primary"
                     >
                       {personalInfo.email}
                     </a>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs text-neutral-500">Phone</span>
+                    <span className="text-xs text-muted-foreground">Phone</span>
                     <a
                       href={`tel:${personalInfo.contactNumber}`}
-                      className="font-medium text-neutral-900 transition-colors hover:text-primary dark:text-neutral-100"
+                      className="font-medium text-foreground transition-colors hover:text-primary"
                     >
                       {personalInfo.contactNumber}
                     </a>
@@ -170,8 +168,8 @@ const ContactPage = async () => {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-neutral-200 bg-neutral-100 p-6 shadow-sm dark:border-neutral-800 dark:bg-dark">
-                <h3 className="mb-4 text-sm font-bold tracking-wider text-neutral-500 uppercase">
+              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                <h3 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
                   Follow Me
                 </h3>
                 <div className="flex flex-wrap gap-4">

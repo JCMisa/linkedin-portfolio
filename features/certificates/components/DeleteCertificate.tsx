@@ -50,7 +50,7 @@ const DeleteCertificate = ({
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <button className="flex items-center justify-center">
-          <TrashIcon className="size-3 cursor-pointer transition-colors hover:text-red-500" />
+          <TrashIcon className="size-3 cursor-pointer transition-colors hover:text-destructive" />
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -65,7 +65,7 @@ const DeleteCertificate = ({
           <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            className="bg-red-500 hover:bg-red-600"
+            className="bg-destructive hover:bg-destructive"
             disabled={isLoading}
           >
             {isLoading ? (

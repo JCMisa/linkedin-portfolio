@@ -146,7 +146,7 @@ const ProfileBasicInfo = ({
   }
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center rounded-lg bg-neutral-100 lg:h-[400px] dark:bg-dark">
+    <div className="relative flex h-full w-full flex-col items-center rounded-lg bg-card lg:h-[400px]">
       {/* cover photo */}
       <div className="relative h-[35%] w-full">
         <Image
@@ -162,7 +162,7 @@ const ProfileBasicInfo = ({
             <TooltipTrigger asChild>
               <div
                 onClick={() => setIsCoverDialogOpen(true)}
-                className="absolute top-3 right-3 z-20 flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg transition-all duration-200 ease-in-out hover:scale-105 dark:bg-neutral-100 dark:text-black"
+                className="absolute top-3 right-3 z-20 flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-all duration-200 ease-in-out hover:scale-105"
               >
                 <PenBoxIcon className="size-4" />
               </div>
@@ -184,7 +184,7 @@ const ProfileBasicInfo = ({
           alt="avatar"
           width={1000}
           height={1000}
-          className="h-[100px] w-[100px] rounded-full border-3 border-white object-fill sm:h-[152px] sm:w-[152px] dark:border-dark"
+          className="h-[100px] w-[100px] rounded-full border-4 border-card object-fill sm:h-[152px] sm:w-[152px]"
         />
         {isOwner && (
           <Tooltip>
@@ -194,7 +194,7 @@ const ProfileBasicInfo = ({
                   e.stopPropagation();
                   setIsProfileDialogOpen(true);
                 }}
-                className="absolute right-0 bottom-0 z-20 flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg transition-all duration-200 ease-in-out hover:scale-105 dark:bg-neutral-100 dark:text-black"
+                className="absolute right-0 bottom-0 z-20 flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-all duration-200 ease-in-out hover:scale-105"
               >
                 <PenBoxIcon className="size-4" />
               </div>
@@ -231,8 +231,8 @@ const ProfileBasicInfo = ({
               <p className="text-2xl font-bold">{personalInfo?.name}</p>
             )}
 
-            <div className="flex w-fit items-center gap-1 rounded-full border border-dashed border-blue-400 px-3 text-blue-400">
-              <ShieldCheckIcon className="size-4 text-blue-400" />
+            <div className="flex w-fit items-center gap-1 rounded-full border border-dashed border-primary px-3 text-primary">
+              <ShieldCheckIcon className="size-4 text-primary" />
               <p className="text-sm font-bold">Profile Owner</p>
             </div>
 
@@ -270,7 +270,7 @@ const ProfileBasicInfo = ({
               <div className="flex items-center gap-2">
                 <Link
                   href={"/contact"}
-                  className="cursor-pointer text-sm text-blue-300 underline"
+                  className="cursor-pointer text-sm font-semibold text-primary hover:underline"
                 >
                   Contact Info
                 </Link>
@@ -282,7 +282,7 @@ const ProfileBasicInfo = ({
                           e.stopPropagation();
                           setIsContactInfoDialogOpen(true);
                         }}
-                        className="flex h-5 w-5 flex-none cursor-pointer items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg transition-all duration-200 ease-in-out hover:scale-105 dark:bg-neutral-100 dark:text-black"
+                        className="flex h-5 w-5 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-all duration-200 ease-in-out hover:scale-105"
                       >
                         <PenBoxIcon className="size-3" />
                       </div>
@@ -296,7 +296,7 @@ const ProfileBasicInfo = ({
             </div>
 
             {/* number of connections */}
-            <p className="text-sm font-bold text-blue-400">500+ connections</p>
+            <p className="text-sm font-bold text-primary">500+ connections</p>
           </div>
 
           {/* experience and education */}
@@ -316,7 +316,7 @@ const ProfileBasicInfo = ({
                     className="h-[20px] w-[20px] rounded-md object-fill"
                   />
                 ) : (
-                  <div className="h-[20px] w-[20px] rounded-md bg-neutral-300 dark:bg-neutral-700" />
+                  <div className="h-[20px] w-[20px] rounded-md bg-muted" />
                 )}
                 {isOwner ? (
                   <div
@@ -386,7 +386,7 @@ const ProfileBasicInfo = ({
               }
               download={"John_Carlo_Misa_Resume_IT.pdf"}
               target="_blank"
-              className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-blue-400"
+              className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-primary"
             >
               IT Resume
             </a>
@@ -397,7 +397,7 @@ const ProfileBasicInfo = ({
               }
               download={"John_Carlo_Misa_Resume_VA.pdf"}
               target="_blank"
-              className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-blue-400"
+              className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-primary"
             >
               VA Resume
             </a>
@@ -406,7 +406,7 @@ const ProfileBasicInfo = ({
                 <Separator />
                 <div
                   onClick={() => setIsResumeDialogOpen(true)}
-                  className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-blue-400"
+                  className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-primary"
                 >
                   Edit Resume
                 </div>
@@ -419,7 +419,7 @@ const ProfileBasicInfo = ({
       {/* profile image full screen view */}
       {isProfileOpen && (
         <div
-          className="bg-opacity-75 fixed inset-0 z-50 flex items-center justify-center bg-black"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85"
           onClick={() => setIsProfileOpen(false)}
         >
           <div className="relative">

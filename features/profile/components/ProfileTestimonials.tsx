@@ -149,7 +149,7 @@ const ProfileTestimonials = async ({ userRole }: { userRole: string }) => {
       : fallbackTestimonials;
 
   return (
-    <div className="flex w-full flex-col overflow-hidden rounded-lg bg-neutral-100 p-[10px] px-5 dark:bg-dark">
+    <div className="flex w-full flex-col overflow-hidden rounded-lg bg-card p-[10px] px-5">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-2xl font-medium">Top Voices</h2>
         {isOwner && (

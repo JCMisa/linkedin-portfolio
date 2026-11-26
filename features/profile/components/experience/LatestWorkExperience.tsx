@@ -31,16 +31,16 @@ const LatestWorkExperience = ({
   if (!latestExp) return null;
 
   return (
-    <div className="flex w-full flex-col items-start gap-4 rounded-lg border border-transparent bg-neutral-100 p-4 shadow-sm transition-all duration-300 hover:border-neutral-200 dark:bg-dark dark:hover:border-neutral-800">
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg border border-transparent bg-card p-4 shadow-sm transition-all duration-300 hover:border-border dark:hover:border-border">
       <div className="flex w-full items-center justify-between">
-        <h2 className="text-sm font-bold tracking-tight text-neutral-800 dark:text-neutral-200">
+        <h2 className="text-sm font-bold tracking-tight text-foreground">
           Latest Work Experience
         </h2>
         <Tooltip>
           <TooltipTrigger asChild>
             <Link href={"/experiences"}>
-              <div className="rounded-full p-1 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800">
-                <ChevronRightIcon className="size-5 text-neutral-500" />
+              <div className="rounded-full p-1 transition-colors hover:bg-accent">
+                <ChevronRightIcon className="size-5 text-muted-foreground" />
               </div>
             </Link>
           </TooltipTrigger>
@@ -57,20 +57,20 @@ const LatestWorkExperience = ({
             alt={latestExp.title}
             width={1000}
             height={1000}
-            className="h-14 w-14 rounded-xl border border-neutral-200 object-cover shadow-sm dark:border-neutral-800"
+            className="h-14 w-14 rounded-xl border border-border object-cover shadow-sm"
           />
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <p className="mb-1 truncate text-sm leading-tight font-bold text-neutral-900 dark:text-neutral-100">
+          <p className="mb-1 truncate text-sm leading-tight font-bold text-foreground">
             {latestExp.title}
           </p>
 
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400">
+            <span className="text-[10px] font-medium text-muted-foreground">
               {formatDate(latestExp.dateFrom)} — {formatDate(latestExp.dateTo)}
             </span>
-            <p className="line-clamp-2 text-[11px] leading-normal text-neutral-600 dark:text-neutral-400">
+            <p className="line-clamp-2 text-[11px] leading-normal text-muted-foreground">
               {latestExp.description}
             </p>
           </div>

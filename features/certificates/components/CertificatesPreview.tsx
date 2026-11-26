@@ -14,7 +14,7 @@ const CertificatesPreview = async () => {
   ]);
 
   return (
-    <div className="no-scrollbar flex h-[394px] w-full flex-col items-start gap-4 overflow-x-hidden overflow-y-auto rounded-lg bg-neutral-100 p-3 dark:bg-dark">
+    <div className="no-scrollbar flex h-[394px] w-full flex-col items-start gap-4 overflow-x-hidden overflow-y-auto rounded-lg bg-card p-3">
       {/* header */}
       <div className="flex w-full items-center justify-between gap-2">
         <h2 className="text-md font-bold">Proof in Paper</h2>

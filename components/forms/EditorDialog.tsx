@@ -73,7 +73,7 @@ export function EditorDialog({
           <DialogFooter>
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
             >

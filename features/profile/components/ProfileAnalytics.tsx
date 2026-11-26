@@ -15,7 +15,7 @@ const ProfileAnalytics = ({
   numberOfPostComments: number;
 }) => {
   return (
-    <div className="flex w-full flex-col rounded-lg bg-neutral-100 p-5 dark:bg-dark">
+    <div className="flex w-full flex-col rounded-lg bg-card p-5">
       <h2 className="text-2xl font-medium">Engagements</h2>
       <div className="flex items-center gap-1 text-muted-foreground">
         <EyeIcon className="size-4" />

@@ -10,8 +10,8 @@ const DownloadResumeMobile = () => {
   return (
     <Popover>
       <PopoverTrigger asChild className="flex md:hidden">
-        <div className="fixed bottom-3 left-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-blue-400 p-2 shadow-lg md:hidden">
-          <DownloadIcon className="size-4 text-white" />
+        <div className="fixed bottom-3 left-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary p-2 shadow-lg md:hidden">
+          <DownloadIcon className="size-4 text-primary-foreground" />
         </div>
       </PopoverTrigger>
       <PopoverContent className="flex flex-col gap-2" align="end" side="top">

@@ -11,7 +11,7 @@ const LatestProjects = ({
   userRole: string;
 }) => {
   return (
-    <div className="hidden w-full flex-col rounded-lg bg-neutral-100 p-[10px] px-5 sm:flex dark:bg-dark">
+    <div className="hidden w-full flex-col rounded-lg bg-card p-[10px] px-5 sm:flex">
       <h2 className="text-2xl font-medium">Latest Projects</h2>
       <div className="no-scrollbar mt-5 grid w-full grid-cols-1 items-center gap-2 overflow-auto lg:grid-cols-2">
         <ProjectGridCard project={latestProject1} currentUserRole={userRole} />

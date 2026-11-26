@@ -2,7 +2,7 @@ import React from "react";
 
 const ProjectCardSkeleton = () => {
   return (
-    <div className="flex w-full animate-pulse flex-col items-start gap-3 overflow-hidden rounded-lg px-3 py-2 dark:bg-dark">
+    <div className="flex w-full animate-pulse flex-col items-start gap-3 overflow-hidden rounded-lg px-3 py-2 dark:bg-card">
       {/* header skeleton */}
       <div className="flex w-full items-center justify-between gap-2">
         <div className="flex items-center gap-2">

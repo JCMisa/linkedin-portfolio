@@ -24,7 +24,7 @@ const PreferenceAndProfileLink = () => {
   };
 
   return (
-    <div className="flex flex-col rounded-lg bg-neutral-100 dark:bg-dark">
+    <div className="flex flex-col rounded-lg bg-card">
       <Image
         src="/profile-banner.gif"
         alt="pixelated gif of person working"
@@ -51,7 +51,7 @@ const PreferenceAndProfileLink = () => {
           </LinkPreview>
 
           {justCopied ? (
-            <CopyCheckIcon className="size-4 text-green-600" />
+            <CopyCheckIcon className="size-4 text-success" />
           ) : (
             <CopyIcon
               onClick={copyUrl}

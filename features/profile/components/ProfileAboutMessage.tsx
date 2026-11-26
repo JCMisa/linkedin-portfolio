@@ -20,7 +20,7 @@ const ProfileAboutMessage = async ({ userRole }: { userRole: string }) => {
   const displayAbout = personalInfo.about || FALLBACK_ABOUT;
 
   return (
-    <div className="flex w-full flex-col rounded-lg bg-neutral-100 p-[10px] px-5 dark:bg-dark">
+    <div className="flex w-full flex-col rounded-lg bg-card p-[10px] px-5">
       <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
         <h2 className="text-2xl font-medium">About Me</h2>
         {(userRole === "admin" || userRole === "owner") && (
@@ -38,7 +38,7 @@ const ProfileAboutMessage = async ({ userRole }: { userRole: string }) => {
             personalInfo.linkedinLink ||
             "https://www.linkedin.com/in/john-carlo-misa-80a1b5208/"
           }
-          className="text-xs font-semibold !text-blue-500"
+          className="text-xs font-semibold text-primary"
         >
           Linkedin
         </LinkPreview>{" "}
@@ -47,14 +47,14 @@ const ProfileAboutMessage = async ({ userRole }: { userRole: string }) => {
           url={
             personalInfo.portfolioLink || "https://jcm-portfolio.vercel.app/"
           }
-          className="text-xs font-semibold !text-blue-500"
+          className="text-xs font-semibold text-primary"
         >
           portfolio
         </LinkPreview>{" "}
         and{" "}
         <LinkPreview
           url={personalInfo.githubLink || "https://github.com/JCMisa"}
-          className="text-xs font-semibold !text-blue-500"
+          className="text-xs font-semibold text-primary"
         >
           github
         </LinkPreview>

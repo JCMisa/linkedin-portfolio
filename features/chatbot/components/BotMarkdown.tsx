@@ -14,9 +14,7 @@ export default function BotMarkdown({ text }: { text: string }) {
       components={{
         p: ({ children }) => <p className="mb-0 last:mb-0">{children}</p>,
         strong: ({ children }) => (
-          <strong className="font-bold text-blue-500 dark:text-blue-400">
-            {children}
-          </strong>
+          <strong className="font-bold text-primary">{children}</strong>
         ),
         ul: ({ children }) => (
           <ul className="my-2 ml-4 list-disc">{children}</ul>
@@ -30,13 +28,13 @@ export default function BotMarkdown({ text }: { text: string }) {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
+            className="text-primary hover:underline"
           >
             {children}
           </a>
         ),
         code: ({ children }) => (
-          <code className="rounded bg-neutral-200 px-1 font-mono text-xs dark:bg-neutral-800">
+          <code className="rounded bg-muted px-1 font-mono text-xs">
             {children}
           </code>
         ),
