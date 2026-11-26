@@ -8,11 +8,30 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
+import { cn } from "@/lib/utils";
 
 const categorizations = [
-  { id: 1, title: "Software & AI", key: "software", icon: BrainCircuitIcon },
-  { id: 2, title: "Design & Assistance", key: "virtual", icon: PaletteIcon },
-  { id: 3, title: "Others", key: "others", icon: LayoutDashboardIcon },
+  {
+    id: 1,
+    title: "Software & AI",
+    key: "software",
+    icon: BrainCircuitIcon,
+    iconClass: "text-success",
+  },
+  {
+    id: 2,
+    title: "Design & Assistance",
+    key: "virtual",
+    icon: PaletteIcon,
+    iconClass: "text-primary",
+  },
+  {
+    id: 3,
+    title: "Others",
+    key: "others",
+    icon: LayoutDashboardIcon,
+    iconClass: "text-warning",
+  },
 ];
 
 interface Props {
@@ -31,60 +50,57 @@ export default function ProjectSearchFilter({
   personalInfo,
 }: Props) {
   return (
-    <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-card px-5 py-3">
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg border bg-card px-5 py-3">
       {/* Search */}
       <div className="flex w-full items-center gap-2">
         {personalInfo?.profileImg ? (
           <Image
             src={personalInfo.profileImg}
-            alt={personalInfo.name || "avatar"}
-            width={48} // real pixels
-            height={44} // real pixels
-            className="rounded-full object-cover"
-            style={{ width: 48, height: 44, maxWidth: 48, maxHeight: 44 }}
+            alt=""
+            width={48}
+            height={48}
+            className="size-12 shrink-0 rounded-full object-cover"
             draggable={false}
           />
         ) : (
-          <div className="flex h-[44px] w-[48px] items-center justify-center rounded-full bg-card">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted">
             <UserIcon className="size-4 text-muted-foreground" />
           </div>
         )}
 
         <Input
           placeholder="Search projects"
+          aria-label="Search projects"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="h-[48px] rounded-full border-input bg-transparent"
         />
       </div>
 
-      {/* Category */}
-      <div className="flex w-full flex-row items-center justify-between gap-3 px-5">
+      {/* Category filter pills (LinkedIn search-filter style) */}
+      <div
+        role="group"
+        aria-label="Filter by category"
+        className="no-scrollbar -mx-1 flex w-full gap-2 overflow-x-auto px-1"
+      >
         {categorizations.map((c) => {
           const Icon = c.icon;
           const active = category === c.key;
           return (
             <button
               key={c.id}
+              type="button"
+              aria-pressed={active}
               onClick={() => setCategory(active ? null : c.key)}
-              className="flex cursor-pointer items-center gap-1 hover:opacity-80"
+              className={cn(
+                "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-semibold transition-colors",
+                active
+                  ? "border-primary bg-primary text-primary-foreground hover:bg-primary-hover"
+                  : "border-input text-muted-foreground hover:bg-accent hover:text-foreground",
+              )}
             >
-              <Icon
-                className={`size-4 ${
-                  c.id === 1
-                    ? "text-success"
-                    : c.id === 2
-                      ? "text-primary"
-                      : "text-destructive"
-                }`}
-              />
-              <p
-                className={`hidden text-xs font-bold sm:block ${
-                  active ? "text-foreground" : "text-muted-foreground"
-                }`}
-              >
-                {c.title}
-              </p>
+              <Icon className={cn("size-4", !active && c.iconClass)} />
+              {c.title}
             </button>
           );
         })}

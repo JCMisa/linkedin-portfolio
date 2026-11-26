@@ -52,7 +52,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
   });
 
   return (
-    <div className="space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
+    <div className="space-y-6 rounded-lg border bg-card p-6 sm:p-8">
       <div className="space-y-1">
         <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
           <MessageSquareIcon className="size-5 text-primary" />

@@ -34,7 +34,7 @@ const ContactPage = async () => {
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left Side: Map & Contact Info */}
           <div className="space-y-6 lg:w-2/3">
-            <div className="relative h-[400px] overflow-hidden rounded-xl border border-border bg-card shadow-sm lg:h-[500px]">
+            <div className="relative h-[400px] overflow-hidden rounded-lg border bg-card lg:h-[500px]">
               <iframe
                 title={`Map of ${personalInfo.city}, ${personalInfo.country}`}
                 loading="lazy"
@@ -64,8 +64,8 @@ const ContactPage = async () => {
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                <h2 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
+              <div className="rounded-lg border bg-card p-6">
+                <h2 className="mb-4 text-base font-semibold text-foreground">
                   Direct contact
                 </h2>
                 <div className="space-y-3">
@@ -90,8 +90,8 @@ const ContactPage = async () => {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                <h2 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
+              <div className="rounded-lg border bg-card p-6">
+                <h2 className="mb-4 text-base font-semibold text-foreground">
                   Follow me
                 </h2>
                 <div className="flex flex-wrap gap-4">

@@ -10,7 +10,7 @@ import {
   useProjectComments,
   type ProjectComment,
 } from "../hooks";
-import { LoaderCircleIcon, MessageSquareIcon } from "lucide-react";
+import { LoaderCircleIcon, MessageSquareIcon, UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -84,13 +84,19 @@ const CreateComment = ({
     <div className="mt-2 w-full rounded-lg p-4">
       {/* Comment Input */}
       <div className="mb-4 flex items-start gap-2">
-        <Image
-          src={user?.imageUrl || "/empty-img.webp"}
-          alt=""
-          width={1000}
-          height={1000}
-          className="h-8 w-8 rounded-full object-cover"
-        />
+        {user?.imageUrl ? (
+          <Image
+            src={user.imageUrl}
+            alt=""
+            width={32}
+            height={32}
+            className="size-8 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <UserIcon className="size-4" />
+          </span>
+        )}
         <div className="flex-1">
           <textarea
             placeholder={

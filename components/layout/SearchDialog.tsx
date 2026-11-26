@@ -42,7 +42,7 @@ const SearchDialog = ({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            `h-[34px] w-[280px] items-center justify-start rounded-full border border-input pr-[16px] pl-[40px]`,
+            `h-[34px] w-[180px] items-center justify-start rounded-full border border-input pr-[16px] pl-[40px] lg:w-[280px]`,
             forMobile ? "flex sm:hidden" : "hidden sm:flex",
             query ? "text-foreground" : "text-muted-foreground",
             additionalClassName,

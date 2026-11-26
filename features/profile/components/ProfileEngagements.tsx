@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const ProfileEngagements = () => {
   return (
-    <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-card p-5">
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg border bg-card p-5">
       <Link
         href={"/certificates"}
         className="flex items-center gap-2 transition-opacity duration-200 ease-in-out hover:opacity-[0.8]"

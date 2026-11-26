@@ -84,7 +84,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
           {/* LEFT COLUMN: Main Content */}
           <div className="flex flex-col gap-6 lg:col-span-2">
             {/* Project Cover & Basic Info Card */}
-            <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            <section className="overflow-hidden rounded-lg border bg-card">
               <div className="relative aspect-video w-full bg-muted">
                 <Image
                   src={project.image || "/empty-img.webp"}
@@ -98,7 +98,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
               <div className="p-6">
                 <div className="mb-4 flex items-start justify-between">
                   <div>
-                    <h1 className="text-2xl font-bold text-foreground capitalize md:text-3xl">
+                    <h1 className="text-2xl font-semibold text-foreground capitalize">
                       {project.title}
                     </h1>
                     <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
@@ -120,9 +120,9 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                 <Separator className="my-6" />
 
                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <h3 className="mb-2 text-lg font-semibold">
+                  <h2 className="mb-2 text-lg font-semibold">
                     About this project
-                  </h3>
+                  </h2>
                   <p className="leading-relaxed whitespace-pre-wrap text-muted-foreground">
                     {project.description}
                   </p>
@@ -131,10 +131,10 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
             </section>
 
             {/* Comments Section Card */}
-            <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <section className="rounded-lg border bg-card p-6">
               <div className="mb-6 flex items-center gap-2">
                 <MessageSquare className="size-5 text-primary" />
-                <h2 className="text-xl font-bold">
+                <h2 className="text-xl font-semibold">
                   Discussion ({comments.length})
                 </h2>
               </div>
@@ -146,10 +146,10 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
           {/* RIGHT COLUMN: Sidebar Details */}
           <div className="flex flex-col gap-6">
             {/* Actions & Links Card */}
-            <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
-                Project Assets
-              </h3>
+            <section className="rounded-lg border bg-card p-6">
+              <h2 className="mb-4 text-base font-semibold text-foreground">
+                Project links
+              </h2>
               <div className="flex flex-col gap-3">
                 {project.liveLink && (
                   <Link
@@ -159,7 +159,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-2.5 font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
                   >
                     <Globe className="size-4" />
-                    Live Demo
+                    Live demo
                   </Link>
                 )}
                 {project.githubLink && (
@@ -170,17 +170,17 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                     className="flex w-full items-center justify-center gap-2 rounded-full border border-primary py-2.5 font-semibold text-primary transition-colors hover:bg-primary/5"
                   >
                     <FaGithub className="size-4" />
-                    Source Code
+                    Source code
                   </Link>
                 )}
               </div>
             </section>
 
             {/* Tech Stack Card */}
-            <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
-                Technology Stack
-              </h3>
+            <section className="rounded-lg border bg-card p-6">
+              <h2 className="mb-4 text-base font-semibold text-foreground">
+                Tech stack
+              </h2>
               <div className="flex flex-wrap gap-2">
                 {project.techStacks?.map((tech: string) => (
                   <span
@@ -194,14 +194,14 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
             </section>
 
             {/* People who liked this project */}
-            <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <section className="rounded-lg border bg-card p-6">
               <div className="mb-4 flex items-center gap-2">
                 <div className="rounded-full bg-primary/10 p-1.5">
                   <ThumbsUp className="size-4 fill-primary text-primary" />
                 </div>
-                <h3 className="text-sm font-bold text-foreground">
+                <h2 className="text-base font-semibold text-foreground">
                   Reactions ({likesWithUser.length})
-                </h3>
+                </h2>
               </div>
 
               <div className="flex flex-col gap-4">

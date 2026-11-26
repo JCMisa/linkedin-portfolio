@@ -32,7 +32,7 @@ const SkillsContent = ({ skills, userRole }: SkillsContentProps) => {
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <h2 className="text-2xl font-medium">Skills</h2>
+        <h2 className="text-xl font-semibold">Skills</h2>
         {isOwner && <SkillsEditorDialog currentSkills={skills} />}
       </div>
 

@@ -149,7 +149,7 @@ const ProfileBasicInfo = ({
   return (
     <section
       aria-labelledby="profile-name"
-      className="relative flex h-full w-full flex-col items-center rounded-lg bg-card lg:h-[400px]"
+      className="relative flex h-full w-full flex-col items-center rounded-lg border bg-card lg:h-[400px]"
     >
       {/* cover photo */}
       <div className="relative h-[35%] w-full">

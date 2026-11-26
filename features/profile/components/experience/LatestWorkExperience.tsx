@@ -31,7 +31,7 @@ const LatestWorkExperience = ({
   if (!latestExp) return null;
 
   return (
-    <div className="flex w-full flex-col items-start gap-4 rounded-lg border border-transparent bg-card p-4 shadow-sm transition-all duration-300 hover:border-border dark:hover:border-border">
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg border bg-card p-4">
       <div className="flex w-full items-center justify-between">
         <h2 className="text-sm font-bold tracking-tight text-foreground">
           Latest work experience
@@ -59,7 +59,7 @@ const LatestWorkExperience = ({
             alt={latestExp.title}
             width={1000}
             height={1000}
-            className="h-14 w-14 rounded-xl border border-border object-cover shadow-sm"
+            className="h-14 w-14 rounded-md border border-border object-cover shadow-sm"
           />
         </div>
 

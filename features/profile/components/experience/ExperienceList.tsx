@@ -112,7 +112,7 @@ const ExperienceItem = ({
 
       {/* Content */}
       <div className={`flex-1 pb-8 ${isLast ? "pb-0" : ""}`}>
-        <div className="rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow duration-200 hover:shadow-md sm:p-5">
+        <div className="rounded-lg border bg-card p-4 sm:p-5">
           {/* Header */}
           <div className="flex items-start gap-3">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-accent dark:bg-primary/10">
@@ -256,7 +256,7 @@ const ExperienceList = ({
   };
 
   return (
-    <div className="rounded-lg border border-border bg-card shadow-sm">
+    <div className="rounded-lg border bg-card">
       {/* Section header */}
       <div className="flex items-center justify-between p-4 pb-0 sm:p-6 sm:pb-0">
         <div className="flex items-center gap-2">

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const EducationPreview = () => {
   return (
-    <div className="no-scrollbar flex h-[250px] w-full flex-col items-start gap-4 overflow-hidden rounded-lg bg-card">
+    <div className="no-scrollbar flex h-[250px] w-full flex-col items-start gap-4 overflow-hidden rounded-lg border bg-card">
       {/* cover photo */}
       <div className="h-[30%] w-full">
         <Image

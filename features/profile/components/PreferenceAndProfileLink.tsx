@@ -24,7 +24,7 @@ const PreferenceAndProfileLink = () => {
   };
 
   return (
-    <div className="flex flex-col rounded-lg bg-card">
+    <div className="flex flex-col rounded-lg border bg-card">
       <Image
         src="/profile-banner.gif"
         alt=""

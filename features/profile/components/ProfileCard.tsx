@@ -9,7 +9,7 @@ const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
   );
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+    <div className="overflow-hidden rounded-lg border bg-card">
       {/* Cover photo */}
       {personalInfo.coverImg ? (
         <div className="relative h-16 w-full sm:h-20">

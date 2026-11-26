@@ -24,7 +24,7 @@ const ProjectGridCard = memo(
   }) => {
     return (
       <div className="inter-var h-full">
-        <article className="group/card relative flex h-full w-full flex-col rounded-lg border bg-card p-6 transition-shadow hover:shadow-md">
+        <article className="group/card relative flex h-full w-full flex-col rounded-lg border bg-card p-6">
           {/* Header */}
           <div className="flex items-center justify-between gap-4">
             <h2
@@ -54,7 +54,7 @@ const ProjectGridCard = memo(
               src={project.image || "/empty-img.webp"}
               height={400}
               width={600}
-              className="h-60 w-full rounded-xl object-cover group-hover/card:shadow-xl"
+              className="h-60 w-full rounded-md object-cover group-hover/card:shadow-xl"
               alt={`${project.title} preview`}
             />
           </div>
@@ -65,7 +65,7 @@ const ProjectGridCard = memo(
               <Button
                 asChild
                 variant="outline"
-                className="min-w-[100px] flex-1 cursor-pointer rounded-md px-4 py-2 text-xs font-normal"
+                className="min-w-0 flex-1 px-2 text-xs"
               >
                 <LinkPreview
                   url={project.githubLink || "#"}
@@ -76,14 +76,11 @@ const ProjectGridCard = memo(
                   }
                 >
                   <FaGithub className="size-3" />
-                  <p className="hidden sm:block">GitHub</p>
+                  GitHub
                 </LinkPreview>
               </Button>
 
-              <Button
-                asChild
-                className="min-w-[100px] flex-1 cursor-pointer rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover"
-              >
+              <Button asChild className="min-w-0 flex-1 px-2 text-xs">
                 <LinkPreview
                   url={project.liveLink || "#"}
                   className={
@@ -93,7 +90,7 @@ const ProjectGridCard = memo(
                   }
                 >
                   <GlobeIcon className="size-3" />
-                  <p className="hidden sm:block">Live</p>
+                  Live
                 </LinkPreview>
               </Button>
 
@@ -101,14 +98,14 @@ const ProjectGridCard = memo(
               <Button
                 asChild
                 variant="secondary"
-                className="min-w-[120px] flex-1 cursor-pointer rounded-md px-4 py-2 text-xs font-bold"
+                className="min-w-0 flex-1 px-2 text-xs"
               >
                 <Link
                   href={`/projects/${project.id}`}
                   className="flex items-center justify-center gap-1"
                 >
                   <EyeIcon className="size-3" />
-                  <p className="hidden sm:block">Details</p>
+                  Details
                 </Link>
               </Button>
             </div>

@@ -22,7 +22,7 @@ const CertificateCard = memo(
     currentUser: UserType | null;
   }) => {
     return (
-      <article className="flex h-full w-full flex-col space-y-4 rounded-lg border border-transparent bg-muted p-4 transition-all hover:border-border">
+      <article className="flex h-full w-full flex-col space-y-4 rounded-lg border bg-card p-4">
         {/* header view and actions */}
         <div className="flex w-full items-center justify-between gap-4">
           <Dialog>
@@ -30,7 +30,7 @@ const CertificateCard = memo(
               <button
                 type="button"
                 aria-label={`View ${cert.title} certificate`}
-                className="flex cursor-pointer items-center justify-center gap-1 rounded-full border border-input px-4 py-1 text-[10px] font-bold tracking-tight text-muted-foreground uppercase transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground"
+                className="flex cursor-pointer items-center justify-center gap-1 rounded-full border border-primary px-3 py-0.5 text-xs font-semibold text-primary transition-colors hover:bg-primary-soft"
               >
                 <EyeIcon className="size-3" />
                 View
@@ -85,7 +85,7 @@ const CertificateCard = memo(
               {cert.title}
             </h2>
           </div>
-          <p className="text-[10px] font-medium tracking-wider text-primary uppercase">
+          <p className="text-xs text-muted-foreground">
             {cert.acquiredDate
               ? new Date(cert.acquiredDate).toLocaleDateString("en-US", {
                   month: "long",

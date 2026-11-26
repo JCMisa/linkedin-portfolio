@@ -92,7 +92,7 @@ const Navbar = () => {
                 href={item.path}
                 aria-current={isActive ? "page" : undefined}
                 className={
-                  "flex h-[52px] w-[80px] flex-col items-center justify-center border-b " +
+                  "flex h-[52px] w-[64px] flex-col items-center justify-center border-b lg:w-[80px] " +
                   (isActive
                     ? "border-b-2 border-b-foreground text-foreground"
                     : "border-b-transparent text-muted-foreground")

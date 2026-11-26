@@ -3,7 +3,7 @@ import { LinkPreview } from "@/components/ui/link-preview";
 
 const ProfileMotto = () => {
   return (
-    <div className="flex h-[65px] w-full flex-col items-start gap-1 rounded-lg bg-card py-2">
+    <div className="flex h-[65px] w-full flex-col items-start gap-1 rounded-lg border bg-card py-2">
       <p className="px-5 text-xs font-bold text-muted-foreground">
         My Personal Manifesto
       </p>

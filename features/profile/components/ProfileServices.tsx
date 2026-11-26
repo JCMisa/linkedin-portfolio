@@ -16,9 +16,9 @@ const ProfileServices = async ({ userRole }: { userRole: string }) => {
   const services = personalInfo.services || [];
 
   return (
-    <div className="flex w-full flex-col rounded-lg bg-card p-[10px] px-5">
+    <div className="flex w-full flex-col rounded-lg border bg-card p-[10px] px-5">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="text-2xl font-medium">Services</h2>
+        <h2 className="text-xl font-semibold">Services</h2>
         {isOwner && <ServicesEditorDialog currentServices={services} />}
       </div>
       <div className="mt-5 w-full">
