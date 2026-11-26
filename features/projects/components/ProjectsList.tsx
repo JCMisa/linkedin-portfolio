@@ -10,6 +10,8 @@ import { useDebounce } from "@/hooks/use-debounce";
 import ProjectCardSkeleton from "./ProjectCardSkeleton";
 import { PersonalInfoType, ProjectsType } from "@/db/schema";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { SearchXIcon } from "lucide-react";
 
 const ROW_HEIGHT = 500; // Fixed height to keep Grid stable
 const GAP = 20;
@@ -138,9 +140,12 @@ export default function ProjectsList({
             />
           </>
         ) : (
-          <div className="flex h-40 flex-col items-center justify-center opacity-50">
-            <p>No projects found matching your criteria.</p>
-          </div>
+          <EmptyState
+            icon={SearchXIcon}
+            title="No matching projects"
+            description="Try a different search term or category."
+            className="rounded-lg border bg-card"
+          />
         )}
       </div>
     </div>

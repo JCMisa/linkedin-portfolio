@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Grid, type CellComponentProps } from "react-window";
 import CertificateCard from "./CertificateCard";
-import { CertificateCardSkeleton } from "./CertificateCardSkeleton";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { AwardIcon } from "lucide-react";
 
 const ROW_HEIGHT = 400;
 const GAP = 20;
@@ -72,11 +73,13 @@ const CertificatesList = ({
           />
         </>
       ) : (
-        <div className="relative flex w-full flex-col gap-4">
-          {[1, 2, 3, 4].map((item) => (
-            <CertificateCardSkeleton key={item} />
-          ))}
-        </div>
+        // Data comes from the server, so an empty array really means "none yet"
+        <EmptyState
+          icon={AwardIcon}
+          title="No certificates yet"
+          description="Certifications will appear here as they're earned."
+          className="h-fit rounded-lg border bg-card"
+        />
       )}
     </div>
   );

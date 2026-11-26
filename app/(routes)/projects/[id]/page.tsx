@@ -20,6 +20,7 @@ import {
   getProjectComments,
   getProjectLikes,
 } from "@/features/projects/queries";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 interface ProjectDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -233,11 +234,12 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                     View all {likesWithUser.length} reactions
                   </button>
                 ) : likesWithUser.length === 0 ? (
-                  <div className="py-4 text-center">
-                    <p className="text-xs text-muted-foreground italic">
-                      No reactions yet. Be the first!
-                    </p>
-                  </div>
+                  <EmptyState
+                    size="compact"
+                    icon={ThumbsUp}
+                    title="No reactions yet"
+                    description="Be the first to like this project."
+                  />
                 ) : null}
               </div>
             </section>

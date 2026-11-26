@@ -4,6 +4,8 @@ import ProjectCardSkeleton from "./ProjectCardSkeleton";
 import { Button } from "@/components/ui/button";
 import { PersonalInfoType } from "@/db/schema";
 import { OptimizedProject } from "@/features/projects/types";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { FolderOpenIcon } from "lucide-react";
 
 const ProjectsFeedList = ({
   projects,
@@ -44,15 +46,17 @@ const ProjectsFeedList = ({
           )}
         </>
       ) : (
-        /* If no projects exist AND we aren't fetching, 
-           we only show skeletons during initial load. */
+        /* Skeletons during the first load; an empty state once we know there are none */
         <div className="flex w-full flex-col items-center gap-2">
-          {isFetchingProjects &&
-            [1, 2, 3].map((id) => <ProjectCardSkeleton key={id} />)}
-          {!isFetchingProjects && (
-            <p className="mt-4 text-sm text-muted-foreground">
-              No projects found.
-            </p>
+          {isFetchingProjects ? (
+            [1, 2, 3].map((id) => <ProjectCardSkeleton key={id} />)
+          ) : (
+            <EmptyState
+              icon={FolderOpenIcon}
+              title="No projects yet"
+              description="New projects will show up here once they're posted."
+              className="rounded-lg border bg-card"
+            />
           )}
         </div>
       )}

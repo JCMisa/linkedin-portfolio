@@ -2,6 +2,8 @@ import React from "react";
 import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
 import { ServicesEditorDialog } from "@/features/profile/components/dialogs/admin-dialogs";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { BriefcaseBusinessIcon } from "lucide-react";
 
 const ProfileServices = async ({ userRole }: { userRole: string }) => {
   const personalInfo: PersonalInfoType | null = await getPersonalInfo();
@@ -30,9 +32,11 @@ const ProfileServices = async ({ userRole }: { userRole: string }) => {
             ))}
           </p>
         ) : (
-          <p className="text-sm text-muted-foreground italic">
-            No services listed yet.
-          </p>
+          <EmptyState
+            size="compact"
+            icon={BriefcaseBusinessIcon}
+            title="No services listed yet"
+          />
         )}
       </div>
     </div>

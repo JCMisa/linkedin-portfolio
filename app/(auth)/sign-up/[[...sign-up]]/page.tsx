@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SignUp } from "@clerk/nextjs";
-import React from "react";
+import { AuthCardSkeleton } from "@/components/shared/AuthCardSkeleton";
 
 export const metadata: Metadata = {
   title: "Join now",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const SignupPage = () => {
   return (
     <main className="mt-36 flex min-h-screen items-center justify-center sm:mt-20">
-      <SignUp />
+      <SignUp fallback={<AuthCardSkeleton />} />
     </main>
   );
 };

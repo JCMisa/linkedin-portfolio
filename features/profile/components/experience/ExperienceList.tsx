@@ -21,6 +21,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 // --------------------------------------------- types and interfaces ---------------------------------------------
 type ExperienceType = {
@@ -296,6 +297,13 @@ const ExperienceList = ({
       </div>
 
       <div className="p-4 pt-4 sm:p-6">
+        {sortedExperiences.length === 0 && (
+          <EmptyState
+            icon={BriefcaseIcon}
+            title="No experience added yet"
+            description="Roles and milestones will show up here."
+          />
+        )}
         {sortedExperiences.map((exp, index) => (
           <ExperienceItem
             key={exp.id}

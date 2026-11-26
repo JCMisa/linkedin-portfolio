@@ -1,12 +1,12 @@
 import { CertificateFormDialog } from "./admin-dialogs";
 
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, AwardIcon } from "lucide-react";
 import Link from "next/link";
 import CertificatePreviewCard from "./CertificatePreviewCard";
-import { CertificatePreviewSkeleton } from "./CertificatePreviewSkeleton";
 
 import { getLatestCertificates } from "@/features/certificates/queries";
 import { getSessionUser } from "@/lib/auth";
+import { EmptyState } from "@/components/shared/EmptyState";
 const CertificatesPreview = async () => {
   const [currentUser, latestCertificates] = await Promise.all([
     getSessionUser(),
@@ -28,11 +28,17 @@ const CertificatesPreview = async () => {
 
       {/* certifications list */}
       <div className="flex w-full flex-col items-start gap-2">
-        {latestCertificates && latestCertificates.length > 0
-          ? latestCertificates.map((cert) => (
-              <CertificatePreviewCard key={cert.id} cert={cert} />
-            ))
-          : [1, 2, 3].map((item) => <CertificatePreviewSkeleton key={item} />)}
+        {latestCertificates && latestCertificates.length > 0 ? (
+          latestCertificates.map((cert) => (
+            <CertificatePreviewCard key={cert.id} cert={cert} />
+          ))
+        ) : (
+          <EmptyState
+            size="compact"
+            icon={AwardIcon}
+            title="No certificates yet"
+          />
+        )}
       </div>
 
       <Link

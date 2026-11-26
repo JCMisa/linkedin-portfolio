@@ -10,7 +10,7 @@ import {
   useProjectComments,
   type ProjectComment,
 } from "../hooks";
-import { LoaderCircleIcon } from "lucide-react";
+import { LoaderCircleIcon, MessageSquareIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 /** Matches the server-side limit in createCommentSchema. */
 const COMMENT_MAX = 2000;
@@ -244,9 +245,12 @@ const CreateComment = ({
               );
             })
           ) : (
-            <div className="flex items-center justify-center">
-              <p className="text-xs text-muted-foreground">No comments yet</p>
-            </div>
+            <EmptyState
+              size="compact"
+              icon={MessageSquareIcon}
+              title="No comments yet"
+              description="Start the conversation."
+            />
           )}
         </div>
       )}
