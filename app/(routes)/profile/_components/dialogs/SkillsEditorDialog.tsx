@@ -172,7 +172,7 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
 
         <ScrollArea className="flex-1 px-6 py-4 overflow-y-auto no-scrollbar">
           <div className="space-y-6 pb-6">
-            {skillCategories.map((category, index) => (
+            {skillCategories.map((category) => (
               <div
                 key={category.id}
                 className="p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50 space-y-4 relative group/card"

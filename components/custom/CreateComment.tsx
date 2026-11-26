@@ -9,7 +9,7 @@ import {
   getProjectComments,
 } from "@/lib/actions/comments";
 import { getCurrentUser } from "@/lib/actions/users";
-import { LoaderCircleIcon, TrashIcon } from "lucide-react";
+import { LoaderCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {

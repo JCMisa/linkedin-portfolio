@@ -140,4 +140,6 @@ const ProjectCard = memo(
   },
 );
 
+ProjectCard.displayName = "ProjectCard";
+
 export default ProjectCard;

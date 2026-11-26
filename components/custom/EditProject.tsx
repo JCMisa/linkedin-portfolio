@@ -18,14 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EditIcon, LoaderCircleIcon, X, AlertCircle } from "lucide-react";
+import { EditIcon, LoaderCircleIcon, X } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useState, KeyboardEvent, useEffect, FocusEvent, useRef } from "react";
 import { toast } from "sonner";
 import { updateProject } from "@/lib/actions/projects";
 import { showConfetti } from "@/lib/utils";
 import { cn } from "@/lib/utils"; // shadcn helper
-import { FileUpload } from "../ui/file-upload";
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import Image from "next/image";
 
@@ -48,7 +47,6 @@ const EditProject = ({ project }: { project: ProjectType }) => {
     project.techStacks || []
   );
   const [currentTech, setCurrentTech] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -91,7 +89,6 @@ const EditProject = ({ project }: { project: ProjectType }) => {
       category: project.category || "",
     });
     setTechStack(project.techStacks || []);
-    setFiles([]);
     setUploadedImageUrl("");
     setTouched({ imageUrl: false, githubUrl: false, liveUrl: false });
   }, [open, project]);
@@ -135,7 +132,6 @@ const EditProject = ({ project }: { project: ProjectType }) => {
   const handleFileUpload = async (files: File[]) => {
     if (files.length === 0) return;
 
-    setFiles(files);
     setIsUploading(true);
 
     try {

@@ -39,13 +39,11 @@ export const ImageEditorDialog = ({
   );
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [files, setFiles] = useState<File[]>([]);
 
   // Sync with currentImageUrl when dialog opens
   useEffect(() => {
     if (open) {
       setUploadedImageUrl(currentImageUrl);
-      setFiles([]);
     }
   }, [open, currentImageUrl]);
 
@@ -54,7 +52,6 @@ export const ImageEditorDialog = ({
     if (!newOpen) {
       // Reset to current image when closing
       setUploadedImageUrl(currentImageUrl);
-      setFiles([]);
     }
     onOpenChange(newOpen);
   };
@@ -62,7 +59,6 @@ export const ImageEditorDialog = ({
   const handleFileUpload = async (uploadedFiles: File[]) => {
     if (uploadedFiles.length === 0) return;
 
-    setFiles(uploadedFiles);
     setIsUploading(true);
 
     try {
@@ -85,7 +81,6 @@ export const ImageEditorDialog = ({
 
   const handleDelete = () => {
     setUploadedImageUrl(null);
-    setFiles([]);
     toast.info("Image marked for deletion. Click Save to confirm.");
   };
 

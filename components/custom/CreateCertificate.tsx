@@ -9,13 +9,12 @@ import {
 import {
   CalendarIcon,
   PlusIcon,
-  AlertCircleIcon,
   LoaderCircleIcon,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn, showConfetti } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { FocusEvent, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -44,14 +43,10 @@ const CreateCertificate = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
-  const [files, setFiles] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
   const [touched, setTouched] = useState({
     imageUrl: false,
   });
-
-  const touch = (k: keyof typeof touched) =>
-    setTouched((prev) => ({ ...prev, [k]: true }));
 
   // For Cloudinary URLs, we accept any valid URL (not just image extensions)
   const imageValid =
@@ -59,19 +54,10 @@ const CreateCertificate = () => {
     formData.imageUrl.trim().startsWith("http") ||
     /^https?:\/\/.+\.(png|jpe?g|webp|svg)$/i.test(formData.imageUrl.trim());
 
-  const handleBlur =
-    (k: keyof typeof touched) => (e: FocusEvent<HTMLInputElement>) => {
-      touch(k);
-      setFormData((prev) => ({
-        ...prev,
-        [k]: e.target.value.trim(),
-      }));
-    };
 
   const handleFileUpload = async (files: File[]) => {
     if (files.length === 0) return;
 
-    setFiles(files);
     setIsUploading(true);
 
     try {
@@ -107,7 +93,6 @@ const CreateCertificate = () => {
           imageUrl: "",
           acquiredDate: new Date(),
         });
-        setFiles([]);
         setUploadedImageUrl("");
         setTouched({ imageUrl: false });
       } else {

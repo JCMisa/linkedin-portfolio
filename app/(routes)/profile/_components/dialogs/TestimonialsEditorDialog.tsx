@@ -102,7 +102,7 @@ const TestimonialsEditorDialog = ({
         handleUpdateTestimonial(id, "profileImg", imageUrl);
         toast.success("Image uploaded!");
       }
-    } catch (error) {
+    } catch {
       toast.error("Upload failed");
     } finally {
       setIsUploading(null);
@@ -126,7 +126,7 @@ const TestimonialsEditorDialog = ({
       } else {
         toast.error(result?.error || "Failed to update testimonials");
       }
-    } catch (error) {
+    } catch {
       toast.error("An error occurred. Please try again.");
     } finally {
       setIsSaving(false);

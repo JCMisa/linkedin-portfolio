@@ -16,7 +16,6 @@ import {
 import CreateComment from "@/components/custom/CreateComment";
 import { FaGithub } from "react-icons/fa";
 // import ProjectCommentsList from "../_components/ProjectCommentsList";
-import { LikesType } from "@/config/schema";
 
 interface ProjectDetailsPageProps {
   params: Promise<{ id: string }>;

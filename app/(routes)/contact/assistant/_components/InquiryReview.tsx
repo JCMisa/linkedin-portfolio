@@ -36,7 +36,7 @@ const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
     setIsSaving(true);
     try {
       await onSave(formData);
-    } catch (error) {
+    } catch {
       toast.error("Failed to save changes.");
     } finally {
       setIsSaving(false);

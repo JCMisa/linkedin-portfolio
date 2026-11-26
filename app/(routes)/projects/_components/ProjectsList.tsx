@@ -51,7 +51,7 @@ export default function ProjectsList({
           category,
         });
         if (res.success) setProjects(res.data || []);
-      } catch (error) {
+      } catch {
         toast.error("Failed to load projects");
       } finally {
         setLoading(false);
@@ -95,7 +95,7 @@ export default function ProjectsList({
   // }, [debouncedSearch, category]);
 
   // Responsive Breakpoints
-  let columnCount = 1;
+  const columnCount = 1;
   // if (containerWidth >= 768) columnCount = 2;
   // if (containerWidth >= 1280) columnCount = 3;
 
@@ -125,9 +125,9 @@ export default function ProjectsList({
               {debouncedSearch && (
                 <span>
                   {" "}
-                  related to "
+                  related to &ldquo;
                   <span className="text-primary italic">{debouncedSearch}</span>
-                  "
+                  &rdquo;
                 </span>
               )}
             </p>

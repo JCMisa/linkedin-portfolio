@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import axios from "axios";
+import { fetchJson } from "@/lib/fetch-json";
+import type { UsersType } from "@/config/schema";
 import { useUser } from "@clerk/nextjs";
 import { useUserStore } from "@/store/userStore";
 
@@ -16,8 +17,8 @@ export const UserStoreWatcher = () => {
     const fetchUser = async () => {
       try {
         setIsLoading(true);
-        const result = await axios.get("/api/users");
-        setUserDetails(result.data);
+        const data = await fetchJson<UsersType | null>("/api/users");
+        setUserDetails(data);
       } catch (error) {
         console.error("Failed to fetch user:", error);
       } finally {

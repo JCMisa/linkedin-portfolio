@@ -361,7 +361,7 @@ export const ExperiencesEditorDialog = ({
           {experiences.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
               <p>No experiences added yet.</p>
-              <p className="text-sm">Click "Add Experience" to get started.</p>
+              <p className="text-sm">Click &ldquo;Add Experience&rdquo; to get started.</p>
             </div>
           )}
         </div>

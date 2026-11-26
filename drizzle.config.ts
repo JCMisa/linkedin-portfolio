@@ -1,7 +1,9 @@
-import { config } from "dotenv";
+import { existsSync } from "node:fs";
 import { defineConfig } from "drizzle-kit";
 
-config({ path: "./.env.local" });
+// Node >= 20.12 can load .env files natively — no dotenv needed.
+// Skipped when the file is absent (e.g. CI, where env vars are injected).
+if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 export default defineConfig({
   schema: "./config/schema.ts",

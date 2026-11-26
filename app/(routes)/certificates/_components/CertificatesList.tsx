@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { Grid, type CellComponentProps } from "react-window";
 import CertificateCard from "./CertificateCard";
 import { CertificateCardSkeleton } from "./CertificateCardSkeleton";
-import { useDebounce } from "@/utils/useDebounce";
 import { cn } from "@/lib/utils";
 
 const ROW_HEIGHT = 400;

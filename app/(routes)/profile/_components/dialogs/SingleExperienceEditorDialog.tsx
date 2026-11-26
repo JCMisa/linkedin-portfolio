@@ -194,7 +194,7 @@ export const SingleExperienceEditorDialog = ({
               <Label>
                 End Date{" "}
                 <span className="text-[9px] text-muted-foreground">
-                  (Leave empty for 'Present')
+                  (Leave empty for &lsquo;Present&rsquo;)
                 </span>
               </Label>
               <Popover>

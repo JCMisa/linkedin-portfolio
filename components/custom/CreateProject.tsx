@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LoaderCircleIcon, PlusIcon, X, AlertCircle } from "lucide-react";
+import { LoaderCircleIcon, PlusIcon, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Separator } from "../ui/separator";
@@ -46,7 +46,6 @@ const CreateProject = () => {
 
   const [techStack, setTechStack] = useState<string[]>([]);
   const [currentTech, setCurrentTech] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
@@ -108,7 +107,6 @@ const CreateProject = () => {
   const handleFileUpload = async (files: File[]) => {
     if (files.length === 0) return;
 
-    setFiles(files);
     setIsUploading(true);
 
     try {
@@ -148,7 +146,6 @@ const CreateProject = () => {
           category: "",
         });
         setTechStack([]);
-        setFiles([]);
         setUploadedImageUrl("");
         setTouched({ imageUrl: false, githubUrl: false, liveUrl: false });
       } else {

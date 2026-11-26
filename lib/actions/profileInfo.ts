@@ -5,7 +5,6 @@ import { withErrorHandling } from "../utils";
 import { PersonalInfo } from "@/config/schema";
 import { unstable_cache, revalidateTag } from "next/cache";
 import {
-  uploadImageToCloudinary,
   deleteImageFromCloudinary,
 } from "../cloudinary";
 import { eq } from "drizzle-orm";

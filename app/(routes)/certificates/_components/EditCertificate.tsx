@@ -23,8 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { updateCertificate } from "@/lib/actions/certificates";
-import { useState, FocusEvent, useEffect, useRef } from "react";
-import { FileUpload } from "@/components/ui/file-upload";
+import { useState, useEffect, useRef } from "react";
 import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import Image from "next/image";
 
@@ -41,13 +40,9 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
-  const [files, setFiles] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
   const [touched, setTouched] = useState({ imageUrl: false });
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const touch = (k: keyof typeof touched) =>
-    setTouched((prev) => ({ ...prev, [k]: true }));
 
   // For Cloudinary URLs, we accept any valid URL (not just image extensions)
   const imageValid =
@@ -76,11 +71,6 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
     );
   };
 
-  const handleBlur =
-    (k: keyof typeof touched) => (e: FocusEvent<HTMLInputElement>) => {
-      touch(k);
-      setFormData((prev) => ({ ...prev, [k]: e.target.value.trim() }));
-    };
 
   /* ---------- reset form when dialog re-opens ---------- */
   useEffect(() => {
@@ -91,7 +81,6 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
       imageUrl: certificate.image || "",
       acquiredDate: certificate.acquiredDate || new Date(),
     });
-    setFiles([]);
     setUploadedImageUrl("");
     setTouched({ imageUrl: false });
   }, [open, certificate]);
@@ -100,7 +89,6 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
   const handleFileUpload = async (files: File[]) => {
     if (files.length === 0) return;
 
-    setFiles(files);
     setIsUploading(true);
 
     try {

@@ -5,11 +5,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { SendIcon, XCircleIcon } from "lucide-react";
+import { SendIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import axios, { AxiosError } from "axios";
+import { fetchJson, HttpError, isTimeoutError } from "@/lib/fetch-json";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
 import {
@@ -95,10 +95,9 @@ const AIChatbot = () => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post<{ response: string }>(
+      const data = await fetchJson<{ response: string }, ChatErrorBody>(
         "/api/chat",
-        { message: trimmed },
-        { timeout: 30000 },
+        { json: { message: trimmed }, timeoutMs: 30000 },
       );
 
       const botMsg: Message = {
@@ -107,26 +106,27 @@ const AIChatbot = () => {
         text: data.response,
       };
       setMessages((m) => [...m, botMsg]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (err: unknown) {
       /* ---------- unified error handling ---------- */
-      const axiosErr = err as AxiosError<ChatErrorBody>;
       let msg = "Something went wrong. Please try again.";
 
-      if (axiosErr.response?.status === 429) {
-        const retry = axiosErr.response?.data?.retryAfterSeconds ?? 60;
-        setRateLimit({ blocked: true, retryAfter: retry });
-        msg = `Too many questions. Please wait ${retry}s before asking again.`;
-      } else if (axiosErr.response?.status === 401) {
-        msg = "You must be signed in to chat.";
-      } else if (axiosErr.response?.data?.response) {
-        msg = axiosErr.response.data.response; // server bot message
-      } else if (axiosErr.response?.data?.error) {
-        msg = axiosErr.response.data.error;
-      } else if (axiosErr.code === "ECONNABORTED") {
+      if (err instanceof HttpError) {
+        const body = err.body as ChatErrorBody | null;
+        if (err.status === 429) {
+          const retry = body?.retryAfterSeconds ?? 60;
+          setRateLimit({ blocked: true, retryAfter: retry });
+          msg = `Too many questions. Please wait ${retry}s before asking again.`;
+        } else if (err.status === 401) {
+          msg = "You must be signed in to chat.";
+        } else if (body?.response) {
+          msg = body.response; // server bot message
+        } else if (body?.error) {
+          msg = body.error;
+        }
+      } else if (isTimeoutError(err)) {
         msg = "Request timed out. Please try again.";
-      } else if (axiosErr.message) {
-        msg = axiosErr.message;
+      } else if (err instanceof Error && err.message) {
+        msg = err.message;
       }
 
       toast.error(msg);

@@ -30,7 +30,7 @@ import CreateComment from "@/components/custom/CreateComment";
 import { useUser } from "@clerk/nextjs";
 import EditProject from "@/components/custom/EditProject";
 import DeleteProject from "@/components/custom/DeleteProject";
-import { PersonalInfoType, ProjectsType } from "@/config/schema";
+import { PersonalInfoType } from "@/config/schema";
 import { handleShare } from "@/lib/utils";
 import { OptimizedProject } from "@/types/index.e";
 

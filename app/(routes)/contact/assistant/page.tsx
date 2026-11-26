@@ -17,13 +17,12 @@ const ContactAssistant = async () => {
             Let Me Help You With Your Concern
           </h3>
           <p className="text-neutral-500 dark:text-neutral-400">
-            Speak naturally. I'll take notes and notify John Carlo.
+            Speak naturally. I&apos;ll take notes and notify John Carlo.
           </p>
         </div>
 
         <Agent
           userName={user.name}
-          userId={user.userId}
           credits={user.remainingContactReq}
         />
       </div>

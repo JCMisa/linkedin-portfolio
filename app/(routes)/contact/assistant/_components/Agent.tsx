@@ -20,7 +20,7 @@ import { Card } from "@/components/ui/card";
 import { vapi } from "@/lib/vapi.sdk";
 import { configureAssistant } from "@/lib/vapi.config";
 // Axios for API calls and Sonner for popup notifications
-import axios from "axios";
+import { fetchJson, HttpError } from "@/lib/fetch-json";
 import { toast } from "sonner";
 
 // Import custom components and actions for handling the "Review" phase
@@ -31,7 +31,6 @@ import { useRouter } from "next/navigation";
 // Define what information the parent component must provide
 interface AgentProps {
   userName: string;
-  userId: string;
   credits: number;
 }
 
@@ -51,7 +50,7 @@ interface Message {
   content: string;
 }
 
-const Agent = ({ userName, userId, credits }: AgentProps) => {
+const Agent = ({ userName, credits }: AgentProps) => {
   const router = useRouter();
 
   // --- REFS (Mutable variables that don't trigger re-renders) ---
@@ -217,25 +216,21 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
     }
 
     try {
-      // UPDATE: Include userId in the payload
-      const response = await axios.post("/api/process-inquiry", {
-        messages: messagesRef.current,
-        userName: userNameRef.current,
-        userId: userId, // <--- Add this line
+      // The server identifies the user from the session
+      const data = await fetchJson<InquiryData>("/api/process-inquiry", {
+        json: {
+          messages: messagesRef.current,
+          userName: userNameRef.current,
+        },
       });
 
-      if (response.status === 200) {
-        setExtractedData(response.data);
-        setStatus("review");
-        toast.success("Inquiry processed successfully!");
-      } else {
-        toast.error("Failed to process conversation.");
-        setStatus("idle");
-      }
-    } catch (error: any) {
+      setExtractedData(data);
+      setStatus("review");
+      toast.success("Inquiry processed successfully!");
+    } catch (error: unknown) {
       console.error(error);
       // Handle the specific 403 Insufficient Credits error
-      if (axios.isAxiosError(error) && error.response?.status === 403) {
+      if (error instanceof HttpError && error.status === 403) {
         toast.error("You have no contact credits remaining.");
       } else {
         toast.error("An error occurred processing the call.");
@@ -435,7 +430,7 @@ const Agent = ({ userName, userId, credits }: AgentProps) => {
                     : "text-zinc-100",
                 )}
               >
-                "{transcript}"
+                &ldquo;{transcript}&rdquo;
               </p>
             </div>
           </div>

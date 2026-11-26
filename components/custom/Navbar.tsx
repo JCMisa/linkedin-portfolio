@@ -12,7 +12,6 @@ import {
   LaptopMinimalIcon,
   MenuIcon,
   PhoneIcon,
-  SearchIcon,
   UserIcon,
 } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";

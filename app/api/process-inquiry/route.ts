@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       // Remove markdown code blocks if Gemini adds them (e.g., ```json ... ```)
       const cleanJson = aiResponse.replace(/```json\n?|```/g, "").trim();
       structuredData = JSON.parse(cleanJson);
-    } catch (e) {
+    } catch {
       console.error("JSON Parse Error:", aiResponse);
       return NextResponse.json(
         { error: "AI processing failed" },
