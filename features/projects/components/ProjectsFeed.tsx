@@ -7,7 +7,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { useProjectsFeed } from "../hooks";
 import type { ProjectCategory } from "../schemas";
 import type { OptimizedProject } from "../types";
-import CreateProject from "./CreateProject";
+import ProjectFormDialog from "./ProjectFormDialog";
 import ProjectSearchFilter from "./ProjectSearchFilter";
 import ProjectsFeedList from "./ProjectsFeedList";
 
@@ -44,7 +44,7 @@ export default function ProjectsFeed({
         <Separator
           className={userRole === "admin" ? "!w-[93%] sm:!w-[95%]" : "w-full"}
         />
-        {userRole === "admin" && <CreateProject />}
+        {userRole === "admin" && <ProjectFormDialog />}
       </div>
 
       <ProjectsFeedList

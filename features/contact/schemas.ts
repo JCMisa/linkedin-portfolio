@@ -37,3 +37,15 @@ export const updateInquirySchema = z.object({
   summary: z.string().trim().min(1, "Summary is required").max(3000),
 });
 export type UpdateInquiryInput = z.input<typeof updateInquirySchema>;
+
+/** Contact page form (opens a pre-filled Gmail draft). */
+export const contactMessageSchema = z.object({
+  name: z.string().trim().min(1, "Please enter your name").max(100),
+  email: z.email("Enter a valid email"),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Message should be at least 10 characters")
+    .max(5000),
+});
+export type ContactMessageInput = z.input<typeof contactMessageSchema>;

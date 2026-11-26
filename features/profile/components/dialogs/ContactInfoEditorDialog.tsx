@@ -1,376 +1,168 @@
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import {
-  Loader2Icon,
-  MapPinIcon,
-  GlobeIcon,
-  MailIcon,
-  PhoneIcon,
-  LinkIcon,
-  XIcon,
-} from "lucide-react";
-import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa";
-import { useEffect, useState } from "react";
+"use client";
+
+import { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { ContactInfoInput } from "@/features/profile/schemas";
+import { EditorDialog } from "@/components/forms/EditorDialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { contactInfoSchema, type ContactInfoInput } from "../../schemas";
 
 interface ContactInfoEditorDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-
-  // address
-  currentCity: string;
-  currentProvince: string;
-  currentCountry: string;
-
-  // contact
-  currentEmail: string;
-  currentContactNumber: string;
-  currentLinkedinLink: string;
-  currentPortfolioLink: string;
-  currentGithubLink: string;
-  currentFacebookLink: string;
-  currentInstagramLink: string;
-  currentXLink: string;
-
+  values: ContactInfoInput;
+  /** Should throw on failure; the dialog shows the error and stays open. */
   onSave: (data: ContactInfoInput) => Promise<void>;
 }
+
+type FieldName = keyof ContactInfoInput;
+
+const SECTIONS: {
+  title: string;
+  fields: {
+    name: FieldName;
+    label: string;
+    placeholder: string;
+    type?: string;
+  }[];
+}[] = [
+  {
+    title: "Address",
+    fields: [
+      { name: "city", label: "City", placeholder: "e.g. San Pablo City" },
+      { name: "province", label: "Province", placeholder: "e.g. Laguna" },
+      { name: "country", label: "Country", placeholder: "e.g. Philippines" },
+    ],
+  },
+  {
+    title: "Contact",
+    fields: [
+      {
+        name: "email",
+        label: "Email",
+        placeholder: "email@example.com",
+        type: "email",
+      },
+      {
+        name: "contactNumber",
+        label: "Phone",
+        placeholder: "+63 9xx xxx xxxx",
+        type: "tel",
+      },
+    ],
+  },
+  {
+    title: "Links",
+    fields: [
+      {
+        name: "portfolioLink",
+        label: "Portfolio",
+        placeholder: "https://yourportfolio.com",
+      },
+      {
+        name: "linkedinLink",
+        label: "LinkedIn",
+        placeholder: "https://linkedin.com/in/username",
+      },
+      {
+        name: "githubLink",
+        label: "GitHub",
+        placeholder: "https://github.com/username",
+      },
+      {
+        name: "facebookLink",
+        label: "Facebook",
+        placeholder: "https://facebook.com/username",
+      },
+      {
+        name: "instagramLink",
+        label: "Instagram",
+        placeholder: "https://instagram.com/username",
+      },
+      {
+        name: "xLink",
+        label: "X (Twitter)",
+        placeholder: "https://x.com/username",
+      },
+    ],
+  },
+];
 
 const ContactInfoEditorDialog = ({
   open,
   onOpenChange,
-  currentCity,
-  currentProvince,
-  currentCountry,
-  currentEmail,
-  currentContactNumber,
-  currentLinkedinLink,
-  currentPortfolioLink,
-  currentGithubLink,
-  currentFacebookLink,
-  currentInstagramLink,
-  currentXLink,
+  values,
   onSave,
 }: ContactInfoEditorDialogProps) => {
-  const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState({
-    city: currentCity,
-    province: currentProvince,
-    country: currentCountry,
-    email: currentEmail,
-    contactNumber: currentContactNumber,
-    linkedinLink: currentLinkedinLink,
-    portfolioLink: currentPortfolioLink,
-    githubLink: currentGithubLink,
-    facebookLink: currentFacebookLink,
-    instagramLink: currentInstagramLink,
-    xLink: currentXLink,
+  const form = useForm<ContactInfoInput>({
+    resolver: zodResolver(contactInfoSchema),
+    defaultValues: values,
   });
 
   useEffect(() => {
-    if (open) {
-      setFormData({
-        city: currentCity,
-        province: currentProvince,
-        country: currentCountry,
-        email: currentEmail,
-        contactNumber: currentContactNumber,
-        linkedinLink: currentLinkedinLink,
-        portfolioLink: currentPortfolioLink,
-        githubLink: currentGithubLink,
-        facebookLink: currentFacebookLink,
-        instagramLink: currentInstagramLink,
-        xLink: currentXLink,
-      });
-    }
-  }, [
-    open,
-    currentCity,
-    currentProvince,
-    currentCountry,
-    currentEmail,
-    currentContactNumber,
-    currentLinkedinLink,
-    currentPortfolioLink,
-    currentGithubLink,
-    currentFacebookLink,
-    currentInstagramLink,
-    currentXLink,
-  ]);
+    if (open) form.reset(values);
+  }, [open, values, form]);
 
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
+  const onSubmit = form.handleSubmit(async (data) => {
     try {
-      await onSave(formData);
+      await onSave(data);
       onOpenChange(false);
     } catch (error) {
-      console.error("Error saving contact info:", error);
-      toast.error("Failed to save contact info. Please try again.");
-    } finally {
-      setIsSaving(false);
+      toast.error(error instanceof Error ? error.message : "Save failed");
     }
-  };
+  });
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col p-0">
-        <DialogHeader className="p-6 pb-2">
-          <DialogTitle>Edit Contact & Address Info</DialogTitle>
-          <DialogDescription>
-            Update your location and contact details. This information will be
-            visible to visitors on your profile.
-          </DialogDescription>
-        </DialogHeader>
-
-        <ScrollArea className="no-scrollbar flex-1 overflow-auto px-6">
-          <div className="space-y-6 py-4">
-            {/* Address Section */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 font-semibold text-primary">
-                <MapPinIcon className="size-4" />
-                <h3>Address Information</h3>
-              </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-1">
-                  <Label htmlFor="city" className="text-xs">
-                    City
-                  </Label>
-                  <Input
-                    id="city"
-                    placeholder="e.g. San Pablo City"
-                    value={formData.city}
-                    onChange={(e) => handleChange("city", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="province" className="text-xs">
-                    Province / State
-                  </Label>
-                  <Input
-                    id="province"
-                    placeholder="e.g. Laguna"
-                    value={formData.province}
-                    onChange={(e) => handleChange("province", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1 md:col-span-2">
-                  <Label htmlFor="country" className="text-xs">
-                    Country
-                  </Label>
-                  <Input
-                    id="country"
-                    placeholder="e.g. Philippines"
-                    value={formData.country}
-                    onChange={(e) => handleChange("country", e.target.value)}
-                  />
-                </div>
-              </div>
+    <Form {...form}>
+      <EditorDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Edit contact info"
+        description="How visitors can reach you."
+        onSubmit={onSubmit}
+        isSubmitting={form.formState.isSubmitting}
+        className="sm:max-w-2xl"
+      >
+        {SECTIONS.map((section) => (
+          <fieldset key={section.title} className="flex flex-col gap-3">
+            <legend className="mb-1 text-xs font-bold tracking-widest text-muted-foreground uppercase">
+              {section.title}
+            </legend>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {section.fields.map(({ name, label, placeholder, type }) => (
+                <FormField
+                  key={name}
+                  control={form.control}
+                  name={name}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type={type}
+                          placeholder={placeholder}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
             </div>
-
-            <Separator />
-
-            {/* Contact Section */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 font-semibold text-primary">
-                <MailIcon className="size-4" />
-                <h3>Contact Information</h3>
-              </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-1">
-                  <Label htmlFor="email" className="text-xs">
-                    Email Address
-                  </Label>
-                  <div className="relative">
-                    <MailIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      className="pl-9"
-                      placeholder="email@example.com"
-                      value={formData.email}
-                      onChange={(e) => handleChange("email", e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="contactNumber" className="text-xs">
-                    Phone Number
-                  </Label>
-                  <div className="relative">
-                    <PhoneIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      id="contactNumber"
-                      className="pl-9"
-                      placeholder="+63 9xx xxx xxxx"
-                      value={formData.contactNumber}
-                      onChange={(e) =>
-                        handleChange("contactNumber", e.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Social Links Section */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 font-semibold text-primary">
-                <GlobeIcon className="size-4" />
-                <h3>Social & Professional Links</h3>
-              </div>
-              <div className="grid grid-cols-1 gap-4">
-                <div className="space-y-1">
-                  <Label htmlFor="portfolio" className="text-xs">
-                    Portfolio Website
-                  </Label>
-                  <div className="relative">
-                    <LinkIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      id="portfolio"
-                      className="pl-9"
-                      placeholder="https://yourportfolio.com"
-                      value={formData.portfolioLink}
-                      onChange={(e) =>
-                        handleChange("portfolioLink", e.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="space-y-1">
-                    <Label htmlFor="linkedin" className="text-xs">
-                      LinkedIn Profile
-                    </Label>
-                    <div className="relative">
-                      <FaLinkedin className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        id="linkedin"
-                        className="pl-9"
-                        placeholder="https://linkedin.com/in/username"
-                        value={formData.linkedinLink}
-                        onChange={(e) =>
-                          handleChange("linkedinLink", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="github" className="text-xs">
-                      GitHub Profile
-                    </Label>
-                    <div className="relative">
-                      <FaGithub className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        id="github"
-                        className="pl-9"
-                        placeholder="https://github.com/username"
-                        value={formData.githubLink}
-                        onChange={(e) =>
-                          handleChange("githubLink", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="space-y-1">
-                    <Label htmlFor="facebook" className="text-xs">
-                      Facebook Profile
-                    </Label>
-                    <div className="relative">
-                      <FaFacebook className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        id="facebook"
-                        className="pl-9"
-                        placeholder="https://facebook.com/username"
-                        value={formData.facebookLink}
-                        onChange={(e) =>
-                          handleChange("facebookLink", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="instagram" className="text-xs">
-                      Instagram Profile
-                    </Label>
-                    <div className="relative">
-                      <FaInstagram className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        id="instagram"
-                        className="pl-9"
-                        placeholder="https://instagram.com/username"
-                        value={formData.instagramLink}
-                        onChange={(e) =>
-                          handleChange("instagramLink", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor="x" className="text-xs">
-                    X (Twitter) Profile
-                  </Label>
-                  <div className="relative">
-                    <XIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      id="x"
-                      className="pl-9"
-                      placeholder="https://x.com/username"
-                      value={formData.xLink}
-                      onChange={(e) => handleChange("xLink", e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </ScrollArea>
-
-        <DialogFooter className="p-6 pt-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSaving}
-          >
-            Cancel
-          </Button>
-          <Button disabled={isSaving} onClick={handleSave}>
-            {isSaving ? (
-              <>
-                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              "Save changes"
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </fieldset>
+        ))}
+      </EditorDialog>
+    </Form>
   );
 };
 

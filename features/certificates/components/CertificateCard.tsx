@@ -3,7 +3,7 @@
 import { memo } from "react";
 import Image from "next/image";
 import DeleteCertificate from "./DeleteCertificate";
-import EditCertificate from "./EditCertificate";
+import CertificateFormDialog from "./CertificateFormDialog";
 import {
   Dialog,
   DialogContent,
@@ -56,7 +56,7 @@ const CertificateCard = memo(
 
           {currentUser?.role === "admin" && (
             <div className="flex items-center gap-2">
-              <EditCertificate certificate={cert} />
+              <CertificateFormDialog certificate={cert} />
               <DeleteCertificate certificate={cert} />
             </div>
           )}

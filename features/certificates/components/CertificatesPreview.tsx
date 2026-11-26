@@ -1,4 +1,4 @@
-import CreateCertificate from "./CreateCertificate";
+import CertificateFormDialog from "./CertificateFormDialog";
 
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
@@ -21,7 +21,7 @@ const CertificatesPreview = async () => {
 
         {currentUser && currentUser.role === "admin" && (
           <div className="flex items-center gap-2">
-            <CreateCertificate />
+            <CertificateFormDialog />
           </div>
         )}
       </div>

@@ -25,6 +25,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+/** Matches the server-side limit in createCommentSchema. */
+const COMMENT_MAX = 2000;
+
 const CreateComment = ({
   projectId,
   initialComments,
@@ -97,9 +100,16 @@ const CreateComment = ({
             disabled={!isLoaded || !user || isSubmitting}
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            maxLength={COMMENT_MAX}
+            aria-label="Comment"
             className="min-h-[60px] w-full resize-none rounded-lg border border-gray-600 p-2 text-xs focus:ring-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-400"
           />
-          <div className="mt-2 flex justify-end">
+          <div className="mt-2 flex items-center justify-end gap-3">
+            {content.length > COMMENT_MAX * 0.8 && (
+              <span className="text-xs text-muted-foreground">
+                {content.length}/{COMMENT_MAX}
+              </span>
+            )}
             <button
               onClick={handleSubmit}
               disabled={!content.trim() || isSubmitting || !user}

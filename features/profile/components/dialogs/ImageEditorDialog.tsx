@@ -1,181 +1,77 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/ui/file-upload";
-import Image from "next/image";
-import { uploadImageFile } from "@/lib/upload-image";
-import type { UploadFolder } from "@/lib/upload-folders";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Trash2Icon, Loader2Icon } from "lucide-react";
+import { EditorDialog } from "@/components/forms/EditorDialog";
+import { ImageUploadField } from "@/components/forms/ImageUploadField";
+import type { UploadFolder } from "@/lib/upload-folders";
 
 interface ImageEditorDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   currentImageUrl: string | null;
+  /** Receives the new URL, or null to remove the image. Should throw on failure. */
   onSave: (imageUrl: string | null) => Promise<void>;
   title: string;
   description?: string;
   folder?: UploadFolder;
 }
 
+/** Replace or remove a single image (profile photo, cover photo). */
 export const ImageEditorDialog = ({
   open,
   onOpenChange,
   currentImageUrl,
   onSave,
   title,
-  description = "Upload a new image or delete the current one",
+  description = "Upload a new image or remove the current one.",
   folder = "jcm",
 }: ImageEditorDialogProps) => {
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(
-    currentImageUrl,
-  );
-  const [isUploading, setIsUploading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(currentImageUrl);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  // Sync with currentImageUrl when dialog opens
+  // Start from the saved image each time the dialog opens
   useEffect(() => {
-    if (open) {
-      setUploadedImageUrl(currentImageUrl);
-    }
+    if (open) setImageUrl(currentImageUrl);
   }, [open, currentImageUrl]);
 
-  // Reset state when dialog opens/closes
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!newOpen) {
-      // Reset to current image when closing
-      setUploadedImageUrl(currentImageUrl);
-    }
-    onOpenChange(newOpen);
-  };
-
-  const handleFileUpload = async (uploadedFiles: File[]) => {
-    if (uploadedFiles.length === 0) return;
-
-    setIsUploading(true);
-
+  const handleSubmit = async (e?: React.BaseSyntheticEvent) => {
+    e?.preventDefault();
+    setSaving(true);
     try {
-      const file = uploadedFiles[0];
-      const imageUrl = await uploadImageFile(file, folder);
-
-      if (imageUrl) {
-        setUploadedImageUrl(imageUrl);
-        toast.success("Image uploaded successfully!");
-      } else {
-        toast.error("Failed to upload image");
-      }
+      await onSave(imageUrl);
+      onOpenChange(false);
     } catch (error) {
-      console.error("Error uploading image:", error);
-      toast.error("Failed to upload image. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Save failed");
     } finally {
-      setIsUploading(false);
+      setSaving(false);
     }
   };
-
-  const handleDelete = () => {
-    setUploadedImageUrl(null);
-    toast.info("Image marked for deletion. Click Save to confirm.");
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      await onSave(uploadedImageUrl);
-      toast.success("Image updated successfully!");
-      handleOpenChange(false);
-    } catch (error) {
-      console.error("Error saving image:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to save image. Please try again.";
-      toast.error(errorMessage);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const hasChanges = uploadedImageUrl !== currentImageUrl;
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
-
-        <div className="no-scrollbar h-[30rem] space-y-4 overflow-y-auto">
-          {/* Current/Preview Image */}
-          <div className="relative h-64 w-full overflow-hidden rounded-lg border bg-neutral-100 dark:bg-neutral-800">
-            {uploadedImageUrl ? (
-              <Image
-                src={uploadedImageUrl}
-                alt="Preview"
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                <p>No image</p>
-              </div>
-            )}
-          </div>
-
-          {/* File Upload */}
-          <div className="space-y-2">
-            <FileUpload onChange={handleFileUpload} />
-            {isUploading && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2Icon className="size-4 animate-spin" />
-                <span>Uploading image...</span>
-              </div>
-            )}
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center justify-between gap-2">
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={!uploadedImageUrl || isSaving}
-              className="flex items-center gap-2"
-            >
-              <Trash2Icon className="size-4" />
-              Delete Image
-            </Button>
-
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleOpenChange(false)}
-                disabled={isSaving}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                onClick={handleSave}
-                disabled={!hasChanges || isSaving || isUploading}
-                className="flex items-center gap-2"
-              >
-                {isSaving && <Loader2Icon className="size-4 animate-spin" />}
-                Save Changes
-              </Button>
-            </div>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <EditorDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description={description}
+      onSubmit={handleSubmit}
+      isSubmitting={saving}
+      submitDisabled={uploading || imageUrl === currentImageUrl}
+    >
+      <ImageUploadField
+        value={imageUrl}
+        onChange={setImageUrl}
+        folder={folder}
+        onUploadingChange={setUploading}
+        allowClear
+        previewClassName="h-56"
+      />
+      {!imageUrl && currentImageUrl && (
+        <p className="text-xs text-muted-foreground">
+          The current image will be removed when you save.
+        </p>
+      )}
+    </EditorDialog>
   );
 };

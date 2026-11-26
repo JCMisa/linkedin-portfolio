@@ -5,9 +5,17 @@ import { z } from "zod";
 export const PROJECT_CATEGORIES = ["software", "virtual", "others"] as const;
 export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number];
 
-/** An optional URL field: "" (empty input) is allowed and stored as null. */
+/**
+ * An optional URL field: "" (empty input) is allowed and stored as null.
+ * Also accepts null so parsing is idempotent (the form resolver parses once,
+ * the server action parses the result again).
+ */
 const optionalUrl = z
-  .union([z.url({ message: "Enter a valid URL (https://…)" }), z.literal("")])
+  .union([
+    z.url({ message: "Enter a valid URL (https://…)" }),
+    z.literal(""),
+    z.null(),
+  ])
   .optional()
   .transform((v) => v || null);
 

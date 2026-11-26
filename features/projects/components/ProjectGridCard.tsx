@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import DeleteProject from "./DeleteProject";
-import EditProject from "./EditProject";
+import ProjectFormDialog from "./ProjectFormDialog";
 import { Button } from "@/components/ui/button";
 import { LinkPreview } from "@/components/ui/link-preview";
 import { EyeIcon, GlobeIcon, MoreHorizontalIcon } from "lucide-react";
@@ -33,7 +33,7 @@ const ProjectGridCard = memo(
             </div>
             {currentUserRole === "admin" && (
               <div className="flex items-center gap-2">
-                <EditProject project={project} />
+                <ProjectFormDialog project={project} />
                 <DeleteProject project={project} />
               </div>
             )}

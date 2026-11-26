@@ -1,308 +1,70 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { FileUpload } from "@/components/ui/file-upload";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import Image from "next/image";
-import { uploadImageFile } from "@/lib/upload-image";
+import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Loader2Icon, CalendarIcon, XIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import type { z } from "zod";
+import { EditorDialog } from "@/components/forms/EditorDialog";
+import { Form } from "@/components/ui/form";
+import { experienceSchema, type ExperienceInput } from "../../schemas";
+import { ExperienceFields } from "./ExperienceFields";
 
-type ExperienceType = {
-  id: string;
-  title: string;
-  description: string;
-  bannerImg: string;
-  dateFrom: string;
-  dateTo: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-};
+type ExperienceOutput = z.output<typeof experienceSchema>;
 
 interface SingleExperienceEditorDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  experience: ExperienceType;
-  onSave: (updatedExperience: ExperienceType) => Promise<void>;
+  experience: ExperienceInput;
+  /** Should throw on failure; the dialog shows the error and stays open. */
+  onSave: (experience: ExperienceOutput) => Promise<void>;
+  title?: string;
 }
 
+/** Add or edit one work experience. */
 export const SingleExperienceEditorDialog = ({
   open,
   onOpenChange,
-  experience: initialExperience,
+  experience,
   onSave,
+  title = "Edit experience",
 }: SingleExperienceEditorDialogProps) => {
-  const [experience, setExperience] =
-    useState<ExperienceType>(initialExperience);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const form = useForm<ExperienceInput, unknown, ExperienceOutput>({
+    resolver: zodResolver(experienceSchema),
+    defaultValues: experience,
+  });
 
   useEffect(() => {
-    if (open) {
-      setExperience({ ...initialExperience });
-    }
-  }, [open, initialExperience]);
+    if (open) form.reset(experience);
+  }, [open, experience, form]);
 
-  const updateField = <K extends keyof ExperienceType>(
-    field: K,
-    value: ExperienceType[K],
-  ) => {
-    setExperience((prev) => ({
-      ...prev,
-      [field]: value,
-      updatedAt: new Date(),
-    }));
-  };
-
-  const handleBannerUpload = async (files: File[]) => {
-    if (files.length === 0) return;
-
-    setIsUploading(true);
+  const onSubmit = form.handleSubmit(async (values) => {
     try {
-      const file = files[0];
-      const imageUrl = await uploadImageFile(file, "jcm/experiences");
-
-      if (imageUrl) {
-        updateField("bannerImg", imageUrl);
-        toast.success("Banner image uploaded successfully!");
-      } else {
-        toast.error("Failed to upload banner image");
-      }
-    } catch (error) {
-      console.error("Error uploading banner image:", error);
-      toast.error("Failed to upload banner image. Please try again.");
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleSave = async () => {
-    if (!experience.title.trim() || !experience.description.trim()) {
-      toast.error("Please fill in all required fields (title and description)");
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      await onSave(experience);
+      await onSave({ ...values, updatedAt: new Date() });
       onOpenChange(false);
     } catch (error) {
-      console.error("Error saving experience:", error);
-      toast.error("Failed to save experience. Please try again.");
-    } finally {
-      setIsSaving(false);
+      toast.error(error instanceof Error ? error.message : "Save failed");
     }
-  };
+  });
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
-        <DialogHeader>
-          <DialogTitle>Edit Experience</DialogTitle>
-          <DialogDescription>
-            Update the details of this experience
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="no-scrollbar flex-1 space-y-6 overflow-y-auto py-4 pr-2">
-          {/* Title */}
-          <div className="space-y-2">
-            <Label htmlFor="title">
-              Title <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="title"
-              value={experience.title}
-              onChange={(e) => updateField("title", e.target.value)}
-              placeholder="e.g., Frontend Developer at Company"
-            />
-          </div>
-
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">
-              Description <span className="text-destructive">*</span>
-            </Label>
-            <Textarea
-              id="description"
-              value={experience.description}
-              onChange={(e) => updateField("description", e.target.value)}
-              placeholder="Describe your role and responsibilities..."
-              rows={6}
-            />
-          </div>
-
-          {/* Date Range */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Start Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !experience.dateFrom && "text-muted-foreground",
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 size-4" />
-                    {experience.dateFrom ? (
-                      format(new Date(experience.dateFrom), "PPP")
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    captionLayout="dropdown"
-                    selected={
-                      experience.dateFrom
-                        ? new Date(experience.dateFrom)
-                        : undefined
-                    }
-                    onSelect={(date) =>
-                      updateField(
-                        "dateFrom",
-                        date ? format(date, "yyyy-MM-dd") : "",
-                      )
-                    }
-                    autoFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="space-y-2">
-              <Label>
-                End Date{" "}
-                <span className="text-[9px] text-muted-foreground">
-                  (Leave empty for &lsquo;Present&rsquo;)
-                </span>
-              </Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !experience.dateTo && "text-muted-foreground",
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 size-4" />
-                    {experience.dateTo ? (
-                      format(new Date(experience.dateTo), "PPP")
-                    ) : (
-                      <span>Present</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    captionLayout="dropdown"
-                    selected={
-                      experience.dateTo
-                        ? new Date(experience.dateTo)
-                        : undefined
-                    }
-                    onSelect={(date) =>
-                      updateField(
-                        "dateTo",
-                        date ? format(date, "yyyy-MM-dd") : "",
-                      )
-                    }
-                    autoFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              {experience.dateTo && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 px-2 text-xs text-muted-foreground"
-                  onClick={() => updateField("dateTo", "")}
-                >
-                  Clear End Date
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* Banner Image */}
-          <div className="space-y-2">
-            <Label>Banner Image</Label>
-            {experience.bannerImg ? (
-              <div className="relative h-48 w-full overflow-hidden rounded-lg border">
-                <Image
-                  src={experience.bannerImg}
-                  alt={`Banner for ${experience.title}`}
-                  fill
-                  className="object-cover"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-2 right-2"
-                  onClick={() => updateField("bannerImg", "")}
-                >
-                  <XIcon className="size-4" />
-                </Button>
-              </div>
-            ) : (
-              <div className="relative">
-                <FileUpload onChange={handleBannerUpload} />
-                {isUploading && (
-                  <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/80">
-                    <Loader2Icon className="size-6 animate-spin text-primary" />
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <DialogFooter className="border-t pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSaving}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            onClick={handleSave}
-            disabled={isSaving}
-            className="flex items-center gap-2"
-          >
-            {isSaving && <Loader2Icon className="size-4 animate-spin" />}
-            Save Changes
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <Form {...form}>
+      <EditorDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        title={title}
+        description="Leave the end date empty if this is your current role."
+        onSubmit={onSubmit}
+        isSubmitting={form.formState.isSubmitting}
+        submitDisabled={uploading}
+        className="sm:max-w-2xl"
+      >
+        <ExperienceFields
+          control={form.control}
+          onUploadingChange={setUploading}
+        />
+      </EditorDialog>
+    </Form>
   );
 };

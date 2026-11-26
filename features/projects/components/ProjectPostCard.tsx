@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/tooltip";
 import CreateComment from "./CreateComment";
 import { useUser } from "@clerk/nextjs";
-import EditProject from "./EditProject";
+import ProjectFormDialog from "./ProjectFormDialog";
 import DeleteProject from "./DeleteProject";
 import { PersonalInfoType } from "@/db/schema";
 import { handleShare } from "@/lib/utils";
@@ -112,7 +112,7 @@ const ProjectPostCard = ({
         <div className="flex items-center gap-2">
           {userRole === "admin" && (
             <>
-              <EditProject project={project} />
+              <ProjectFormDialog project={project} />
               <DeleteProject project={project} />
             </>
           )}

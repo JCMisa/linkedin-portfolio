@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
+import { updateInquirySchema } from "../schemas";
+
 import { CheckCircle2, Pencil, Save, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,6 +22,9 @@ export interface InquiryData {
   summary: string;
 }
 
+const reviewSchema = updateInquirySchema.omit({ id: true });
+type ReviewInput = z.input<typeof reviewSchema>;
+
 interface InquiryReviewProps {
   data: InquiryData;
   onCancel: () => void;
@@ -25,23 +32,28 @@ interface InquiryReviewProps {
 }
 
 const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
-  const [formData, setFormData] = useState<InquiryData>(data);
-  const [isSaving, setIsSaving] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting: isSaving },
+  } = useForm<ReviewInput>({
+    resolver: zodResolver(reviewSchema),
+    defaultValues: {
+      visitorName: data.visitorName,
+      email: data.email ?? "",
+      phoneNumber: data.phoneNumber ?? "",
+      purpose: data.purpose,
+      summary: data.summary,
+    },
+  });
 
-  const handleChange = (field: keyof InquiryData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleConfirm = async () => {
-    setIsSaving(true);
+  const handleConfirm = handleSubmit(async (values) => {
     try {
-      await onSave(formData);
+      await onSave({ ...data, ...values });
     } catch {
       toast.error("Failed to save changes.");
-    } finally {
-      setIsSaving(false);
     }
-  };
+  });
 
   return (
     <Card className="relative flex h-[80vh] max-h-[800px] min-h-[500px] w-full animate-in flex-col overflow-y-auto rounded-3xl border border-border bg-card p-6 shadow-2xl duration-300 zoom-in-95 fade-in">
@@ -66,22 +78,32 @@ const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
               Name <Pencil className="h-3 w-3 opacity-50" />
             </label>
             <Input
-              value={formData.visitorName}
-              onChange={(e) => handleChange("visitorName", e.target.value)}
+              {...register("visitorName")}
+              aria-invalid={!!errors.visitorName}
               className="bg-muted/30 transition-colors focus:bg-background"
               placeholder="Your Name"
             />
+            {errors.visitorName && (
+              <p className="text-xs text-destructive">
+                {errors.visitorName.message}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase">
               Purpose <Pencil className="h-3 w-3 opacity-50" />
             </label>
             <Input
-              value={formData.purpose}
-              onChange={(e) => handleChange("purpose", e.target.value)}
+              {...register("purpose")}
+              aria-invalid={!!errors.purpose}
               className="bg-muted/30 transition-colors focus:bg-background"
               placeholder="Reason for calling"
             />
+            {errors.purpose && (
+              <p className="text-xs text-destructive">
+                {errors.purpose.message}
+              </p>
+            )}
           </div>
         </div>
 
@@ -92,22 +114,30 @@ const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
               Email <Pencil className="h-3 w-3 opacity-50" />
             </label>
             <Input
-              value={formData.email || ""}
-              onChange={(e) => handleChange("email", e.target.value)}
+              {...register("email")}
+              aria-invalid={!!errors.email}
               className="bg-muted/30 transition-colors focus:bg-background"
               placeholder="example@gmail.com"
             />
+            {errors.email && (
+              <p className="text-xs text-destructive">{errors.email.message}</p>
+            )}
           </div>
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase">
               Phone <Pencil className="h-3 w-3 opacity-50" />
             </label>
             <Input
-              value={formData.phoneNumber || ""}
-              onChange={(e) => handleChange("phoneNumber", e.target.value)}
+              {...register("phoneNumber")}
+              aria-invalid={!!errors.phoneNumber}
               className="bg-muted/30 transition-colors focus:bg-background"
               placeholder="+1 234 567 890"
             />
+            {errors.phoneNumber && (
+              <p className="text-xs text-destructive">
+                {errors.phoneNumber.message}
+              </p>
+            )}
           </div>
         </div>
 
@@ -117,10 +147,13 @@ const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
             Conversation Summary <Pencil className="h-3 w-3 opacity-50" />
           </label>
           <Textarea
-            value={formData.summary}
-            onChange={(e) => handleChange("summary", e.target.value)}
+            {...register("summary")}
+            aria-invalid={!!errors.summary}
             className="min-h-[120px] resize-none bg-muted/30 leading-relaxed transition-colors focus:bg-background"
           />
+          {errors.summary && (
+            <p className="text-xs text-destructive">{errors.summary.message}</p>
+          )}
         </div>
       </div>
 

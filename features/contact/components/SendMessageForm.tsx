@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { contactMessageSchema, type ContactMessageInput } from "../schemas";
 import { toast } from "sonner";
 import { PersonalInfoType } from "@/db/schema";
 import { Button } from "@/components/ui/button";
@@ -20,19 +22,17 @@ interface SendMessageFormProps {
 }
 
 const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [isSending, setIsSending] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting: isSending },
+  } = useForm<ContactMessageInput>({
+    resolver: zodResolver(contactMessageSchema),
+    defaultValues: { name: "", email: "", message: "" },
+  });
 
-  const handleSend = () => {
-    if (!name.trim() || !email.trim() || !message.trim()) {
-      toast.error("Please fill in all fields.");
-      return;
-    }
-
-    setIsSending(true);
-
+  const handleSend = handleSubmit(({ name, email, message }) => {
     try {
       const subject = `Portfolio Inquiry: Message from ${name}`;
       const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
@@ -44,19 +44,12 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
       window.open(gmailUrl, "_blank");
       toast.success("Draft prepared in Gmail!");
 
-      // Clear form after slight delay
-      setTimeout(() => {
-        setName("");
-        setEmail("");
-        setMessage("");
-        setIsSending(false);
-      }, 500);
+      reset();
     } catch (error) {
       console.error("Error preparing message:", error);
       toast.error("Failed to prepare message. Please try again.");
-      setIsSending(false);
     }
-  };
+  });
 
   return (
     <div className="space-y-6 rounded-xl border border-neutral-200 bg-neutral-100 p-6 shadow-sm sm:p-8 dark:border-neutral-800 dark:bg-dark">
@@ -84,10 +77,13 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             type="text"
             id="name"
             placeholder="John Doe"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            {...register("name")}
+            aria-invalid={!!errors.name}
             className="border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
           />
+          {errors.name && (
+            <p className="text-xs text-destructive">{errors.name.message}</p>
+          )}
         </div>
 
         <div className="space-y-1.5">
@@ -102,10 +98,13 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             type="email"
             id="email"
             placeholder="your@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register("email")}
+            aria-invalid={!!errors.email}
             className="border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
           />
+          {errors.email && (
+            <p className="text-xs text-destructive">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="space-y-1.5">
@@ -119,10 +118,13 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
           <Textarea
             id="message"
             placeholder="What project or collaboration do you have in mind?"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            {...register("message")}
+            aria-invalid={!!errors.message}
             className="min-h-[150px] resize-none border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
           />
+          {errors.message && (
+            <p className="text-xs text-destructive">{errors.message.message}</p>
+          )}
         </div>
       </div>
 

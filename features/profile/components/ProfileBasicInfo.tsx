@@ -30,8 +30,7 @@ import {
   updateContactInfo,
 } from "@/features/profile/actions";
 import { PersonalInfoType } from "@/db/schema";
-import NameEditorDialog from "@/features/profile/components/dialogs/NameEditorDialog";
-import IndustryRoleEditorDialog from "@/features/profile/components/dialogs/IndustryRoleEditorDialog";
+import { TextFieldEditorDialog } from "@/features/profile/components/dialogs/TextFieldEditorDialog";
 import ResumeEditorDialog from "@/features/profile/components/dialogs/ResumeEditorDialog";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
@@ -466,16 +465,23 @@ const ProfileBasicInfo = ({
             currentExperiences={personalInfo.experiences ?? []}
             onSave={handleExperiencesSave}
           />
-          <NameEditorDialog
+          <TextFieldEditorDialog
             open={isNameDialogOpen}
             onOpenChange={setIsNameDialogOpen}
-            currentName={personalInfo?.name || ""}
+            title="Edit name"
+            label="Name"
+            value={personalInfo.name}
+            maxLength={100}
             onSave={handleNameSave}
           />
-          <IndustryRoleEditorDialog
+          <TextFieldEditorDialog
             open={isIndustryRoleDialogOpen}
             onOpenChange={setIsIndustryRoleDialogOpen}
-            currentIndustryRole={personalInfo?.industryRole || ""}
+            title="Edit industry role"
+            label="Industry role"
+            placeholder="e.g. Front-End Developer"
+            value={personalInfo.industryRole}
+            maxLength={150}
             onSave={handleIndustryRoleSave}
           />
           <ResumeEditorDialog
@@ -488,19 +494,19 @@ const ProfileBasicInfo = ({
           <ContactInfoEditorDialog
             open={isContactInfoDialogOpen}
             onOpenChange={setIsContactInfoDialogOpen}
-            // address
-            currentCity={personalInfo?.city || ""}
-            currentProvince={personalInfo?.province || ""}
-            currentCountry={personalInfo?.country || ""}
-            // contact
-            currentEmail={personalInfo?.email || ""}
-            currentContactNumber={personalInfo?.contactNumber || ""}
-            currentLinkedinLink={personalInfo?.linkedinLink || ""}
-            currentPortfolioLink={personalInfo?.portfolioLink || ""}
-            currentGithubLink={personalInfo?.githubLink || ""}
-            currentFacebookLink={personalInfo?.facebookLink || ""}
-            currentInstagramLink={personalInfo?.instagramLink || ""}
-            currentXLink={personalInfo?.xLink || ""}
+            values={{
+              city: personalInfo.city,
+              province: personalInfo.province,
+              country: personalInfo.country,
+              email: personalInfo.email,
+              contactNumber: personalInfo.contactNumber,
+              linkedinLink: personalInfo.linkedinLink,
+              portfolioLink: personalInfo.portfolioLink,
+              githubLink: personalInfo.githubLink,
+              facebookLink: personalInfo.facebookLink,
+              instagramLink: personalInfo.instagramLink,
+              xLink: personalInfo.xLink,
+            }}
             onSave={handleContactInfoSave}
           />
         </>

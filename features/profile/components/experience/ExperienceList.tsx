@@ -270,6 +270,7 @@ const ExperienceList = ({
               Add Experience
             </Button>
             <SingleExperienceEditorDialog
+              title="Add experience"
               open={isAddDialogOpen}
               onOpenChange={setIsAddDialogOpen}
               experience={{

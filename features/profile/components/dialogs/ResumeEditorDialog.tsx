@@ -1,28 +1,37 @@
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Loader2Icon } from "lucide-react";
-import { useEffect, useState } from "react";
+"use client";
+
+import { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import type { z } from "zod";
+import { EditorDialog } from "@/components/forms/EditorDialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { resumeSchema } from "../../schemas";
+
+type ResumeInput = z.input<typeof resumeSchema>;
 
 interface ResumeEditorDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   currentITResumeLink: string;
   currentVAResumeLink: string;
-  onSave: (
-    updatedITResumeLink: string,
-    updatedVAResumeLink: string,
-  ) => Promise<void>;
+  /** Should throw on failure; the dialog shows the error and stays open. */
+  onSave: (itResumeLink: string, vaResumeLink: string) => Promise<void>;
 }
+
+const FIELDS = [
+  { name: "itResumeLink", label: "IT resume link" },
+  { name: "vaResumeLink", label: "Virtual assistant resume link" },
+] as const;
 
 const ResumeEditorDialog = ({
   open,
@@ -31,109 +40,54 @@ const ResumeEditorDialog = ({
   currentVAResumeLink,
   onSave,
 }: ResumeEditorDialogProps) => {
-  const [isSaving, setIsSaving] = useState(false);
-  const [itResumeLink, setItResumeLink] = useState(currentITResumeLink);
-  const [vaResumeLink, setVaResumeLink] = useState(currentVAResumeLink);
+  const form = useForm<ResumeInput>({ resolver: zodResolver(resumeSchema) });
 
   useEffect(() => {
     if (open) {
-      setItResumeLink(currentITResumeLink);
-      setVaResumeLink(currentVAResumeLink);
+      form.reset({
+        itResumeLink: currentITResumeLink,
+        vaResumeLink: currentVAResumeLink,
+      });
     }
-  }, [open, currentITResumeLink, currentVAResumeLink]);
+  }, [open, currentITResumeLink, currentVAResumeLink, form]);
 
-  const isValidUrl = (url: string) => {
+  const onSubmit = form.handleSubmit(async (values) => {
     try {
-      // Try as is
-      new URL(url);
-      return true;
-    } catch {
-      try {
-        // Try adding https:// if protocol is missing
-        new URL(`https://${url}`);
-        return true;
-      } catch {
-        return false;
-      }
-    }
-  };
-
-  const handleSave = async () => {
-    if (!itResumeLink.trim() || !vaResumeLink.trim()) {
-      toast.error(
-        "Please fill in all required fields (IT Resume Link and VA Resume Link)",
-      );
-      return;
-    }
-
-    if (!isValidUrl(itResumeLink)) {
-      toast.error("Please enter a valid URL for IT Resume Link");
-      return;
-    }
-
-    if (!isValidUrl(vaResumeLink)) {
-      toast.error("Please enter a valid URL for VA Resume Link");
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      await onSave(itResumeLink, vaResumeLink);
+      await onSave(values.itResumeLink, values.vaResumeLink);
       onOpenChange(false);
     } catch (error) {
-      console.error("Error saving resume:", error);
-      toast.error("Failed to save resume. Please try again.");
-    } finally {
-      setIsSaving(false);
+      toast.error(error instanceof Error ? error.message : "Save failed");
     }
-  };
+  });
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Resumes</DialogTitle>
-          <DialogDescription>
-            Make changes to your resumes here. Click save to confirm your
-            changes.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col items-start gap-1">
-            <Label htmlFor="itResume" className="text-xs">
-              IT Resume Link
-            </Label>
-            <Input
-              id="itResume"
-              value={itResumeLink}
-              onChange={(e) => setItResumeLink(e.target.value)}
-              className="w-full"
-            />
-          </div>
-
-          <div className="flex flex-col items-start gap-1">
-            <Label htmlFor="vaResume" className="text-xs">
-              VA Resume Link
-            </Label>
-            <Input
-              id="vaResume"
-              value={vaResumeLink}
-              onChange={(e) => setVaResumeLink(e.target.value)}
-              className="w-full"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button disabled={isSaving} onClick={handleSave}>
-            {isSaving ? (
-              <Loader2Icon className="h-4 w-4 animate-spin" />
-            ) : (
-              "Save changes"
+    <Form {...form}>
+      <EditorDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Edit resumes"
+        description="Links to the resumes visitors can download."
+        onSubmit={onSubmit}
+        isSubmitting={form.formState.isSubmitting}
+      >
+        {FIELDS.map(({ name, label }) => (
+          <FormField
+            key={name}
+            control={form.control}
+            name={name}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{label}</FormLabel>
+                <FormControl>
+                  <Input placeholder="/Resume.pdf or https://..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          />
+        ))}
+      </EditorDialog>
+    </Form>
   );
 };
 

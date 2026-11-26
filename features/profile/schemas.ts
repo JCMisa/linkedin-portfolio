@@ -46,16 +46,28 @@ export const servicesSchema = z.object({
   services: z.array(z.string().trim().min(1).max(100)).max(50),
 });
 
-export const experienceSchema = z.object({
-  id: z.string().min(1),
-  title: z.string().trim().min(1, "Title is required").max(200),
-  description: z.string().trim().max(5000),
-  bannerImg: z.string().trim().max(1000),
-  dateFrom: z.string().max(50),
-  dateTo: z.string().max(50),
-  createdAt: jsonDate,
-  updatedAt: jsonDate,
-});
+/** Experience dates are stored as "yyyy-MM-dd" strings; "" = not set. */
+const isoDay = z.union([
+  z.literal(""),
+  z.string().regex(/^\d{4}-\d{2}-\d{2}/, "Use a valid date"),
+]);
+
+export const experienceSchema = z
+  .object({
+    id: z.string().min(1),
+    title: z.string().trim().min(1, "Title is required").max(200),
+    description: z.string().trim().max(5000),
+    bannerImg: z.string().trim().max(1000),
+    dateFrom: isoDay,
+    dateTo: isoDay, // "" means "Present"
+    createdAt: jsonDate,
+    updatedAt: jsonDate,
+  })
+  .refine((e) => !e.dateFrom || !e.dateTo || e.dateTo >= e.dateFrom, {
+    message: "End date can't be before the start date",
+    path: ["dateTo"],
+  });
+export type ExperienceInput = z.input<typeof experienceSchema>;
 export const experiencesSchema = z.object({
   experiences: z.array(experienceSchema).max(100),
 });
