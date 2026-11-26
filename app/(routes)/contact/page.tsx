@@ -1,104 +1,24 @@
-import { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+import type { Metadata } from "next";
 import SendMessageForm from "@/features/contact/components/SendMessageForm";
 import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-import { env } from "@/lib/env";
-export async function generateMetadata(): Promise<Metadata> {
-  const title = "Contact | John Carlo Misa";
-
-  const description =
-    "Get in touch with John Carlo Misa – based in San Pablo City, Philippines. " +
-    "Book a call, email jcmisa.dev@gmail.com, or DM on LinkedIn/Twitter. " +
-    "Freelance web/mobile development, AI integrations, virtual assistance, and more.";
-
-  const siteUrl = env.NEXT_PUBLIC_SITE_URL;
-
-  return {
-    title,
-    description,
-    authors: [{ name: "John Carlo Misa", url: siteUrl }],
-    creator: "John Carlo Misa",
-    publisher: "John Carlo Misa",
-    keywords: [
-      "John Carlo Misa contact",
-      "hire freelance developer Philippines",
-      "San Pablo Laguna web developer",
-      "Next.js freelancer for hire",
-      "React Native app developer",
-      "AWS serverless consultant",
-      "AI integration services",
-      "virtual assistant developer",
-      "full-stack engineer hire",
-      "freelance quote request",
-      "book discovery call",
-      "Calendly jcmisa",
-      "LinkedIn DM John Carlo Misa",
-      "Philippines remote developer",
-      "urgent web development",
-      "mobile app freelancer",
-      "Neon Drizzle ORM expert",
-      ".NET Web API contractor",
-      "Gemini API integration",
-      "Stripe Clerk Auth setup",
-      "contact form portfolio",
-      "24 hr response guarantee",
-    ],
-    openGraph: {
-      title,
-      description,
-      url: `${siteUrl}/contact`,
-      siteName: "John Carlo Misa – Contact & Booking",
-      images: [
-        {
-          url: `${siteUrl}/og/logo.png`, // 1200×630, < 500 kB
-          width: 1200,
-          height: 630,
-          alt: "Let’s work together – John Carlo Misa contact page",
-        },
-      ],
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      site: "@jcmisa_dev",
-      creator: "@jcmisa_dev",
-      title,
-      description,
-      images: [`${siteUrl}/og/logo.png`],
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
-    alternates: {
-      canonical: `${siteUrl}/contact`,
-    },
-    manifest: "/site.webmanifest",
-    other: {
-      "msapplication-TileColor": "#0f172a",
-      "theme-color": "#0f172a",
-      "email:primary": "jcmisa.dev@gmail.com",
-      "phone:ph": "+639071816666",
-      "linkedin:message":
-        "https://www.linkedin.com/in/john-carlo-misa-80a1b5208",
-      "twitter:dm": "https://x.com/jcmisa_dev",
-      "whatsapp:chat": "https://wa.me/639071816666",
-      "response:time": "24 hours",
-      "timezone:manila": "UTC+8",
-    },
-  };
-}
+export const metadata: Metadata = pageMetadata({
+  title: "Contact",
+  description:
+    "Hire John Carlo Misa for web, mobile and AI development or virtual assistance. Send a message or talk to the AI voice assistant. Based in the Philippines.",
+  path: "/contact",
+  keywords: [
+    "hire full-stack developer",
+    "freelance developer Philippines",
+    "Next.js freelancer",
+    "AI integration services",
+    "virtual assistant",
+  ],
+});
 
 const ContactPage = async () => {
   const personalInfo: PersonalInfoType | null = await getPersonalInfo();

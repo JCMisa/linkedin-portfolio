@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { pageMetadata, siteConfig, toMetaDescription } from "@/lib/seo";
 import { z } from "zod";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +23,31 @@ import {
 
 interface ProjectDetailsPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ProjectDetailsPageProps): Promise<Metadata> {
+  const { id } = await params;
+  if (!z.uuid().safeParse(id).success) return {};
+
+  // Same cached query as the page below, so this costs no extra round trip
+  const project = await getProjectById(id);
+  if (!project) return { title: "Project not found" };
+
+  return pageMetadata({
+    title: project.title,
+    description:
+      toMetaDescription(project.description) ||
+      `${project.title}, a project by ${siteConfig.name}.`,
+    path: `/projects/${project.id}`,
+    type: "article",
+    keywords: project.techStacks ?? undefined,
+    // Project screenshot as the share image; falls back to the site OG image
+    image: project.image
+      ? { url: project.image, alt: project.title }
+      : undefined,
+  });
 }
 
 const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {

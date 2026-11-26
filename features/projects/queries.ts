@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import {
   and,
   count,
@@ -19,14 +20,22 @@ import type { OptimizedProject } from "./types";
 export const getLatestProjects = (limit: number) =>
   db.select().from(Projects).orderBy(desc(Projects.createdAt)).limit(limit);
 
-export const getProjectById = async (projectId: string) => {
+/** Cached per request: generateMetadata and the page share one query. */
+export const getProjectById = cache(async (projectId: string) => {
   const [project] = await db
     .select()
     .from(Projects)
     .where(eq(Projects.id, projectId))
     .limit(1);
   return project ?? null;
-};
+});
+
+/** Lightweight list for the sitemap. */
+export const getProjectSitemapEntries = () =>
+  db
+    .select({ id: Projects.id, updatedAt: Projects.updatedAt })
+    .from(Projects)
+    .orderBy(desc(Projects.createdAt));
 
 export const getLikeCount = async () => {
   const [row] = await db.select({ value: count() }).from(Likes);

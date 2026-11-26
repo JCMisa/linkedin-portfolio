@@ -9,10 +9,11 @@ const isPublicRoute = createRouteMatcher([
   "/experiences(.*)",
   "/profile(.*)",
   "/contact",
-  "/Resume-IT.pdf(.*)",
-  "/Resume-VA-General.pdf(.*)",
+  // SEO files (crawlers and link previews are never signed in)
   "/sitemap.xml",
   "/robots.txt",
+  "/opengraph-image(.*)",
+  "/twitter-image(.*)",
   "/api/webhooks(.*)",
   // Public read APIs (they check the session themselves where it matters)
   "/api/projects(.*)",

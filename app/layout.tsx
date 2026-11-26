@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
@@ -8,13 +8,58 @@ import AIChatbot from "@/features/chatbot/components/AIChatbot";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { shadcn } from "@clerk/ui/themes";
+import { siteConfig } from "@/lib/seo";
 
+// Icons come from app/favicon.ico, app/icon.svg and app/apple-icon.png;
+// social previews from app/opengraph-image.tsx and app/twitter-image.tsx;
+// the manifest from app/manifest.ts (all wired by Next's file conventions).
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "JCM",
-    template: "%s | JCM",
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: "My portfolio inspired on Linkedin",
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  openGraph: {
+    type: "website",
+    url: "/",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    locale: siteConfig.locale,
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: siteConfig.twitter,
+    creator: siteConfig.twitter,
+    title: siteConfig.title,
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  appleWebApp: { title: siteConfig.shortName, statusBarStyle: "default" },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: siteConfig.colors.light },
+    { media: "(prefers-color-scheme: dark)", color: siteConfig.colors.dark },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({

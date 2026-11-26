@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import VoiceAgent from "@/features/contact/components/VoiceAgent";
 import { redirect } from "next/navigation";
 
 import { getSessionUser } from "@/lib/auth";
+export const metadata: Metadata = {
+  title: "AI Assistant",
+  robots: { index: false, follow: false },
+};
+
 const ContactAssistant = async () => {
   const user = await getSessionUser();
 
