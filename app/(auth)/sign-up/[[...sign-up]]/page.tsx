@@ -9,7 +9,10 @@ export const metadata: Metadata = {
 
 const SignupPage = () => {
   return (
-    <main className="mt-36 flex min-h-screen items-center justify-center sm:mt-20">
+    <main
+      id="main-content"
+      className="mt-36 flex min-h-screen items-center justify-center sm:mt-20"
+    >
       <SignUp fallback={<AuthCardSkeleton />} />
     </main>
   );

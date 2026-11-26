@@ -19,7 +19,7 @@ const ProfileStats = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
         </div>
 
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold">Github Link</p>
+          <p className="text-xs font-bold">GitHub</p>
           <LinkPreview
             url={personalInfo.githubLink || "https://github.com/JCMisa"}
             className="text-xs font-semibold text-primary"

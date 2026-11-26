@@ -22,15 +22,19 @@ const CertificateCard = memo(
     currentUser: UserType | null;
   }) => {
     return (
-      <div className="flex h-full w-full flex-col space-y-4 rounded-lg border border-transparent bg-muted p-4 transition-all hover:border-border">
+      <article className="flex h-full w-full flex-col space-y-4 rounded-lg border border-transparent bg-muted p-4 transition-all hover:border-border">
         {/* header view and actions */}
         <div className="flex w-full items-center justify-between gap-4">
           <Dialog>
             <DialogTrigger asChild>
-              <div className="flex cursor-pointer items-center justify-center gap-1 rounded-full border border-input px-4 py-1 text-[10px] font-bold tracking-tight text-muted-foreground uppercase transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground">
+              <button
+                type="button"
+                aria-label={`View ${cert.title} certificate`}
+                className="flex cursor-pointer items-center justify-center gap-1 rounded-full border border-input px-4 py-1 text-[10px] font-bold tracking-tight text-muted-foreground uppercase transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground"
+              >
                 <EyeIcon className="size-3" />
                 View
-              </div>
+              </button>
             </DialogTrigger>
             <DialogContent
               showCloseButton={false}
@@ -65,7 +69,7 @@ const CertificateCard = memo(
         <div className="relative h-48 w-full overflow-hidden rounded-lg">
           <Image
             src={cert.image || "/empty-img.webp"}
-            alt="certificate-preview"
+            alt={`${cert.title} certificate`}
             fill
             className="object-cover object-top transition-transform duration-500 hover:scale-105"
           />
@@ -74,9 +78,12 @@ const CertificateCard = memo(
         {/* info */}
         <div className="flex flex-grow flex-col items-start gap-1">
           <div className="flex w-full items-start justify-between gap-2">
-            <p className="text-md line-clamp-1 font-bold tracking-tight text-foreground">
+            <h2
+              title={cert.title}
+              className="line-clamp-2 text-base font-semibold text-foreground"
+            >
               {cert.title}
-            </p>
+            </h2>
           </div>
           <p className="text-[10px] font-medium tracking-wider text-primary uppercase">
             {cert.acquiredDate
@@ -91,7 +98,7 @@ const CertificateCard = memo(
             {cert.description || "No description provided."}
           </p>
         </div>
-      </div>
+      </article>
     );
   },
 );

@@ -10,7 +10,7 @@ const ProfileMotto = () => {
       <div className="ml-6 flex items-center gap-1">
         <Image
           src={"/jcm-logo.svg"}
-          alt="brand-logo"
+          alt="JCM logo"
           width={1000}
           height={1000}
           className="h-4 w-4"

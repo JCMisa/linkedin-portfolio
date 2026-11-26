@@ -66,7 +66,10 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
   if (!project) notFound();
 
   return (
-    <main className="min-h-screen bg-secondary/30 px-4 py-13 md:px-10 lg:px-16 lg:py-17">
+    <main
+      id="main-content"
+      className="min-h-screen bg-secondary/30 px-4 py-13 md:px-10 lg:px-16 lg:py-17"
+    >
       <div className="mx-auto max-w-6xl">
         {/* Back Button */}
         <Link
@@ -74,7 +77,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
           className="group mb-6 flex w-fit items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
         >
           <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
-          <span className="text-sm font-medium">Back to Feed</span>
+          <span className="text-sm font-medium">Back to feed</span>
         </Link>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -152,6 +155,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                   <Link
                     href={project.liveLink}
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-2.5 font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
                   >
                     <Globe className="size-4" />
@@ -162,6 +166,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                   <Link
                     href={project.githubLink}
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="flex w-full items-center justify-center gap-2 rounded-full border border-primary py-2.5 font-semibold text-primary transition-colors hover:bg-primary/5"
                   >
                     <FaGithub className="size-4" />

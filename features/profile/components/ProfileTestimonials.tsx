@@ -177,7 +177,7 @@ const ProfileTestimonials = async ({ userRole }: { userRole: string }) => {
                 <div className="flex h-full items-start gap-2">
                   <Image
                     src={item.profileImg || "/empty-img.webp"}
-                    alt="profile"
+                    alt=""
                     width={100}
                     height={100}
                     className="size-10 shrink-0 rounded-full object-cover"

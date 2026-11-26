@@ -45,13 +45,18 @@ const DeleteProject = ({ project }: { project: ProjectType }) => {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <button className="flex items-center justify-center">
-          <TrashIcon className="size-3 cursor-pointer transition-colors hover:text-destructive" />
+        <button
+          type="button"
+          aria-label="Delete project"
+          title="Delete project"
+          className="flex cursor-pointer items-center justify-center rounded-full p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-destructive"
+        >
+          <TrashIcon className="size-3.5" />
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Delete this project?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete this
             project and remove related data from the servers.

@@ -34,14 +34,16 @@ const LatestWorkExperience = ({
     <div className="flex w-full flex-col items-start gap-4 rounded-lg border border-transparent bg-card p-4 shadow-sm transition-all duration-300 hover:border-border dark:hover:border-border">
       <div className="flex w-full items-center justify-between">
         <h2 className="text-sm font-bold tracking-tight text-foreground">
-          Latest Work Experience
+          Latest work experience
         </h2>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href={"/experiences"}>
-              <div className="rounded-full p-1 transition-colors hover:bg-accent">
-                <ChevronRightIcon className="size-5 text-muted-foreground" />
-              </div>
+            <Link
+              href="/experiences"
+              aria-label="View all experiences"
+              className="rounded-full p-1 transition-colors hover:bg-accent"
+            >
+              <ChevronRightIcon className="size-5 text-muted-foreground" />
             </Link>
           </TooltipTrigger>
           <TooltipContent>

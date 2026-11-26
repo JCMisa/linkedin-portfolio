@@ -29,9 +29,13 @@ export default function GlobalError({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <main className="flex min-h-screen items-center justify-center px-4">
+        <main
+          id="main-content"
+          className="flex min-h-screen items-center justify-center px-4"
+        >
           <div className="w-full max-w-md rounded-lg border bg-card">
             <EmptyState
+              titleAs="h1"
               icon={TriangleAlertIcon}
               title="Something went wrong"
               description="The site hit an unexpected error. Please try again in a moment."

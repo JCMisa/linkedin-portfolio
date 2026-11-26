@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Tooltip,
   TooltipContent,
@@ -165,34 +166,47 @@ const AIChatbot = () => {
   const Trigger = !user ? (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Image
-          src="/machine.webp"
-          alt="Pixel art pumpkin computer with bat wings"
-          width={50}
-          height={50}
-          className="image-pixelated opacity-50 grayscale hover:cursor-not-allowed"
-          style={{
-            maxWidth: "100%",
-            height: "auto",
-          }}
-        />
+        {/* Signed out: the robot links to sign-in instead of doing nothing */}
+        <Link
+          href="/sign-in"
+          aria-label="Sign in to chat with JCM AI"
+          className="block rounded-md"
+        >
+          <Image
+            src="/machine.webp"
+            alt=""
+            width={50}
+            height={50}
+            className="image-pixelated opacity-50 grayscale"
+            style={{
+              maxWidth: "100%",
+              height: "auto",
+            }}
+          />
+        </Link>
       </TooltipTrigger>
       <TooltipContent side="left" className="bg-card">
         <p>Sign in to unlock JCM AI</p>
       </TooltipContent>
     </Tooltip>
   ) : (
-    <Image
-      src="/machine.webp"
-      alt="Pixel art pumpkin computer with bat wings"
-      width={50}
-      height={50}
-      className="image-pixelated cursor-pointer"
-      style={{
-        maxWidth: "100%",
-        height: "auto",
-      }}
-    />
+    <button
+      type="button"
+      aria-label="Chat with JCM AI"
+      className="block cursor-pointer rounded-md"
+    >
+      <Image
+        src="/machine.webp"
+        alt=""
+        width={50}
+        height={50}
+        className="image-pixelated"
+        style={{
+          maxWidth: "100%",
+          height: "auto",
+        }}
+      />
+    </button>
   );
 
   /* ---------- chat body ---------- */
@@ -278,7 +292,8 @@ const AIChatbot = () => {
           type="submit"
           size="icon"
           disabled={loading || rateLimit.blocked}
-          className="shrink-0 rounded-full bg-primary hover:bg-primary"
+          aria-label="Send message"
+          className="shrink-0 rounded-full"
         >
           <SendIcon className="h-4 w-4 text-primary-foreground" />
         </Button>
@@ -309,7 +324,7 @@ const AIChatbot = () => {
       {/* Mobile */}
       {user && isMobile && (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger>{Trigger}</DialogTrigger>
+          <DialogTrigger asChild>{Trigger}</DialogTrigger>
           <DialogContent className="h-screen max-h-none w-screen max-w-none gap-0 rounded-none p-0">
             <DialogHeader className="hidden">
               <DialogTitle>Chat</DialogTitle>

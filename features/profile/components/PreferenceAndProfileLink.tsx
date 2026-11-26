@@ -27,7 +27,7 @@ const PreferenceAndProfileLink = () => {
     <div className="flex flex-col rounded-lg bg-card">
       <Image
         src="/profile-banner.gif"
-        alt="pixelated gif of person working"
+        alt=""
         unoptimized
         width={1000}
         height={1000}

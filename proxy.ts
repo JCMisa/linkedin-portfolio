@@ -1,27 +1,20 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPublicRoute = createRouteMatcher([
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/",
-  "/certificates(.*)",
-  "/projects(.*)",
-  "/experiences(.*)",
-  "/profile(.*)",
-  "/contact",
-  // SEO files (crawlers and link previews are never signed in)
-  "/sitemap.xml",
-  "/robots.txt",
-  "/opengraph-image(.*)",
-  "/twitter-image(.*)",
-  "/api/webhooks(.*)",
-  // Public read APIs (they check the session themselves where it matters)
-  "/api/projects(.*)",
-  "/api/users",
+/**
+ * The site is public by default; only these need a signed-in user.
+ * (Protecting "everything else" turned unknown URLs into sign-in redirects
+ * instead of 404s.) Each route below also checks the session itself, and
+ * every server action calls requireUser/requireAdmin, so this is defense in
+ * depth rather than the only gate.
+ */
+const isProtectedRoute = createRouteMatcher([
+  "/contact/assistant(.*)",
+  "/api/chat(.*)",
+  "/api/process-inquiry(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
-  if (!isPublicRoute(request)) {
+  if (isProtectedRoute(request)) {
     await auth.protect();
   }
 });

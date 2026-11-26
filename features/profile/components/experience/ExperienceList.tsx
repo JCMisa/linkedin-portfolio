@@ -119,9 +119,9 @@ const ExperienceItem = ({
               <BriefcaseIcon className="h-6 w-6 text-primary" />
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="text-sm leading-tight font-semibold text-foreground sm:text-base">
+              <h2 className="text-sm leading-tight font-semibold text-foreground sm:text-base">
                 {experience.title}
-              </h3>
+              </h2>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span className="flex items-center gap-1 text-xs text-muted-foreground sm:text-sm">
                   <CalendarIcon className="h-3.5 w-3.5" />
@@ -261,7 +261,7 @@ const ExperienceList = ({
       <div className="flex items-center justify-between p-4 pb-0 sm:p-6 sm:pb-0">
         <div className="flex items-center gap-2">
           <BriefcaseIcon className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground">Experience</h2>
+          <h1 className="text-xl font-semibold text-foreground">Experience</h1>
         </div>
         {/* <span className="text-xs text-muted-foreground">
           {experiences.length} position{experiences.length !== 1 ? "s" : ""}
@@ -274,7 +274,7 @@ const ExperienceList = ({
               className="gap-2"
             >
               <PlusIcon className="size-4" />
-              Add Experience
+              Add experience
             </Button>
             <SingleExperienceEditorDialog
               title="Add experience"
@@ -332,12 +332,14 @@ const ExperienceContentWrapper = ({
         <div className="ml-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <div
-                className="h-8 w-8 flex-none rounded-full p-2 hover:bg-accent"
+              <button
+                type="button"
+                aria-label="Edit experience"
+                className="size-8 flex-none cursor-pointer rounded-full p-2 hover:bg-accent"
                 onClick={() => setIsDialogOpen(true)}
               >
                 <PenBoxIcon className="size-4 text-muted-foreground" />
-              </div>
+              </button>
             </TooltipTrigger>
             <TooltipContent>
               <p>Edit Experience</p>

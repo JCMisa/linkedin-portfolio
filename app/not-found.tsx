@@ -8,9 +8,13 @@ export const metadata: Metadata = { title: "Page not found" };
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-4 pt-14">
+    <main
+      id="main-content"
+      className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-4 pt-14"
+    >
       <div className="w-full max-w-md rounded-lg border bg-card">
         <EmptyState
+          titleAs="h1"
           icon={CompassIcon}
           title="This page doesn't exist"
           description="The link may be broken, or the page may have been removed."

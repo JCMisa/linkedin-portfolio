@@ -28,7 +28,7 @@ const CertificatePreviewCard = ({ cert }: { cert: CertificatesType }) => {
     <div className="flex w-full items-start gap-2 overflow-hidden p-2">
       <Image
         src={cert.image || "/empty-img.webp"}
-        alt={`certificate-${cert.title}`}
+        alt=""
         width={100}
         height={100}
         className="h-14 w-14 rounded-full object-cover"
@@ -65,7 +65,7 @@ const CertificatePreviewCard = ({ cert }: { cert: CertificatesType }) => {
             <div className="relative w-full">
               <Image
                 src={cert.image || "/empty-img.webp"}
-                alt={`certificate-${cert.title}-full`}
+                alt={`${cert.title} certificate`}
                 width={1000}
                 height={1000}
                 className="h-auto max-h-[80vh] w-full rounded-lg object-contain shadow-2xl"

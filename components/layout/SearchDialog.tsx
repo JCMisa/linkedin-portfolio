@@ -51,7 +51,7 @@ const SearchDialog = ({
           <SearchIcon className="opacity-50" />
           {query
             ? paths.find((path) => path.value === query)?.label
-            : "Search page..."}
+            : "Search pages…"}
         </Button>
       </PopoverTrigger>
       <PopoverContent className={cn("w-[280px] p-0", contentClassName)}>

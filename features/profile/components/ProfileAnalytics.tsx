@@ -28,11 +28,9 @@ const ProfileAnalytics = ({
         <div className="flex items-start gap-2">
           <UsersIcon className="size-5" />
           <div className="flex flex-col items-start gap-[2px]">
-            <p className="text-sm font-bold">
-              {numberOfUsers || 0} Profile Signin
-            </p>
+            <p className="text-sm font-bold">{numberOfUsers || 0} members</p>
             <span className="text-xs">
-              Discover how many people signed in on my profile.
+              People who signed in to explore my portfolio.
             </span>
           </div>
         </div>
@@ -41,10 +39,10 @@ const ProfileAnalytics = ({
           <ThumbsUpIcon className="size-5" />
           <div className="flex flex-col items-start gap-[2px]">
             <p className="text-sm font-bold">
-              {numberOfPostLikes || 0} Project likes
+              {numberOfPostLikes || 0} project likes
             </p>
             <span className="text-xs">
-              Checkout who&apos;s engaging with my projects.
+              Check out who&apos;s engaging with my projects.
             </span>
           </div>
         </div>
@@ -53,7 +51,7 @@ const ProfileAnalytics = ({
           <MessageSquareMoreIcon className="size-5" />
           <div className="flex flex-col items-start gap-[2px]">
             <p className="text-sm font-bold">
-              {numberOfPostComments || 0} Project comments
+              {numberOfPostComments || 0} project comments
             </p>
             <span className="text-xs">
               See how often my projects get comments.

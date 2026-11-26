@@ -15,7 +15,7 @@ const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
         <div className="relative h-16 w-full sm:h-20">
           <Image
             src={personalInfo.coverImg || "/empty-img.webp"}
-            alt="cover-img"
+            alt=""
             width={1000}
             height={1000}
             className="h-full w-full rounded-t-lg object-cover"
@@ -30,7 +30,7 @@ const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
         {personalInfo.profileImg ? (
           <Image
             src={personalInfo.profileImg || "/empty-img.webp"}
-            alt="cover-img"
+            alt=""
             width={1000}
             height={1000}
             className="h-16 w-16 rounded-full border-4 border-card bg-accent object-fill dark:border-dark"

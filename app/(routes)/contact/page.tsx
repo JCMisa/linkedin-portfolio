@@ -28,14 +28,16 @@ const ContactPage = async () => {
   }
 
   return (
-    <main className="min-h-screen bg-muted pt-16">
+    <main id="main-content" className="min-h-screen bg-muted pt-16">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <h1 className="sr-only">Contact John Carlo Misa</h1>
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left Side: Map & Contact Info */}
           <div className="space-y-6 lg:w-2/3">
             <div className="relative h-[400px] overflow-hidden rounded-xl border border-border bg-card shadow-sm lg:h-[500px]">
               <iframe
-                title="map"
+                title={`Map of ${personalInfo.city}, ${personalInfo.country}`}
+                loading="lazy"
                 width="100%"
                 height="100%"
                 src={`https://maps.google.com/maps?q=${personalInfo.city},${personalInfo.country}&t=&z=11&ie=UTF8&iwloc=&output=embed`}
@@ -44,7 +46,7 @@ const ContactPage = async () => {
               />
               <div className="absolute right-4 bottom-4 left-4 flex flex-col justify-between gap-4 rounded-lg border border-border bg-card/90 p-4 shadow-lg backdrop-blur-sm sm:flex-row sm:items-center">
                 <div className="space-y-1">
-                  <h3 className="font-bold text-foreground">Location</h3>
+                  <h2 className="font-bold text-foreground">Location</h2>
                   <p className="text-sm text-muted-foreground">
                     {personalInfo.city}, {personalInfo.province},{" "}
                     {personalInfo.country}
@@ -63,9 +65,9 @@ const ContactPage = async () => {
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                <h3 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
-                  Direct Contact
-                </h3>
+                <h2 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
+                  Direct contact
+                </h2>
                 <div className="space-y-3">
                   <div className="flex flex-col">
                     <span className="text-xs text-muted-foreground">Email</span>
@@ -89,9 +91,9 @@ const ContactPage = async () => {
               </div>
 
               <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                <h3 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
-                  Follow Me
-                </h3>
+                <h2 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
+                  Follow me
+                </h2>
                 <div className="flex flex-wrap gap-4">
                   {[
                     { label: "LinkedIn", href: personalInfo.linkedinLink },

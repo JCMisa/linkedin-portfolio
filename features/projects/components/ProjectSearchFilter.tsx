@@ -11,7 +11,7 @@ import { Dispatch, SetStateAction } from "react";
 
 const categorizations = [
   { id: 1, title: "Software & AI", key: "software", icon: BrainCircuitIcon },
-  { id: 2, title: "Design & Assitance", key: "virtual", icon: PaletteIcon },
+  { id: 2, title: "Design & Assistance", key: "virtual", icon: PaletteIcon },
   { id: 3, title: "Others", key: "others", icon: LayoutDashboardIcon },
 ];
 
@@ -51,7 +51,7 @@ export default function ProjectSearchFilter({
         )}
 
         <Input
-          placeholder="Search a project"
+          placeholder="Search projects"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="h-[48px] rounded-full border-input bg-transparent"

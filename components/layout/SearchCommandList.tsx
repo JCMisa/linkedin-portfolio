@@ -22,7 +22,7 @@ export default function SearchCommandList({
 }) {
   return (
     <Command>
-      <CommandInput placeholder="Search page..." className="h-9" />
+      <CommandInput placeholder="Search pages…" className="h-9" />
       <CommandList>
         <CommandEmpty>No path found.</CommandEmpty>
         <CommandGroup>

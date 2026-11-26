@@ -81,7 +81,7 @@ const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
               {...register("visitorName")}
               aria-invalid={!!errors.visitorName}
               className="bg-muted/30 transition-colors focus:bg-background"
-              placeholder="Your Name"
+              placeholder="Your name"
             />
             {errors.visitorName && (
               <p className="text-xs text-destructive">
@@ -168,7 +168,7 @@ const InquiryReview = ({ data, onCancel, onSave }: InquiryReviewProps) => {
           className="min-w-[140px]"
         >
           {isSaving ? (
-            <>Saving...</>
+            <>Saving…</>
           ) : (
             <>
               <Save className="mr-2 h-4 w-4" /> Confirm & Send

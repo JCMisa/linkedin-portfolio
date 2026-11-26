@@ -10,6 +10,8 @@ interface EmptyStateProps {
   action?: ReactNode;
   /** "compact" for inline lists (comments, reactions); "default" for sections and pages. */
   size?: "default" | "compact";
+  /** Heading level for the title; use "h1" when the empty state is the whole page. */
+  titleAs?: "h1" | "h2" | "h3" | "p";
   className?: string;
 }
 
@@ -23,6 +25,7 @@ export function EmptyState({
   description,
   action,
   size = "default",
+  titleAs: Title = "p",
   className,
 }: EmptyStateProps) {
   const compact = size === "compact";
@@ -46,14 +49,14 @@ export function EmptyState({
         </div>
       )}
       <div className="max-w-sm space-y-1">
-        <p
+        <Title
           className={cn(
             "font-semibold text-foreground",
             compact ? "text-sm" : "text-base",
           )}
         >
           {title}
-        </p>
+        </Title>
         {description && (
           <p
             className={cn(

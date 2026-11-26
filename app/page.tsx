@@ -26,12 +26,19 @@ export default async function Home() {
   const userRole = currentUser && currentUser.role ? currentUser.role : "user";
 
   return (
-    <main className="relative px-6 py-14 md:px-10 lg:px-16 lg:py-18">
+    <main
+      id="main-content"
+      className="relative px-6 py-14 md:px-10 lg:px-16 lg:py-18"
+    >
       <JsonLd data={personJsonLd()} />
+      <h1 className="sr-only">John Carlo Misa: projects feed</h1>
       <div className="relative mx-auto max-w-7xl">
-        <div className="fixed hidden w-[240px] rounded-lg lg:block">
+        <aside
+          aria-label="Profile summary"
+          className="fixed hidden w-[240px] rounded-lg lg:block"
+        >
           <ProfileSection personalInfo={personalInfo as PersonalInfoType} />
-        </div>
+        </aside>
 
         <div className="flex flex-col gap-6 py-5 lg:flex-row lg:py-0 lg:pl-[265px]">
           <div className="w-full rounded-lg lg:max-w-[640px]">
@@ -42,7 +49,10 @@ export default async function Home() {
             />
           </div>
 
-          <div className="flex w-full flex-col gap-2 rounded-lg lg:w-[320px]">
+          <aside
+            aria-label="Activity and certificates"
+            className="flex w-full flex-col gap-2 rounded-lg lg:w-[320px]"
+          >
             <ProfessionalActivities
               personalInfo={personalInfo as PersonalInfoType}
             />
@@ -53,7 +63,7 @@ export default async function Home() {
                 <Footer />
               </div>
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </main>

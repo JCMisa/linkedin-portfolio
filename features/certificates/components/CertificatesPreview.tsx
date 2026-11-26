@@ -45,7 +45,7 @@ const CertificatesPreview = async () => {
         href={"/certificates"}
         className="flex w-full items-center gap-1 px-4"
       >
-        <p className="text-xs leading-[16px]">View All Certificates</p>
+        <p className="text-xs leading-[16px]">View all certificates</p>
         <ArrowRightIcon className="size-3" />
       </Link>
     </div>

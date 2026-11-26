@@ -56,7 +56,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
       <div className="space-y-1">
         <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
           <MessageSquareIcon className="size-5 text-primary" />
-          Send Message
+          Send a message
         </h2>
         <p className="text-sm text-muted-foreground">
           I typically respond within 24 hours. Let&apos;s build something
@@ -71,7 +71,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             className="flex items-center gap-2 text-sm font-semibold"
           >
             <UserIcon className="size-3.5 text-muted-foreground" />
-            Full Name
+            Full name
           </Label>
           <Input
             type="text"
@@ -92,7 +92,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             className="flex items-center gap-2 text-sm font-semibold"
           >
             <MailIcon className="size-3.5 text-muted-foreground" />
-            Email Address
+            Email address
           </Label>
           <Input
             type="email"
@@ -113,7 +113,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             className="flex items-center gap-2 text-sm font-semibold"
           >
             <MessageSquareIcon className="size-3.5 text-muted-foreground" />
-            Your Message
+            Message
           </Label>
           <Textarea
             id="message"
@@ -138,7 +138,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
         ) : (
           <span className="flex items-center gap-2">
             <SendIcon className="size-4" />
-            Send Inquiry
+            Send inquiry
           </span>
         )}
       </Button>

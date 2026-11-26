@@ -2,9 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import {
-  ChevronDownIcon,
   ChevronRightIcon,
-  DotIcon,
   EarthIcon,
   EyeIcon,
   MessageSquareMoreIcon,
@@ -15,6 +13,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   Popover,
   PopoverContent,
@@ -32,6 +31,23 @@ import { DeleteProject, ProjectFormDialog } from "./admin-dialogs";
 import { PersonalInfoType } from "@/db/schema";
 import { shareProject } from "../lib/share";
 import { OptimizedProject } from "@/features/projects/types";
+import { cn } from "@/lib/utils";
+
+/** LinkedIn-style action bar button: icon over label on mobile, side by side from sm. */
+const actionClass =
+  "flex flex-1 flex-col items-center justify-center gap-0.5 rounded-md px-2 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:opacity-50 sm:flex-row sm:gap-1.5 sm:text-sm";
+
+/** "3d" style age, like LinkedIn posts. */
+function postAge(createdAt: Date | string) {
+  const days = Math.max(
+    1,
+    Math.ceil((Date.now() - new Date(createdAt).getTime()) / 86_400_000),
+  );
+  if (days < 7) return `${days}d`;
+  if (days < 30) return `${Math.floor(days / 7)}w`;
+  if (days < 365) return `${Math.floor(days / 30)}mo`;
+  return `${Math.floor(days / 365)}y`;
+}
 
 const ProjectPostCard = ({
   project,
@@ -44,15 +60,22 @@ const ProjectPostCard = ({
 }) => {
   const { user } = useUser();
 
-  // 1. Initialize state directly from Server Props (No useEffect needed!)
+  // Initialized from server props; reconciled after each like toggle
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [isLiked, setIsLiked] = useState(project.hasLiked);
   const [likesCount, setLikesCount] = useState(project.likesCount);
   const [isLoading, setIsLoading] = useState(false);
 
+  const titleId = `project-${project.id}-title`;
+  const commentsId = `project-${project.id}-comments`;
+
   const handleLikeClick = async () => {
-    if (!user || isLoading) return;
+    if (isLoading) return;
+    if (!user) {
+      toast.info("Sign in to like projects.");
+      return;
+    }
 
     setIsLoading(true);
     // Optimistic update
@@ -69,7 +92,6 @@ const ProjectPostCard = ({
         setIsLiked(result.data.liked);
         setLikesCount(result.data.likesCount);
       } else {
-        // Revert on failure
         setIsLiked(previousIsLiked);
         setLikesCount(previousCount);
       }
@@ -82,33 +104,43 @@ const ProjectPostCard = ({
     }
   };
 
+  const externalLinks = [
+    { label: "GitHub", href: project.githubLink, primary: false },
+    { label: "Live demo", href: project.liveLink, primary: true },
+  ];
+
   return (
-    <div className="flex w-full flex-col items-start gap-3 overflow-hidden rounded-lg border border-transparent bg-card px-3 py-2 transition-all hover:border-border">
-      {/* 2. Header: Latest Commenter (Now instant from Props) */}
+    <article
+      aria-labelledby={titleId}
+      className="flex w-full flex-col items-start gap-3 overflow-hidden rounded-lg border bg-card px-3 py-2"
+    >
+      {/* Header: latest commenter */}
       <div className="flex w-full items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           {project.latestCommenter ? (
             <>
               <Image
                 src={project.latestCommenter.image || "/empty-img.webp"}
-                alt="commenter"
+                alt=""
                 width={24}
                 height={24}
-                className="h-6 w-6 rounded-full object-cover"
+                className="size-6 shrink-0 rounded-full object-cover"
               />
-              <p className="text-[9px]">
-                {project.latestCommenter.name}{" "}
-                <span className="text-muted-foreground">
-                  recently commented on this
-                </span>
+              <p className="truncate text-xs">
+                <span className="font-semibold">
+                  {project.latestCommenter.name}
+                </span>{" "}
+                <span className="text-muted-foreground">commented on this</span>
               </p>
             </>
           ) : (
-            <p className="text-[9px] text-muted-foreground">No comments yet</p>
+            <p className="text-xs text-muted-foreground">
+              Be the first to comment
+            </p>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           {userRole === "admin" && (
             <>
               <ProjectFormDialog project={project} />
@@ -117,12 +149,16 @@ const ProjectPostCard = ({
           )}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href={`/projects`}>
+              <Link
+                href="/projects"
+                aria-label="More projects"
+                className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
                 <ChevronRightIcon className="size-4" />
               </Link>
             </TooltipTrigger>
             <TooltipContent>
-              <p>More Projects</p>
+              <p>More projects</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -130,190 +166,186 @@ const ProjectPostCard = ({
 
       <Separator />
 
-      {/* 3. Content Header */}
-      <div className="flex w-full items-center justify-between px-2">
-        <div className="flex items-start gap-2">
+      {/* Author + title */}
+      <div className="flex w-full items-start justify-between gap-2 px-2">
+        <div className="flex min-w-0 items-start gap-2">
           <Image
             src={personalInfo.profileImg || "/empty-img.webp"}
-            alt={personalInfo.name}
+            alt=""
             width={48}
             height={48}
-            className="h-12 w-12 flex-none rounded-full object-cover"
+            className="size-12 flex-none rounded-full object-cover"
           />
-          <div className="flex max-w-[80%] flex-col">
-            <p className="text-sm font-bold capitalize">{project.title}</p>
-            <span className="text-xs text-muted-foreground">
+          <div className="flex min-w-0 flex-col">
+            <h2
+              id={titleId}
+              className="line-clamp-2 text-sm font-semibold text-foreground capitalize"
+            >
+              <Link
+                href={`/projects/${project.id}`}
+                className="hover:text-primary hover:underline"
+              >
+                {project.title}
+              </Link>
+            </h2>
+            <p className="line-clamp-1 text-xs text-muted-foreground">
               {project.techStacks && project.techStacks.length > 0
-                ? project.techStacks.join(" | ")
-                : "No tech stacks"}
-            </span>
-            <span className="mt-1 flex items-center text-xs text-muted-foreground">
-              {Math.ceil(
-                (Date.now() - new Date(project.createdAt).getTime()) /
-                  (1000 * 60 * 60 * 24),
-              )}
-              d <DotIcon className="size-4" /> <EarthIcon className="size-4" />
-            </span>
+                ? project.techStacks.join(" · ")
+                : "No tech stack listed"}
+            </p>
+            <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+              <time dateTime={new Date(project.createdAt).toISOString()}>
+                {postAge(project.createdAt)}
+              </time>
+              <span aria-hidden>·</span>
+              <EarthIcon className="size-3.5" />
+              <span className="sr-only">Public</span>
+            </p>
           </div>
         </div>
 
         <Popover>
-          <PopoverTrigger>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <MoreHorizontalIcon className="size-4 cursor-pointer" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Links</p>
-              </TooltipContent>
-            </Tooltip>
+          <PopoverTrigger
+            aria-label={`Links for ${project.title}`}
+            className="shrink-0 cursor-pointer rounded-full p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <MoreHorizontalIcon className="size-4" />
           </PopoverTrigger>
           <PopoverContent
             align="end"
-            className="flex w-auto flex-col items-center gap-2 border-none bg-card shadow-xl"
+            className="flex w-auto flex-col items-stretch gap-2 bg-card"
           >
-            <Link
-              href={project.githubLink || ""}
-              target="_blank"
-              className={`min-w-32 cursor-pointer rounded-md border bg-background/20 px-5 py-1 text-center text-xs ${
-                !project.githubLink &&
-                "pointer-events-none text-muted-foreground line-through opacity-50"
-              }`}
-            >
-              Github
-            </Link>
-            <Link
-              href={project.liveLink || ""}
-              target="_blank"
-              className={`min-w-32 cursor-pointer rounded-md bg-primary px-5 py-1 text-center text-xs text-primary-foreground ${
-                !project.liveLink &&
-                "pointer-events-none text-muted-foreground line-through opacity-50"
-              }`}
-            >
-              Live
-            </Link>
+            {externalLinks.map((link) =>
+              link.href ? (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    "min-w-32 rounded-full px-5 py-1 text-center text-xs font-semibold transition-colors",
+                    link.primary
+                      ? "bg-primary text-primary-foreground hover:bg-primary-hover"
+                      : "border border-input text-muted-foreground hover:bg-accent",
+                  )}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <span
+                  key={link.label}
+                  aria-disabled
+                  className="min-w-32 rounded-full border border-dashed px-5 py-1 text-center text-xs text-muted-foreground"
+                >
+                  No {link.label.toLowerCase()} link
+                </span>
+              ),
+            )}
           </PopoverContent>
         </Popover>
       </div>
 
-      {/* 4. Description */}
-      <div className="flex flex-col gap-1 px-2">
-        <div
-          className={`w-[95%] text-xs whitespace-pre-wrap transition-all ${
-            isExpanded ? "" : "line-clamp-5"
-          }`}
+      {/* Description */}
+      <div className="flex w-full flex-col gap-1 px-2">
+        <p
+          className={cn(
+            "text-sm whitespace-pre-wrap",
+            !isExpanded && "line-clamp-3",
+          )}
         >
-          {project.description || "No description provided"}
-        </div>
+          {project.description || "No description provided."}
+        </p>
         <button
+          type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-1 flex w-fit cursor-pointer items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+          aria-expanded={isExpanded}
+          className="w-fit cursor-pointer rounded-sm text-xs font-semibold text-muted-foreground hover:text-primary hover:underline"
         >
-          {isExpanded ? "less" : "more"}
-          <ChevronDownIcon
-            className={`size-3 transition-transform ${isExpanded ? "rotate-180" : ""}`}
-          />
+          {isExpanded ? "Show less" : "…more"}
         </button>
       </div>
 
-      {/* 5. Main Project Image (Optimized Sizes) */}
-      <div className="w-full px-1">
+      {/* Project image */}
+      <Link href={`/projects/${project.id}`} className="w-full" tabIndex={-1}>
         <Image
           src={project.image || "/empty-img.webp"}
-          alt="project-img"
+          alt={`${project.title} preview`}
           width={800}
           height={600}
           sizes="(max-width: 768px) 100vw, 640px"
-          className="h-auto w-full rounded-md border border-border/50 object-cover"
-          priority={false}
+          className="h-auto w-full rounded-md border object-cover"
         />
-      </div>
+      </Link>
 
-      {/* 6. Stats Section */}
+      {/* Stats */}
       <div className="flex w-full items-center justify-between gap-2 px-2">
-        <div className="flex items-center gap-1">
-          <div
-            className={`flex h-4 w-4 items-center justify-center rounded-full bg-primary p-[3px]`}
-          >
+        <p className="flex items-center gap-1 text-xs text-muted-foreground">
+          <span className="flex size-4 items-center justify-center rounded-full bg-primary p-[3px]">
             <ThumbsUpIcon className="size-3 text-primary-foreground" />
-          </div>
-          <p className="text-xs text-muted-foreground">{likesCount}</p>
-        </div>
+          </span>
+          {likesCount}
+          <span className="sr-only">{likesCount === 1 ? "like" : "likes"}</span>
+        </p>
 
-        <p
-          className="cursor-pointer text-xs text-muted-foreground hover:underline"
+        <button
+          type="button"
           onClick={() => setShowComments(!showComments)}
+          aria-expanded={showComments}
+          aria-controls={commentsId}
+          className="cursor-pointer rounded-sm text-xs text-muted-foreground hover:text-primary hover:underline"
         >
           {project.commentsCount}{" "}
           {project.commentsCount === 1 ? "comment" : "comments"}
-        </p>
+        </button>
       </div>
 
       <Separator />
 
-      {/* 7. Action Buttons */}
-      <div className="flex w-full items-center justify-between px-10 py-1">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={handleLikeClick}
-              disabled={isLoading}
-              className="group"
-            >
-              <ThumbsUpIcon
-                className={`size-5 transition-all group-hover:scale-110 ${
-                  isLiked
-                    ? "fill-primary text-primary"
-                    : "text-muted-foreground"
-                } ${isLoading ? "opacity-50" : ""}`}
-              />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{isLiked ? "Unlike" : "Like"}</p>
-          </TooltipContent>
-        </Tooltip>
+      {/* Actions */}
+      <div className="flex w-full items-center gap-1 pb-1">
+        <button
+          type="button"
+          onClick={handleLikeClick}
+          disabled={isLoading}
+          aria-pressed={isLiked}
+          className={cn(actionClass, isLiked && "text-primary")}
+        >
+          <ThumbsUpIcon className={cn("size-5", isLiked && "fill-primary")} />
+          Like
+        </button>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <MessageSquareMoreIcon
-              onClick={() => setShowComments(!showComments)}
-              className={`size-5 cursor-pointer transition-colors ${showComments ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Comment</p>
-          </TooltipContent>
-        </Tooltip>
+        <button
+          type="button"
+          onClick={() => setShowComments(!showComments)}
+          aria-expanded={showComments}
+          aria-controls={commentsId}
+          className={cn(actionClass, showComments && "text-primary")}
+        >
+          <MessageSquareMoreIcon className="size-5" />
+          Comment
+        </button>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={() => shareProject(project)}
-              className="outline-none"
-            >
-              <SendIcon className="size-5 cursor-pointer text-muted-foreground transition-colors hover:text-foreground" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Share</p>
-          </TooltipContent>
-        </Tooltip>
+        <button
+          type="button"
+          onClick={() => shareProject(project)}
+          className={actionClass}
+        >
+          <SendIcon className="size-5" />
+          Share
+        </button>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link href={`/projects/${project.id}`} className="outline-none">
-              <EyeIcon className="size-5 cursor-pointer text-muted-foreground transition-colors hover:text-foreground" />
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>View Details</p>
-          </TooltipContent>
-        </Tooltip>
+        <Link href={`/projects/${project.id}`} className={actionClass}>
+          <EyeIcon className="size-5" />
+          View
+        </Link>
       </div>
 
-      {showComments && <CreateComment projectId={project.id} />}
-    </div>
+      {showComments && (
+        <div id={commentsId} className="w-full">
+          <CreateComment projectId={project.id} />
+        </div>
+      )}
+    </article>
   );
 };
 

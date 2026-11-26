@@ -7,7 +7,7 @@ const EducationPreview = () => {
       <div className="h-[30%] w-full">
         <Image
           src={"/lspu.webp"}
-          alt="school-img"
+          alt=""
           width={1000}
           height={1000}
           className="h-full w-full rounded-t-lg object-cover"
@@ -19,23 +19,23 @@ const EducationPreview = () => {
         <div className="absolute -top-8 left-1/2 flex -translate-x-1/2 gap-[5px]">
           <Image
             src={"/ccs-logo.webp"}
-            alt="cover-img"
+            alt="College of Computer Studies logo"
             width={1000}
             height={1000}
             className="h-[72px] w-[72px] rounded-full border-2 border-card object-fill"
           />
           <Image
             src={"/lspu-logo.png"}
-            alt="cover-img"
+            alt="Laguna State Polytechnic University logo"
             width={1000}
             height={1000}
             className="h-[72px] w-[72px] rounded-full border-2 border-card object-fill"
           />
         </div>
         <div className="mt-3 flex flex-col gap-[2px] px-2">
-          <h1 className="text-md truncate text-center font-bold tracking-wider">
-            Laguna State Polytechnic Univesity
-          </h1>
+          <h2 className="truncate text-center text-base font-semibold">
+            Laguna State Polytechnic University
+          </h2>
           <p className="truncate text-center text-xs">
             Bachelor of Science in Information Technology
           </p>

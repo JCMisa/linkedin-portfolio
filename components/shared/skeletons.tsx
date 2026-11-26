@@ -18,6 +18,7 @@ export function PageSkeleton({
 }) {
   return (
     <main
+      id="main-content"
       aria-busy="true"
       className={cn("relative px-6 py-18 md:px-10 lg:px-16", className)}
     >

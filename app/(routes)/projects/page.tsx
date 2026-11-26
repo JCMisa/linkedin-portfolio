@@ -30,7 +30,8 @@ const ProjectsPage = async () => {
   ]);
 
   return (
-    <main className="relative px-6 py-18 md:px-10 lg:px-16">
+    <main id="main-content" className="relative px-6 py-18 md:px-10 lg:px-16">
+      <h1 className="sr-only">Projects</h1>
       <div className="relative mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row">
         {/* projects list */}
         <ProjectsList
@@ -39,7 +40,10 @@ const ProjectsPage = async () => {
         />
 
         {/* profile and latest certificates and footer - fixed */}
-        <div className="flex w-full flex-col gap-2 rounded-lg lg:w-[320px]">
+        <aside
+          aria-label="Sidebar"
+          className="flex w-full flex-col gap-2 rounded-lg lg:w-[320px]"
+        >
           <ProfileCard personalInfo={personalInfo as PersonalInfoType} />
 
           <div className="sticky top-[73px]">
@@ -48,7 +52,7 @@ const ProjectsPage = async () => {
               <Footer />
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </main>
   );

@@ -1,56 +1,45 @@
 import Image from "next/image";
 import Link from "next/link";
 
+// Real destinations only (the old LinkedIn-style labels went nowhere)
+const footerLinks = [
+  { label: "About Me", href: "/profile" },
+  { label: "Projects", href: "/projects" },
+  { label: "Experience", href: "/experiences" },
+  { label: "Certificates", href: "/certificates" },
+  { label: "Skills", href: "/profile#skills" },
+  { label: "Contact", href: "/contact" },
+];
+
 const Footer = () => {
   return (
-    <div className="flex flex-col items-center justify-center gap-2">
-      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          About Me
-        </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          Accessibility
-        </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          Need Help?
-        </span>
-      </div>
+    <footer className="flex flex-col items-center justify-center gap-3">
+      <nav aria-label="Footer">
+        <ul className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          {footerLinks.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className="rounded-sm transition-colors hover:text-primary hover:underline"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          Privacy & Terms
-        </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          Cookie Choices
-        </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          Collaborate
-        </span>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          Download Resume
-        </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          Get My Details
-        </span>
-        <span className="cursor-pointer transition-all duration-200 ease-in-out hover:text-primary hover:underline">
-          More
-        </span>
-      </div>
-
-      <Link href={"/"} className="flex items-center gap-1 text-xs font-bold">
+      <p className="flex items-center gap-1 text-xs font-bold">
         <Image
           src="/logo.png"
-          alt="logo"
-          width={1000}
-          height={1000}
-          className="h-4 w-4 rounded-xs"
+          alt=""
+          width={16}
+          height={16}
+          className="size-4 rounded-xs"
         />
         JCM Portfolio © {new Date().getFullYear()}
-      </Link>
-    </div>
+      </p>
+    </footer>
   );
 };
 

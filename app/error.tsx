@@ -19,9 +19,13 @@ export default function RouteError({
   }, [error]);
 
   return (
-    <main className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-4 pt-14">
+    <main
+      id="main-content"
+      className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-4 pt-14"
+    >
       <div className="w-full max-w-md rounded-lg border bg-card">
         <EmptyState
+          titleAs="h1"
           icon={TriangleAlertIcon}
           title="Something went wrong"
           description={

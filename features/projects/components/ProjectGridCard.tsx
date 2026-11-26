@@ -24,12 +24,15 @@ const ProjectGridCard = memo(
   }) => {
     return (
       <div className="inter-var h-full">
-        <div className="group/card relative flex h-full w-full flex-col rounded-lg border bg-card p-6 transition-shadow hover:shadow-md">
+        <article className="group/card relative flex h-full w-full flex-col rounded-lg border bg-card p-6 transition-shadow hover:shadow-md">
           {/* Header */}
           <div className="flex items-center justify-between gap-4">
-            <div className="line-clamp-1 text-base font-semibold text-foreground">
+            <h2
+              title={project.title}
+              className="line-clamp-1 text-base font-semibold text-foreground"
+            >
               {project.title}
-            </div>
+            </h2>
             {currentUserRole === "admin" && (
               <div className="flex items-center gap-2">
                 <ProjectFormDialog project={project} />
@@ -52,7 +55,7 @@ const ProjectGridCard = memo(
               height={400}
               width={600}
               className="h-60 w-full rounded-xl object-cover group-hover/card:shadow-xl"
-              alt="thumbnail"
+              alt={`${project.title} preview`}
             />
           </div>
 
@@ -73,7 +76,7 @@ const ProjectGridCard = memo(
                   }
                 >
                   <FaGithub className="size-3" />
-                  <p className="hidden sm:block">Github</p>
+                  <p className="hidden sm:block">GitHub</p>
                 </LinkPreview>
               </Button>
 
@@ -123,7 +126,10 @@ const ProjectGridCard = memo(
               </Popover>
 
               <Popover>
-                <PopoverTrigger className="flex sm:hidden">
+                <PopoverTrigger
+                  aria-label="More options"
+                  className="flex rounded-full p-1 hover:bg-accent sm:hidden"
+                >
                   <MoreHorizontalIcon className="size-4" />
                 </PopoverTrigger>
                 <PopoverContent align="end" className="flex flex-col gap-2">
@@ -131,13 +137,13 @@ const ProjectGridCard = memo(
                     href={`/projects/${project.id}`}
                     className="flex items-center gap-2 text-sm"
                   >
-                    <EyeIcon className="size-4" /> View Details
+                    <EyeIcon className="size-4" /> View details
                   </Link>
                 </PopoverContent>
               </Popover>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     );
   },

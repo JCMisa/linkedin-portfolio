@@ -26,7 +26,7 @@ const ModeToggle = () => {
   // to avoid ID mismatch between Server and Client
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" disabled>
+      <Button variant="ghost" size="icon" disabled aria-label="Toggle theme">
         <Sun className="h-[1.2rem] w-[1.2rem]" />
       </Button>
     );

@@ -75,6 +75,12 @@ export default function RootLayout({
     >
       <html lang="en" suppressHydrationWarning>
         <body>
+          <a
+            href="#main-content"
+            className="sr-only z-[100] rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+          >
+            Skip to main content
+          </a>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

@@ -93,7 +93,7 @@ export default function ProjectsList({
                 }}
                 className="cursor-pointer text-[10px] font-bold tracking-wider text-primary uppercase hover:underline"
               >
-                Reset Filters
+                Reset filters
               </button>
             )}
           </div>

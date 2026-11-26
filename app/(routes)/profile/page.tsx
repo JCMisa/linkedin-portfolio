@@ -48,7 +48,7 @@ const ProfilePage = async () => {
   const [latestProject1, latestProject2] = projects;
 
   return (
-    <main className="relative px-6 py-18 md:px-10 lg:px-16">
+    <main id="main-content" className="relative px-6 py-18 md:px-10 lg:px-16">
       <JsonLd data={personJsonLd()} />
       <div className="relative mx-auto flex max-w-7xl flex-col gap-6 xl:flex-row">
         {/* left info */}
@@ -62,7 +62,10 @@ const ProfilePage = async () => {
         />
 
         {/* right info */}
-        <div className="flex w-full flex-col gap-2 rounded-lg xl:w-[320px]">
+        <aside
+          aria-label="Sidebar"
+          className="flex w-full flex-col gap-2 rounded-lg xl:w-[320px]"
+        >
           <PreferenceAndProfileLink />
 
           <div className="sticky top-[73px]">
@@ -71,7 +74,7 @@ const ProfilePage = async () => {
               <Footer />
             </div>
           </div>
-        </div>
+        </aside>
       </div>
 
       <DownloadResumeMobile />

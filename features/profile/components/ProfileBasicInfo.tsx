@@ -29,6 +29,7 @@ import {
 } from "@/features/profile/actions";
 import { PersonalInfoType } from "@/db/schema";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { showConfetti } from "@/lib/confetti";
 import {
@@ -146,12 +147,16 @@ const ProfileBasicInfo = ({
   }
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center rounded-lg bg-card lg:h-[400px]">
+    <section
+      aria-labelledby="profile-name"
+      className="relative flex h-full w-full flex-col items-center rounded-lg bg-card lg:h-[400px]"
+    >
       {/* cover photo */}
       <div className="relative h-[35%] w-full">
         <Image
           src={displayCoverImage}
-          alt="cover-img"
+          alt=""
+          priority
           width={1000}
           height={1000}
           className="h-full w-full rounded-t-lg object-cover"
@@ -160,47 +165,53 @@ const ProfileBasicInfo = ({
         {isOwner && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <div
+              <button
+                type="button"
+                aria-label="Edit cover photo"
                 onClick={() => setIsCoverDialogOpen(true)}
-                className="absolute top-3 right-3 z-20 flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-all duration-200 ease-in-out hover:scale-105"
+                className="absolute top-3 right-3 z-20 flex size-8 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform duration-200 hover:scale-105"
               >
                 <PenBoxIcon className="size-4" />
-              </div>
+              </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Edit Cover Photo</p>
+              <p>Edit cover photo</p>
             </TooltipContent>
           </Tooltip>
         )}
       </div>
 
       {/* profile photo */}
-      <div
-        onClick={() => setIsProfileOpen(true)}
-        className="relative z-10 mt-[-70px] ml-[20px] flex cursor-pointer items-start justify-start self-start sm:mt-[-100px]"
-      >
-        <Image
-          src={displayProfileImage}
-          alt="avatar"
-          width={1000}
-          height={1000}
-          className="h-[100px] w-[100px] rounded-full border-4 border-card object-fill sm:h-[152px] sm:w-[152px]"
-        />
+      <div className="relative z-10 mt-[-70px] ml-[20px] flex items-start justify-start self-start sm:mt-[-100px]">
+        <button
+          type="button"
+          aria-label="View profile photo"
+          onClick={() => setIsProfileOpen(true)}
+          className="cursor-zoom-in rounded-full"
+        >
+          <Image
+            src={displayProfileImage}
+            alt={`Profile photo of ${personalInfo?.name}`}
+            width={304}
+            height={304}
+            priority
+            className="h-[100px] w-[100px] rounded-full border-4 border-card object-cover sm:h-[152px] sm:w-[152px]"
+          />
+        </button>
         {isOwner && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsProfileDialogOpen(true);
-                }}
-                className="absolute right-0 bottom-0 z-20 flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-all duration-200 ease-in-out hover:scale-105"
+              <button
+                type="button"
+                aria-label="Edit profile photo"
+                onClick={() => setIsProfileDialogOpen(true)}
+                className="absolute right-0 bottom-0 z-20 flex size-8 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform duration-200 hover:scale-105"
               >
                 <PenBoxIcon className="size-4" />
-              </div>
+              </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Edit Profile Photo</p>
+              <p>Edit profile photo</p>
             </TooltipContent>
           </Tooltip>
         )}
@@ -213,22 +224,24 @@ const ProfileBasicInfo = ({
             {isOwner ? (
               <Tooltip>
                 <TooltipTrigger asChild disabled={!isOwner}>
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsNameDialogOpen(true);
-                    }}
-                    className="cursor-pointer text-2xl font-bold transition-all duration-200 ease-linear hover:opacity-[0.8]"
-                  >
-                    {personalInfo?.name}
-                  </div>
+                  <h1 id="profile-name" className="text-2xl font-semibold">
+                    <button
+                      type="button"
+                      onClick={() => setIsNameDialogOpen(true)}
+                      className="cursor-pointer rounded-sm text-left hover:opacity-80"
+                    >
+                      {personalInfo?.name}
+                    </button>
+                  </h1>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Edit Name</p>
+                  <p>Edit name</p>
                 </TooltipContent>
               </Tooltip>
             ) : (
-              <p className="text-2xl font-bold">{personalInfo?.name}</p>
+              <h1 id="profile-name" className="text-2xl font-semibold">
+                {personalInfo?.name}
+              </h1>
             )}
 
             <div className="flex w-fit items-center gap-1 rounded-full border border-dashed border-primary px-3 text-primary">
@@ -239,23 +252,21 @@ const ProfileBasicInfo = ({
             {isOwner ? (
               <Tooltip>
                 <TooltipTrigger asChild disabled={!isOwner}>
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsIndustryRoleDialogOpen(true);
-                    }}
-                    className="cursor-pointer text-sm transition-all duration-200 ease-linear hover:opacity-[0.8]"
+                  <button
+                    type="button"
+                    onClick={() => setIsIndustryRoleDialogOpen(true)}
+                    className="w-fit cursor-pointer rounded-sm text-left text-base hover:opacity-80"
                   >
-                    {personalInfo?.industryRole || "Fullstack Developer 🚀"}
-                  </div>
+                    {personalInfo?.industryRole || "Full-stack Developer 🚀"}
+                  </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Edit Industry Role</p>
+                  <p>Edit industry role</p>
                 </TooltipContent>
               </Tooltip>
             ) : (
-              <p className="text-sm">
-                {personalInfo?.industryRole || "Fullstack Developer 🚀"}
+              <p className="text-base">
+                {personalInfo?.industryRole || "Full-stack Developer 🚀"}
               </p>
             )}
 
@@ -272,23 +283,22 @@ const ProfileBasicInfo = ({
                   href={"/contact"}
                   className="cursor-pointer text-sm font-semibold text-primary hover:underline"
                 >
-                  Contact Info
+                  Contact info
                 </Link>
                 {isOwner && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIsContactInfoDialogOpen(true);
-                        }}
-                        className="flex h-5 w-5 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-all duration-200 ease-in-out hover:scale-105"
+                      <button
+                        type="button"
+                        aria-label="Edit address and contact info"
+                        onClick={() => setIsContactInfoDialogOpen(true)}
+                        className="flex size-5 flex-none cursor-pointer items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform duration-200 hover:scale-105"
                       >
                         <PenBoxIcon className="size-3" />
-                      </div>
+                      </button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Edit Address & Contact Info</p>
+                      <p>Edit address & contact info</p>
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -310,7 +320,7 @@ const ProfileBasicInfo = ({
                 {latestExperience.bannerImg ? (
                   <Image
                     src={latestExperience.bannerImg}
-                    alt={latestExperience.title || "experience"}
+                    alt=""
                     width={20}
                     height={20}
                     className="h-[20px] w-[20px] rounded-md object-fill"
@@ -319,12 +329,13 @@ const ProfileBasicInfo = ({
                   <div className="h-[20px] w-[20px] rounded-md bg-muted" />
                 )}
                 {isOwner ? (
-                  <div
+                  <button
+                    type="button"
                     onClick={() => setIsExperiencesDialogOpen(true)}
-                    className="cursor-pointer text-sm font-bold transition-all duration-200 ease-in-out hover:opacity-[0.8]"
+                    className="cursor-pointer rounded-sm text-left text-sm font-semibold hover:opacity-80"
                   >
-                    {latestExperience.title || "Untitled Experience"}
-                  </div>
+                    {latestExperience.title || "Untitled experience"}
+                  </button>
                 ) : (
                   <p className="text-sm font-bold">
                     {latestExperience.title || "Untitled Experience"}
@@ -336,7 +347,7 @@ const ProfileBasicInfo = ({
               <div className="flex items-center gap-1">
                 <Image
                   src={"/empty-img.webp"}
-                  alt="school-img"
+                  alt=""
                   width={1000}
                   height={1000}
                   className="h-[20px] w-[20px] rounded-md object-fill"
@@ -354,7 +365,7 @@ const ProfileBasicInfo = ({
             <div className="flex items-center gap-1">
               <Image
                 src={"/lspu-logo.png"}
-                alt="school-img"
+                alt=""
                 width={1000}
                 height={1000}
                 className="h-[20px] w-[20px] rounded-md object-fill"
@@ -375,7 +386,7 @@ const ProfileBasicInfo = ({
               size={"sm"}
             >
               <DownloadIcon className="size-4" />
-              Download Resume
+              Download resume
             </Button>
           </PopoverTrigger>
           <PopoverContent className="flex flex-col gap-2" align="end">
@@ -386,7 +397,8 @@ const ProfileBasicInfo = ({
               }
               download={"John_Carlo_Misa_Resume_IT.pdf"}
               target="_blank"
-              className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-primary"
+              rel="noopener noreferrer"
+              className="rounded-sm text-sm transition-colors hover:text-primary hover:underline"
             >
               IT Resume
             </a>
@@ -397,19 +409,21 @@ const ProfileBasicInfo = ({
               }
               download={"John_Carlo_Misa_Resume_VA.pdf"}
               target="_blank"
-              className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-primary"
+              rel="noopener noreferrer"
+              className="rounded-sm text-sm transition-colors hover:text-primary hover:underline"
             >
               VA Resume
             </a>
             {isOwner && (
               <>
                 <Separator />
-                <div
+                <button
+                  type="button"
                   onClick={() => setIsResumeDialogOpen(true)}
-                  className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-primary"
+                  className="cursor-pointer rounded-sm text-left text-sm transition-colors hover:text-primary hover:underline"
                 >
-                  Edit Resume
-                </div>
+                  Edit resume
+                </button>
               </>
             )}
           </PopoverContent>
@@ -417,28 +431,20 @@ const ProfileBasicInfo = ({
       </div>
 
       {/* profile image full screen view */}
-      {isProfileOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85"
-          onClick={() => setIsProfileOpen(false)}
-        >
-          <div className="relative">
-            <button
-              onClick={() => setIsProfileOpen(false)}
-              className="absolute top-4 right-4 z-50 text-2xl text-white"
-            >
-              &times;
-            </button>
-            <Image
-              src={displayProfileImage}
-              alt="avatar"
-              width={1000}
-              height={1000}
-              className="max-h-screen-lg max-w-screen-lg p-8"
-            />
-          </div>
-        </div>
-      )}
+      <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+        <DialogContent className="w-auto max-w-[min(90vw,40rem)] border-none bg-transparent p-0 shadow-none">
+          <DialogTitle className="sr-only">
+            Profile photo of {personalInfo?.name}
+          </DialogTitle>
+          <Image
+            src={displayProfileImage}
+            alt={`Profile photo of ${personalInfo?.name}`}
+            width={640}
+            height={640}
+            className="h-auto max-h-[85vh] w-full rounded-lg object-contain"
+          />
+        </DialogContent>
+      </Dialog>
 
       {/* Image Editor Dialogs */}
       {isOwner && (
@@ -513,7 +519,7 @@ const ProfileBasicInfo = ({
           />
         </>
       )}
-    </div>
+    </section>
   );
 };
 

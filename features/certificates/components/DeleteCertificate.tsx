@@ -49,13 +49,18 @@ const DeleteCertificate = ({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <button className="flex items-center justify-center">
-          <TrashIcon className="size-3 cursor-pointer transition-colors hover:text-destructive" />
+        <button
+          type="button"
+          aria-label="Delete certificate"
+          title="Delete certificate"
+          className="flex cursor-pointer items-center justify-center rounded-full p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-destructive"
+        >
+          <TrashIcon className="size-3.5" />
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Delete this certificate?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete this
             certificate and remove related data from the servers.

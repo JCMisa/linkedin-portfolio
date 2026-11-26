@@ -86,7 +86,7 @@ const CreateComment = ({
       <div className="mb-4 flex items-start gap-2">
         <Image
           src={user?.imageUrl || "/empty-img.webp"}
-          alt="user-img"
+          alt=""
           width={1000}
           height={1000}
           className="h-8 w-8 rounded-full object-cover"
@@ -151,7 +151,7 @@ const CreateComment = ({
                     >
                       <Image
                         src={comment.user.image || "/empty-img.webp"}
-                        alt="commenter-img"
+                        alt=""
                         width={1000}
                         height={1000}
                         className="h-8 w-8 rounded-full object-cover"
@@ -192,9 +192,7 @@ const CreateComment = ({
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
+                      <AlertDialogTitle>Delete this comment?</AlertDialogTitle>
                       <AlertDialogDescription>
                         This action cannot be undone. This will permanently
                         delete your comment for this project.
@@ -219,7 +217,7 @@ const CreateComment = ({
                 >
                   <Image
                     src={comment.user.image || "/empty-img.webp"}
-                    alt="commenter-img"
+                    alt=""
                     width={1000}
                     height={1000}
                     className="h-8 w-8 rounded-full object-cover"

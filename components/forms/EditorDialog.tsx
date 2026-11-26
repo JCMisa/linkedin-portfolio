@@ -81,7 +81,7 @@ export function EditorDialog({
             </Button>
             <Button type="submit" disabled={isSubmitting || submitDisabled}>
               {isSubmitting && <Loader2Icon className="size-4 animate-spin" />}
-              {isSubmitting ? "Saving..." : submitLabel}
+              {isSubmitting ? "Saving…" : submitLabel}
             </Button>
           </DialogFooter>
         </form>

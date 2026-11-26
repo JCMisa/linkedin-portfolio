@@ -2,15 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 // Lucide icons used for the UI buttons and status indicators
-import {
-  Mic,
-  MicOff,
-  PhoneOff,
-  Settings,
-  Activity,
-  Phone,
-  Loader2,
-} from "lucide-react";
+import { Mic, MicOff, PhoneOff, Activity, Phone, Loader2 } from "lucide-react";
 // Utility to merge Tailwind classes conditionally
 import { cn } from "@/lib/utils";
 // Shadcn UI components
@@ -359,13 +351,6 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
               ? "03:00 Max"
               : `${formatTime(secondsActive)} / ${formatTime(MAX_DURATION)}`}
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
-          >
-            <Settings className="h-5 w-5" />
-          </Button>
         </div>
       </div>
 
@@ -405,7 +390,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
               size="lg"
               className="h-14 rounded-full px-8 text-lg shadow-lg transition-all hover:scale-105"
             >
-              Start Conversation
+              Start conversation
             </Button>
             <p className="mt-2 text-xs text-muted-foreground">
               Max duration: 3 minutes
@@ -488,6 +473,8 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
                 variant="secondary"
                 size="icon"
                 onClick={toggleMic}
+                aria-label={isMicOn ? "Mute microphone" : "Unmute microphone"}
+                aria-pressed={!isMicOn}
                 className={cn(
                   "h-12 w-12 rounded-full border border-border shadow-sm transition-all md:h-14 md:w-14",
                   !isMicOn &&
@@ -507,7 +494,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
                 onClick={endCall}
                 className="h-12 rounded-full bg-destructive px-8 text-white hover:scale-105 md:h-14"
               >
-                <PhoneOff className="mr-2 h-6 w-6" /> End Call
+                <PhoneOff className="mr-2 h-6 w-6" /> End call
               </Button>
             )}
           </div>

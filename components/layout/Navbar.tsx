@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   ActivityIcon,
   BriefcaseBusinessIcon,
@@ -63,24 +63,26 @@ const menuItems = [
 const Navbar = () => {
   const pathname = usePathname();
   const { user } = useUser();
-  const router = useRouter();
 
   return (
-    <div className="fixed top-0 z-50 flex h-[53px] w-full items-center border-b bg-card px-4 lg:pr-[24px] lg:pl-[80px]">
+    <header className="fixed top-0 z-50 flex h-[53px] w-full items-center border-b bg-card px-4 lg:pr-[24px] lg:pl-[80px]">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
-          <Image
-            src={"/logo.png"}
-            alt="logo"
-            width={34.17}
-            height={34.17}
-            className="rounded-[3px]"
-          />
+          <Link href="/" aria-label="JCM Portfolio home" className="shrink-0">
+            <Image
+              src={"/logo.png"}
+              alt=""
+              width={34}
+              height={34}
+              className="rounded-[3px]"
+              priority
+            />
+          </Link>
           <SearchDialog />
         </div>
 
         {/* menu items - large screen */}
-        <div className="hidden items-center md:flex">
+        <nav aria-label="Main" className="hidden items-center md:flex">
           {menuItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -88,6 +90,7 @@ const Navbar = () => {
               <Link
                 key={item.id}
                 href={item.path}
+                aria-current={isActive ? "page" : undefined}
                 className={
                   "flex h-[52px] w-[80px] flex-col items-center justify-center border-b " +
                   (isActive
@@ -111,17 +114,20 @@ const Navbar = () => {
               </Link>
             );
           })}
-        </div>
+        </nav>
 
         {/* menu items - small screen */}
         <Sheet>
-          <SheetTrigger>
-            <MenuIcon className="mr-2 block cursor-pointer md:hidden" />
+          <SheetTrigger
+            aria-label="Open menu"
+            className="mr-2 block cursor-pointer rounded-sm md:hidden"
+          >
+            <MenuIcon aria-hidden />
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] bg-card sm:w-[400px]">
             <SheetHeader className="space-y-4">
               <SheetTitle className="text-left text-lg font-bold">
-                Explore My Portfolio
+                Explore my portfolio
               </SheetTitle>
               <SheetDescription className="sr-only">
                 Navigate through pages and view more about me.
@@ -136,7 +142,7 @@ const Navbar = () => {
                 <Separator />
 
                 {/* Menu Items */}
-                <div className="mt-2 space-y-4">
+                <nav aria-label="Mobile" className="mt-2 space-y-4">
                   {menuItems.map((item) => {
                     const isActive = pathname === item.path;
                     const Icon = item.icon;
@@ -144,6 +150,7 @@ const Navbar = () => {
                       <Link
                         key={item.id}
                         href={item.path}
+                        aria-current={isActive ? "page" : undefined}
                         className={
                           "flex items-center gap-4 rounded-lg p-2 transition-colors " +
                           (isActive
@@ -156,7 +163,7 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
-                </div>
+                </nav>
 
                 <Separator className="my-4" />
 
@@ -194,13 +201,8 @@ const Navbar = () => {
           <UserButton />
         </div>
       ) : (
-        <Button
-          variant={"outline"}
-          size={"sm"}
-          className="mx-2 cursor-pointer"
-          onClick={() => router.push("/sign-in")}
-        >
-          Sign In
+        <Button variant="outline" size="sm" className="mx-2" asChild>
+          <Link href="/sign-in">Sign in</Link>
         </Button>
       )}
 
@@ -227,7 +229,7 @@ const Navbar = () => {
           <span className={"mt-1 text-[12px] leading-none"}>Contact Me</span>
         </Link>
       </div>
-    </div>
+    </header>
   );
 };
 
