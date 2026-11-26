@@ -9,34 +9,34 @@ const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
   );
 
   return (
-    <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
+    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
       {/* Cover photo */}
       {personalInfo.coverImg ? (
-        <div className="h-16 sm:h-20 relative w-full">
+        <div className="relative h-16 w-full sm:h-20">
           <Image
             src={personalInfo.coverImg || "/empty-img.webp"}
             alt="cover-img"
             width={1000}
             height={1000}
-            className="w-full h-full object-cover rounded-t-lg"
+            className="h-full w-full rounded-t-lg object-cover"
           />
         </div>
       ) : (
-        <div className="h-16 sm:h-20 bg-gradient-to-r from-primary/80 to-primary relative" />
+        <div className="relative h-16 bg-gradient-to-r from-primary/80 to-primary sm:h-20" />
       )}
 
       {/* Avatar */}
-      <div className="px-4 -mt-8 relative z-10">
+      <div className="relative z-10 -mt-8 px-4">
         {personalInfo.profileImg ? (
           <Image
             src={personalInfo.profileImg || "/empty-img.webp"}
             alt="cover-img"
             width={1000}
             height={1000}
-            className="w-16 h-16 object-fill rounded-full border-4 border-card dark:border-dark bg-accent"
+            className="h-16 w-16 rounded-full border-4 border-card bg-accent object-fill dark:border-dark"
           />
         ) : (
-          <div className="w-16 h-16 rounded-full border-4 border-card bg-accent flex items-center justify-center text-2xl font-bold text-primary">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-card bg-accent text-2xl font-bold text-primary">
             JC
           </div>
         )}
@@ -46,21 +46,21 @@ const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
       <div className="p-4 pt-2">
         <Link
           href={"/profile"}
-          className="font-semibold text-foreground text-base hover:underline hover:opacity-[0.8] transition-all ease-linear duration-200"
+          className="text-base font-semibold text-foreground transition-all duration-200 ease-linear hover:underline hover:opacity-[0.8]"
         >
           {personalInfo.name}
         </Link>
-        <p className="text-sm text-muted-foreground mt-0.5">
+        <p className="mt-0.5 text-sm text-muted-foreground">
           {personalInfo.industryRole}
         </p>
-        <p className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-          <MapPin className="w-3 h-3" />
+        <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+          <MapPin className="h-3 w-3" />
           {personalInfo.city}, {personalInfo.province}
         </p>
 
         {/* Current role */}
         {currentExperience && (
-          <div className="mt-3 pt-3 border-t border-border">
+          <div className="mt-3 border-t border-border pt-3">
             <p className="text-xs text-muted-foreground">Current</p>
             <div className="flex items-center gap-2">
               <Image
@@ -68,9 +68,9 @@ const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
                 alt={currentExperience.title}
                 width={1000}
                 height={1000}
-                className="size-4 sm:size-5 md:size-6 lg:size-7 rounded-sm object-cover"
+                className="size-4 rounded-sm object-cover sm:size-5 md:size-6 lg:size-7"
               />
-              <p className="text-sm font-medium text-foreground mt-0.5">
+              <p className="mt-0.5 text-sm font-medium text-foreground">
                 {currentExperience.title}
               </p>
             </div>
@@ -79,9 +79,9 @@ const ProfileCard = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
 
         <Link
           href="/profile"
-          className="flex items-center gap-1 mt-3 text-xs font-semibold text-primary hover:underline"
+          className="mt-3 flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
         >
-          View full profile <ExternalLink className="w-3 h-3" />
+          View full profile <ExternalLink className="h-3 w-3" />
         </Link>
       </div>
     </div>

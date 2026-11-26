@@ -80,9 +80,9 @@ const ProjectCard = ({
   };
 
   return (
-    <div className="w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-3 rounded-lg py-2 px-3 overflow-hidden border border-transparent hover:border-border transition-all">
+    <div className="flex w-full flex-col items-start gap-3 overflow-hidden rounded-lg border border-transparent bg-neutral-100 px-3 py-2 transition-all hover:border-border dark:bg-dark">
       {/* 2. Header: Latest Commenter (Now instant from Props) */}
-      <div className="flex items-center gap-2 justify-between w-full">
+      <div className="flex w-full items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           {project.latestCommenter ? (
             <>
@@ -91,7 +91,7 @@ const ProjectCard = ({
                 alt="commenter"
                 width={24}
                 height={24}
-                className="w-6 h-6 object-cover rounded-full"
+                className="h-6 w-6 rounded-full object-cover"
               />
               <p className="text-[9px]">
                 {project.latestCommenter.name}{" "}
@@ -128,23 +128,23 @@ const ProjectCard = ({
       <Separator />
 
       {/* 3. Content Header */}
-      <div className="flex items-center justify-between w-full px-2">
+      <div className="flex w-full items-center justify-between px-2">
         <div className="flex items-start gap-2">
           <Image
             src={personalInfo.profileImg || "/empty-img.webp"}
             alt={personalInfo.name}
             width={48}
             height={48}
-            className="w-12 h-12 object-cover rounded-full flex-none"
+            className="h-12 w-12 flex-none rounded-full object-cover"
           />
-          <div className="flex flex-col max-w-[80%]">
-            <p className="text-sm font-bold capitalize ">{project.title}</p>
-            <span className="text-xs text-muted-foreground ">
+          <div className="flex max-w-[80%] flex-col">
+            <p className="text-sm font-bold capitalize">{project.title}</p>
+            <span className="text-xs text-muted-foreground">
               {project.techStacks && project.techStacks.length > 0
                 ? project.techStacks.join(" | ")
                 : "No tech stacks"}
             </span>
-            <span className="text-xs text-muted-foreground flex items-center mt-1">
+            <span className="mt-1 flex items-center text-xs text-muted-foreground">
               {Math.ceil(
                 (Date.now() - new Date(project.createdAt).getTime()) /
                   (1000 * 60 * 60 * 24),
@@ -167,14 +167,14 @@ const ProjectCard = ({
           </PopoverTrigger>
           <PopoverContent
             align="end"
-            className="border-none flex flex-col items-center gap-2 w-auto bg-neutral-100 dark:bg-neutral-900 shadow-xl"
+            className="flex w-auto flex-col items-center gap-2 border-none bg-neutral-100 shadow-xl dark:bg-neutral-900"
           >
             <Link
               href={project.githubLink || ""}
               target="_blank"
-              className={`text-xs py-1 px-5 rounded-md cursor-pointer min-w-32 text-center border bg-background/20 ${
+              className={`min-w-32 cursor-pointer rounded-md border bg-background/20 px-5 py-1 text-center text-xs ${
                 !project.githubLink &&
-                "text-muted-foreground line-through pointer-events-none opacity-50"
+                "pointer-events-none text-muted-foreground line-through opacity-50"
               }`}
             >
               Github
@@ -182,9 +182,9 @@ const ProjectCard = ({
             <Link
               href={project.liveLink || ""}
               target="_blank"
-              className={`text-xs py-1 px-5 rounded-md cursor-pointer min-w-32 text-center bg-primary text-primary-foreground ${
+              className={`min-w-32 cursor-pointer rounded-md bg-primary px-5 py-1 text-center text-xs text-primary-foreground ${
                 !project.liveLink &&
-                "text-muted-foreground line-through pointer-events-none opacity-50"
+                "pointer-events-none text-muted-foreground line-through opacity-50"
               }`}
             >
               Live
@@ -196,7 +196,7 @@ const ProjectCard = ({
       {/* 4. Description */}
       <div className="flex flex-col gap-1 px-2">
         <div
-          className={`whitespace-pre-wrap text-xs w-[95%] transition-all ${
+          className={`w-[95%] text-xs whitespace-pre-wrap transition-all ${
             isExpanded ? "" : "line-clamp-5"
           }`}
         >
@@ -204,7 +204,7 @@ const ProjectCard = ({
         </div>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 w-fit cursor-pointer mt-1"
+          className="mt-1 flex w-fit cursor-pointer items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
         >
           {isExpanded ? "less" : "more"}
           <ChevronDownIcon
@@ -221,16 +221,16 @@ const ProjectCard = ({
           width={800}
           height={600}
           sizes="(max-width: 768px) 100vw, 640px"
-          className="w-full h-auto object-cover rounded-md border border-border/50"
+          className="h-auto w-full rounded-md border border-border/50 object-cover"
           priority={false}
         />
       </div>
 
       {/* 6. Stats Section */}
-      <div className="flex items-center justify-between w-full gap-2 px-2">
+      <div className="flex w-full items-center justify-between gap-2 px-2">
         <div className="flex items-center gap-1">
           <div
-            className={`w-4 h-4 rounded-full flex items-center justify-center p-[3px] ${isLiked ? "bg-primary" : "bg-blue-500"}`}
+            className={`flex h-4 w-4 items-center justify-center rounded-full p-[3px] ${isLiked ? "bg-primary" : "bg-blue-500"}`}
           >
             <ThumbsUpIcon className="size-3 text-white" />
           </div>
@@ -238,7 +238,7 @@ const ProjectCard = ({
         </div>
 
         <p
-          className="text-xs text-muted-foreground hover:underline cursor-pointer"
+          className="cursor-pointer text-xs text-muted-foreground hover:underline"
           onClick={() => setShowComments(!showComments)}
         >
           {project.commentsCount}{" "}
@@ -249,7 +249,7 @@ const ProjectCard = ({
       <Separator />
 
       {/* 7. Action Buttons */}
-      <div className="w-full flex items-center justify-between px-10 py-1">
+      <div className="flex w-full items-center justify-between px-10 py-1">
         <Tooltip>
           <TooltipTrigger asChild>
             <button
@@ -260,7 +260,7 @@ const ProjectCard = ({
               <ThumbsUpIcon
                 className={`size-5 transition-all group-hover:scale-110 ${
                   isLiked
-                    ? "text-primary fill-primary"
+                    ? "fill-primary text-primary"
                     : "text-muted-foreground"
                 } ${isLoading ? "opacity-50" : ""}`}
               />
@@ -289,7 +289,7 @@ const ProjectCard = ({
               onClick={() => handleShare(project)}
               className="outline-none"
             >
-              <SendIcon className="size-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+              <SendIcon className="size-5 cursor-pointer text-muted-foreground transition-colors hover:text-foreground" />
             </button>
           </TooltipTrigger>
           <TooltipContent>
@@ -300,7 +300,7 @@ const ProjectCard = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <Link href={`/projects/${project.id}`} className="outline-none">
-              <EyeIcon className="size-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+              <EyeIcon className="size-5 cursor-pointer text-muted-foreground transition-colors hover:text-foreground" />
             </Link>
           </TooltipTrigger>
           <TooltipContent>

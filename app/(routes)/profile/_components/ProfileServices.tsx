@@ -14,14 +14,14 @@ const ProfileServices = async ({ userRole }: { userRole: string }) => {
   const services = personalInfo.services || [];
 
   return (
-    <div className="rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col p-[10px] px-5">
+    <div className="flex w-full flex-col rounded-lg bg-neutral-100 p-[10px] px-5 dark:bg-dark">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-2xl font-medium">Services</h2>
         {isOwner && <ServicesEditorDialog currentServices={services} />}
       </div>
       <div className="mt-5 w-full">
         {services.length > 0 ? (
-          <p className="font-bold text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm leading-relaxed font-bold text-muted-foreground">
             {services.map((service, index) => (
               <React.Fragment key={service}>
                 {service}

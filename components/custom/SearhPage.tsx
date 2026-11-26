@@ -72,13 +72,13 @@ const SearhPage = ({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            `rounded-full w-[280px] h-[34px] border border-neutral-600 pl-[40px] pr-[16px] items-center justify-start`,
+            `h-[34px] w-[280px] items-center justify-start rounded-full border border-neutral-600 pr-[16px] pl-[40px]`,
             forMobile ? "flex sm:hidden" : "hidden sm:flex",
             query ? "text-foreground" : "text-muted-foreground",
-            additionalClassName
+            additionalClassName,
           )}
         >
-          <SearchIcon className="opacity-50 " />
+          <SearchIcon className="opacity-50" />
           {query
             ? paths.find((path) => path.value === query)?.label
             : "Search page..."}
@@ -104,7 +104,7 @@ const SearhPage = ({
                   <Check
                     className={cn(
                       "ml-auto",
-                      query === path.value ? "opacity-100" : "opacity-0"
+                      query === path.value ? "opacity-100" : "opacity-0",
                     )}
                   />
                 </CommandItem>

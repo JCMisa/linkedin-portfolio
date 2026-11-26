@@ -112,7 +112,7 @@ export const SingleExperienceEditorDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Edit Experience</DialogTitle>
           <DialogDescription>
@@ -120,7 +120,7 @@ export const SingleExperienceEditorDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto no-scrollbar space-y-6 pr-2 py-4">
+        <div className="no-scrollbar flex-1 space-y-6 overflow-y-auto py-4 pr-2">
           {/* Title */}
           <div className="space-y-2">
             <Label htmlFor="title">
@@ -158,7 +158,7 @@ export const SingleExperienceEditorDialog = ({
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
-                      !experience.dateFrom && "text-muted-foreground"
+                      !experience.dateFrom && "text-muted-foreground",
                     )}
                   >
                     <CalendarIcon className="mr-2 size-4" />
@@ -181,7 +181,7 @@ export const SingleExperienceEditorDialog = ({
                     onSelect={(date) =>
                       updateField(
                         "dateFrom",
-                        date ? format(date, "yyyy-MM-dd") : ""
+                        date ? format(date, "yyyy-MM-dd") : "",
                       )
                     }
                     initialFocus
@@ -203,7 +203,7 @@ export const SingleExperienceEditorDialog = ({
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
-                      !experience.dateTo && "text-muted-foreground"
+                      !experience.dateTo && "text-muted-foreground",
                     )}
                   >
                     <CalendarIcon className="mr-2 size-4" />
@@ -226,7 +226,7 @@ export const SingleExperienceEditorDialog = ({
                     onSelect={(date) =>
                       updateField(
                         "dateTo",
-                        date ? format(date, "yyyy-MM-dd") : ""
+                        date ? format(date, "yyyy-MM-dd") : "",
                       )
                     }
                     initialFocus
@@ -250,7 +250,7 @@ export const SingleExperienceEditorDialog = ({
           <div className="space-y-2">
             <Label>Banner Image</Label>
             {experience.bannerImg ? (
-              <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+              <div className="relative h-48 w-full overflow-hidden rounded-lg border">
                 <Image
                   src={experience.bannerImg}
                   alt={`Banner for ${experience.title}`}
@@ -271,7 +271,7 @@ export const SingleExperienceEditorDialog = ({
               <div className="relative">
                 <FileUpload onChange={handleBannerUpload} />
                 {isUploading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-lg">
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/80">
                     <Loader2Icon className="size-6 animate-spin text-primary" />
                   </div>
                 )}
@@ -280,7 +280,7 @@ export const SingleExperienceEditorDialog = ({
           </div>
         </div>
 
-        <DialogFooter className="pt-4 border-t">
+        <DialogFooter className="border-t pt-4">
           <Button
             type="button"
             variant="outline"

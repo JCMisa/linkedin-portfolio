@@ -27,8 +27,8 @@ const SkillsContent = ({ skills, userRole }: SkillsContentProps) => {
     <div
       id="skills"
       className={cn(
-        "rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col justify-between p-[10px] px-5 overflow-hidden relative transition-all duration-300 ease-in-out",
-        isExpanded ? "max-h-[2000px]" : "max-h-[277px]"
+        "relative flex w-full flex-col justify-between overflow-hidden rounded-lg bg-neutral-100 p-[10px] px-5 transition-all duration-300 ease-in-out dark:bg-dark",
+        isExpanded ? "max-h-[2000px]" : "max-h-[277px]",
       )}
     >
       <div className="flex items-center justify-between gap-2">
@@ -36,21 +36,21 @@ const SkillsContent = ({ skills, userRole }: SkillsContentProps) => {
         {isOwner && <SkillsEditorDialog currentSkills={skills} />}
       </div>
 
-      <div className="flex flex-col gap-2 w-full pb-14">
+      <div className="flex w-full flex-col gap-2 pb-14">
         {skills.map((skill, index) => (
           <div
             key={skill.id}
             className={cn(
-              "w-full flex flex-col py-3",
+              "flex w-full flex-col py-3",
               index === skills.length - 1
                 ? ""
-                : "border-b border-neutral-200 dark:border-neutral-800"
+                : "border-b border-neutral-200 dark:border-neutral-800",
             )}
           >
-            <p className="font-bold text-sm text-neutral-900 dark:text-neutral-100">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
               {skill.title}
             </p>
-            <span className="text-xs italic text-muted-foreground mt-1">
+            <span className="mt-1 text-xs text-muted-foreground italic">
               {skill.items.join(", ")}
             </span>
           </div>
@@ -59,8 +59,8 @@ const SkillsContent = ({ skills, userRole }: SkillsContentProps) => {
 
       <div
         className={cn(
-          "cursor-pointer flex items-center gap-1 justify-center h-[44px] border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-dark z-10 w-full",
-          !isExpanded ? "absolute bottom-0 left-0" : "mt-2"
+          "z-10 flex h-[44px] w-full cursor-pointer items-center justify-center gap-1 border-t border-neutral-200 bg-neutral-100 dark:border-neutral-800 dark:bg-dark",
+          !isExpanded ? "absolute bottom-0 left-0" : "mt-2",
         )}
         onClick={() => setIsExpanded(!isExpanded)}
       >

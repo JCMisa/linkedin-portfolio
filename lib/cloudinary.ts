@@ -19,7 +19,7 @@ cloudinary.config({
  */
 export const uploadImageToCloudinary = withErrorHandling(
   async (file: File, folder: string = "jcm") => {
-  await requireAdmin();
+    await requireAdmin();
 
     // Validate environment variables
     if (
@@ -54,7 +54,7 @@ export const uploadImageToCloudinary = withErrorHandling(
     }
 
     return result.secure_url;
-  }
+  },
 );
 
 /**
@@ -110,7 +110,7 @@ function extractPublicIdFromUrl(url: string): string | null {
  */
 export const deleteImageFromCloudinary = withErrorHandling(
   async (imageUrl: string | null | undefined) => {
-  await requireAdmin();
+    await requireAdmin();
 
     // Validate environment variables
     if (
@@ -150,5 +150,5 @@ export const deleteImageFromCloudinary = withErrorHandling(
       console.error("Error deleting image from Cloudinary:", error);
       throw error;
     }
-  }
+  },
 );

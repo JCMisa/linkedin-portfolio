@@ -51,7 +51,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
   const [isResumeDialogOpen, setIsResumeDialogOpen] = useState(false);
   const [isContactInfoDialogOpen, setIsContactInfoDialogOpen] = useState(false);
   const [personalInfo, setPersonalInfo] = useState<PersonalInfoType | null>(
-    null
+    null,
   );
 
   const isOwner = userRole === "admin" || userRole === "owner";
@@ -90,7 +90,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
         // Update local state with the actual saved URL from database
         const savedUrl = result.imageUrl || imageUrl;
         setPersonalInfo((prev) =>
-          prev ? { ...prev, coverImg: savedUrl } : null
+          prev ? { ...prev, coverImg: savedUrl } : null,
         );
         // Refetch to ensure consistency
         const data = await getPersonalInfo();
@@ -129,7 +129,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
         // Update local state with the actual saved URL from database
         const savedUrl = result.imageUrl || imageUrl;
         setPersonalInfo((prev) =>
-          prev ? { ...prev, profileImg: savedUrl } : null
+          prev ? { ...prev, profileImg: savedUrl } : null,
         );
         // Refetch to ensure consistency
         const data = await getPersonalInfo();
@@ -169,7 +169,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
         setPersonalInfo((prev) =>
           prev
             ? { ...prev, experiences: result.experiences || experiences }
-            : null
+            : null,
         );
         // Refetch to ensure consistency
         const data = await getPersonalInfo();
@@ -207,7 +207,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
       ) {
         // Update local state
         setPersonalInfo((prev) =>
-          prev ? { ...prev, name: result.name || updatedName } : null
+          prev ? { ...prev, name: result.name || updatedName } : null,
         );
         // Refetch to ensure consistency
         const data = await getPersonalInfo();
@@ -250,7 +250,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                 ...prev,
                 industryRole: result.industryRole || updatedIndustryRole,
               }
-            : null
+            : null,
         );
         // Refetch to ensure consistency
         const data = await getPersonalInfo();
@@ -272,12 +272,12 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
 
   const handleResumeSave = async (
     updatedITResumeLink: string,
-    updatedVAResumeLink: string
+    updatedVAResumeLink: string,
   ) => {
     try {
       const result = await updateResume(
         updatedITResumeLink,
-        updatedVAResumeLink
+        updatedVAResumeLink,
       );
 
       // Check if result is an error string (from withErrorHandling)
@@ -300,7 +300,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                 itResumeLink: result.itResumeLink || updatedITResumeLink,
                 vaResumeLink: result.vaResumeLink || updatedVAResumeLink,
               }
-            : null
+            : null,
         );
         // Refetch to ensure consistency
         const data = await getPersonalInfo();
@@ -358,7 +358,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                   result.instagramLink || updatedContactInfo.instagramLink,
                 xLink: result.xLink || updatedContactInfo.xLink,
               }
-            : null
+            : null,
         );
         // Refetch to ensure consistency
         const data = await getPersonalInfo();
@@ -401,15 +401,15 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
   }
 
   return (
-    <div className="rounded-lg w-full lg:h-[400px] h-full bg-neutral-100 dark:bg-dark flex flex-col items-center relative">
+    <div className="relative flex h-full w-full flex-col items-center rounded-lg bg-neutral-100 lg:h-[400px] dark:bg-dark">
       {/* cover photo */}
-      <div className="h-[35%] w-full relative">
+      <div className="relative h-[35%] w-full">
         <Image
           src={displayCoverImage}
           alt="cover-img"
           width={1000}
           height={1000}
-          className="w-full h-full object-cover rounded-t-lg"
+          className="h-full w-full rounded-t-lg object-cover"
         />
 
         {isOwner && (
@@ -417,7 +417,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
             <TooltipTrigger asChild>
               <div
                 onClick={() => setIsCoverDialogOpen(true)}
-                className="flex-none flex items-center justify-center rounded-full w-8 h-8 cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out shadow-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black absolute top-3 right-3 z-20"
+                className="absolute top-3 right-3 z-20 flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg transition-all duration-200 ease-in-out hover:scale-105 dark:bg-neutral-100 dark:text-black"
               >
                 <PenBoxIcon className="size-4" />
               </div>
@@ -432,14 +432,14 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
       {/* profile photo */}
       <div
         onClick={() => setIsProfileOpen(true)}
-        className="cursor-pointer sm:mt-[-100px] mt-[-70px] flex items-start justify-start self-start ml-[20px] z-10 relative"
+        className="relative z-10 mt-[-70px] ml-[20px] flex cursor-pointer items-start justify-start self-start sm:mt-[-100px]"
       >
         <Image
           src={displayProfileImage}
           alt="avatar"
           width={1000}
           height={1000}
-          className="sm:w-[152px] sm:h-[152px] w-[100px] h-[100px] object-fill rounded-full border-3 border-white dark:border-dark "
+          className="h-[100px] w-[100px] rounded-full border-3 border-white object-fill sm:h-[152px] sm:w-[152px] dark:border-dark"
         />
         {isOwner && (
           <Tooltip>
@@ -449,7 +449,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                   e.stopPropagation();
                   setIsProfileDialogOpen(true);
                 }}
-                className="flex-none flex items-center justify-center rounded-full w-8 h-8 cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out shadow-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black absolute bottom-0 right-0 z-20"
+                className="absolute right-0 bottom-0 z-20 flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg transition-all duration-200 ease-in-out hover:scale-105 dark:bg-neutral-100 dark:text-black"
               >
                 <PenBoxIcon className="size-4" />
               </div>
@@ -462,9 +462,9 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
       </div>
 
       {/* profile info */}
-      <div className="h-full w-full p-[10px] overflow-auto no-scrollbar ">
-        <div className="px-5 flex flex-col lg:flex-row items-start gap-2 justify-between">
-          <div className=" flex flex-col gap-[5px]">
+      <div className="no-scrollbar h-full w-full overflow-auto p-[10px]">
+        <div className="flex flex-col items-start justify-between gap-2 px-5 lg:flex-row">
+          <div className="flex flex-col gap-[5px]">
             {isOwner ? (
               <Tooltip>
                 <TooltipTrigger asChild disabled={!isOwner}>
@@ -473,7 +473,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                       e.stopPropagation();
                       setIsNameDialogOpen(true);
                     }}
-                    className="text-2xl font-bold hover:opacity-[0.8] transition-all ease-linear duration-200 cursor-pointer"
+                    className="cursor-pointer text-2xl font-bold transition-all duration-200 ease-linear hover:opacity-[0.8]"
                   >
                     {personalInfo?.name}
                   </div>
@@ -486,7 +486,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
               <p className="text-2xl font-bold">{personalInfo?.name}</p>
             )}
 
-            <div className="border-blue-400 text-blue-400 border border-dashed px-3 flex items-center gap-1 rounded-full w-fit">
+            <div className="flex w-fit items-center gap-1 rounded-full border border-dashed border-blue-400 px-3 text-blue-400">
               <ShieldCheckIcon className="size-4 text-blue-400" />
               <p className="text-sm font-bold">Profile Owner</p>
             </div>
@@ -499,7 +499,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                       e.stopPropagation();
                       setIsIndustryRoleDialogOpen(true);
                     }}
-                    className="text-sm hover:opacity-[0.8] transition-all ease-linear duration-200 cursor-pointer"
+                    className="cursor-pointer text-sm transition-all duration-200 ease-linear hover:opacity-[0.8]"
                   >
                     {personalInfo?.industryRole || "Fullstack Developer 🚀"}
                   </div>
@@ -514,18 +514,18 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
               </p>
             )}
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 my-2">
+            <div className="my-2 flex flex-col items-start gap-2 sm:flex-row sm:items-center">
               <span className="text-sm text-muted-foreground">
                 {personalInfo?.city}, {personalInfo?.province},{" "}
                 {personalInfo?.country}
               </span>
-              <span className="text-sm text-muted-foreground hidden sm:block">
+              <span className="hidden text-sm text-muted-foreground sm:block">
                 •
               </span>
               <div className="flex items-center gap-2">
                 <Link
                   href={"/contact"}
-                  className="text-sm underline cursor-pointer text-blue-300"
+                  className="cursor-pointer text-sm text-blue-300 underline"
                 >
                   Contact Info
                 </Link>
@@ -537,7 +537,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                           e.stopPropagation();
                           setIsContactInfoDialogOpen(true);
                         }}
-                        className="flex-none flex items-center justify-center rounded-full w-5 h-5 cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out shadow-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black "
+                        className="flex h-5 w-5 flex-none cursor-pointer items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg transition-all duration-200 ease-in-out hover:scale-105 dark:bg-neutral-100 dark:text-black"
                       >
                         <PenBoxIcon className="size-3" />
                       </div>
@@ -568,20 +568,20 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                     alt={latestExperience.title || "experience"}
                     width={20}
                     height={20}
-                    className="w-[20px] h-[20px] object-fill rounded-md"
+                    className="h-[20px] w-[20px] rounded-md object-fill"
                   />
                 ) : (
-                  <div className="w-[20px] h-[20px] rounded-md bg-neutral-300 dark:bg-neutral-700" />
+                  <div className="h-[20px] w-[20px] rounded-md bg-neutral-300 dark:bg-neutral-700" />
                 )}
                 {isOwner ? (
                   <div
                     onClick={() => setIsExperiencesDialogOpen(true)}
-                    className="font-bold text-sm hover:opacity-[0.8] transition-all duration-200 ease-in-out cursor-pointer"
+                    className="cursor-pointer text-sm font-bold transition-all duration-200 ease-in-out hover:opacity-[0.8]"
                   >
                     {latestExperience.title || "Untitled Experience"}
                   </div>
                 ) : (
-                  <p className="font-bold text-sm ">
+                  <p className="text-sm font-bold">
                     {latestExperience.title || "Untitled Experience"}
                   </p>
                 )}
@@ -594,9 +594,9 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                   alt="school-img"
                   width={1000}
                   height={1000}
-                  className="w-[20px] h-[20px] object-fill rounded-md"
+                  className="h-[20px] w-[20px] rounded-md object-fill"
                 />
-                <p className="font-bold text-sm uppercase">
+                <p className="text-sm font-bold uppercase">
                   PHILADELPHIA TRUCK PARTS{" "}
                   <span className="text-sm text-muted-foreground italic">
                     (current)
@@ -612,9 +612,9 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                 alt="school-img"
                 width={1000}
                 height={1000}
-                className="w-[20px] h-[20px] object-fill rounded-md"
+                className="h-[20px] w-[20px] rounded-md object-fill"
               />
-              <p className="font-bold text-sm ">
+              <p className="text-sm font-bold">
                 Laguna State Polytechnic University - San Pablo City
               </p>
             </div>
@@ -625,7 +625,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
         <Popover>
           <PopoverTrigger asChild className="hidden md:flex">
             <Button
-              className="text-xs hidden md:flex items-center justify-center gap-1 cursor-pointer absolute bottom-2 right-2"
+              className="absolute right-2 bottom-2 hidden cursor-pointer items-center justify-center gap-1 text-xs md:flex"
               variant={"secondary"}
               size={"sm"}
             >
@@ -641,7 +641,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
               }
               download={"John_Carlo_Misa_Resume_IT.pdf"}
               target="_blank"
-              className="cursor-pointer text-sm hover:text-blue-400 transition-all duration-200 ease-in-out"
+              className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-blue-400"
             >
               IT Resume
             </a>
@@ -652,7 +652,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
               }
               download={"John_Carlo_Misa_Resume_VA.pdf"}
               target="_blank"
-              className="cursor-pointer text-sm hover:text-blue-400 transition-all duration-200 ease-in-out"
+              className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-blue-400"
             >
               VA Resume
             </a>
@@ -661,7 +661,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
                 <Separator />
                 <div
                   onClick={() => setIsResumeDialogOpen(true)}
-                  className="cursor-pointer text-sm hover:text-blue-400 transition-all duration-200 ease-in-out"
+                  className="cursor-pointer text-sm transition-all duration-200 ease-in-out hover:text-blue-400"
                 >
                   Edit Resume
                 </div>
@@ -674,13 +674,13 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
       {/* profile image full screen view */}
       {isProfileOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+          className="bg-opacity-75 fixed inset-0 z-50 flex items-center justify-center bg-black"
           onClick={() => setIsProfileOpen(false)}
         >
           <div className="relative">
             <button
               onClick={() => setIsProfileOpen(false)}
-              className="absolute top-4 right-4 text-white text-2xl z-50"
+              className="absolute top-4 right-4 z-50 text-2xl text-white"
             >
               &times;
             </button>
@@ -689,7 +689,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
               alt="avatar"
               width={1000}
               height={1000}
-              className="max-w-screen-lg max-h-screen-lg p-8"
+              className="max-h-screen-lg max-w-screen-lg p-8"
             />
           </div>
         </div>

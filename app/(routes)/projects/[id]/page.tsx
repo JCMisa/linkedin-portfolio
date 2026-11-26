@@ -38,23 +38,23 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
   const comments = commentsData.data || [];
 
   return (
-    <main className="min-h-screen bg-secondary/30 py-13 lg:py-17 px-4 md:px-10 lg:px-16">
-      <div className="max-w-6xl mx-auto">
+    <main className="min-h-screen bg-secondary/30 px-4 py-13 md:px-10 lg:px-16 lg:py-17">
+      <div className="mx-auto max-w-6xl">
         {/* Back Button */}
         <Link
           href="/"
-          className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6 w-fit group"
+          className="group mb-6 flex w-fit items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
         >
-          <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
           <span className="text-sm font-medium">Back to Feed</span>
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* LEFT COLUMN: Main Content */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
+          <div className="flex flex-col gap-6 lg:col-span-2">
             {/* Project Cover & Basic Info Card */}
-            <section className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-              <div className="relative w-full aspect-video bg-muted">
+            <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+              <div className="relative aspect-video w-full bg-muted">
                 <Image
                   src={project.image || "/empty-img.webp"}
                   alt={project.title}
@@ -65,12 +65,12 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
               </div>
 
               <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
+                <div className="mb-4 flex items-start justify-between">
                   <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-foreground capitalize">
+                    <h1 className="text-2xl font-bold text-foreground capitalize md:text-3xl">
                       {project.title}
                     </h1>
-                    <div className="flex items-center gap-4 mt-2 text-muted-foreground text-sm">
+                    <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Calendar className="size-4" />
                         {new Date(project.createdAt).toLocaleDateString(
@@ -89,10 +89,10 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                 <Separator className="my-6" />
 
                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <h3 className="text-lg font-semibold mb-2">
+                  <h3 className="mb-2 text-lg font-semibold">
                     About this project
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                  <p className="leading-relaxed whitespace-pre-wrap text-muted-foreground">
                     {project.description}
                   </p>
                 </div>
@@ -100,8 +100,8 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
             </section>
 
             {/* Comments Section Card */}
-            <section className="bg-card border border-border rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-6">
+            <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="mb-6 flex items-center gap-2">
                 <MessageSquare className="size-5 text-primary" />
                 <h2 className="text-xl font-bold">
                   Discussion ({comments.length})
@@ -119,8 +119,8 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
           {/* RIGHT COLUMN: Sidebar Details */}
           <div className="flex flex-col gap-6">
             {/* Actions & Links Card */}
-            <section className="bg-card border border-border rounded-xl p-6 shadow-sm">
-              <h3 className="font-bold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
+            <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <h3 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
                 Project Assets
               </h3>
               <div className="flex flex-col gap-3">
@@ -128,7 +128,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                   <Link
                     href={project.liveLink}
                     target="_blank"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-primary text-white rounded-full font-semibold hover:bg-primary-600 transition-colors"
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-2.5 font-semibold text-white transition-colors hover:bg-primary-600"
                   >
                     <Globe className="size-4" />
                     Live Demo
@@ -138,7 +138,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                   <Link
                     href={project.githubLink}
                     target="_blank"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 border border-primary text-primary rounded-full font-semibold hover:bg-primary/5 transition-colors"
+                    className="flex w-full items-center justify-center gap-2 rounded-full border border-primary py-2.5 font-semibold text-primary transition-colors hover:bg-primary/5"
                   >
                     <FaGithub className="size-4" />
                     Source Code
@@ -148,15 +148,15 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
             </section>
 
             {/* Tech Stack Card */}
-            <section className="bg-card border border-border rounded-xl p-6 shadow-sm">
-              <h3 className="font-bold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
+            <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <h3 className="mb-4 text-sm font-bold tracking-wider text-muted-foreground uppercase">
                 Technology Stack
               </h3>
               <div className="flex flex-wrap gap-2">
                 {project.techStacks?.map((tech: string) => (
                   <span
                     key={tech}
-                    className="px-3 py-1 bg-secondary text-secondary-foreground text-xs font-medium rounded-md border border-border"
+                    className="rounded-md border border-border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground"
                   >
                     {tech}
                   </span>
@@ -165,12 +165,12 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
             </section>
 
             {/* People who liked this project */}
-            <section className="bg-card border border-border rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="bg-primary/10 p-1.5 rounded-full">
-                  <ThumbsUp className="size-4 text-primary fill-primary" />
+            <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-2">
+                <div className="rounded-full bg-primary/10 p-1.5">
+                  <ThumbsUp className="size-4 fill-primary text-primary" />
                 </div>
-                <h3 className="font-bold text-sm text-foreground">
+                <h3 className="text-sm font-bold text-foreground">
                   Reactions ({likesWithUser.length})
                 </h3>
               </div>
@@ -179,7 +179,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                 {likesWithUser.slice(0, 5).map((like, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-3 group cursor-pointer"
+                    className="group flex cursor-pointer items-center gap-3"
                   >
                     <div className="relative flex-none">
                       <Image
@@ -187,17 +187,17 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                         alt={like.userName || "User"}
                         width={36}
                         height={36}
-                        className="rounded-full size-9 object-cover border border-border group-hover:border-primary transition-colors"
+                        className="size-9 rounded-full border border-border object-cover transition-colors group-hover:border-primary"
                       />
                       {/* Small blue dot/badge for "Connection" feel */}
                       {/* <div className="absolute -bottom-0.5 -right-0.5 size-2.5 bg-green-500 border-2 border-card rounded-full" /> */}
                     </div>
 
                     <div className="flex flex-col overflow-hidden">
-                      <span className="text-xs font-bold text-foreground group-hover:text-primary group-hover:underline truncate transition-colors">
+                      <span className="truncate text-xs font-bold text-foreground transition-colors group-hover:text-primary group-hover:underline">
                         {like.userName}
                       </span>
-                      <span className="text-[10px] text-muted-foreground truncate capitalize">
+                      <span className="truncate text-[10px] text-muted-foreground capitalize">
                         {like.userRole || "Member"}
                       </span>
                     </div>
@@ -206,7 +206,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
 
                 {/* Footer of the Reactions list */}
                 {likesWithUser.length > 5 ? (
-                  <button className="text-xs font-semibold text-primary hover:bg-primary/5 py-2 rounded-md transition-colors w-full text-center border-t border-border mt-2 pt-4">
+                  <button className="mt-2 w-full rounded-md border-t border-border py-2 pt-4 text-center text-xs font-semibold text-primary transition-colors hover:bg-primary/5">
                     View all {likesWithUser.length} reactions
                   </button>
                 ) : likesWithUser.length === 0 ? (

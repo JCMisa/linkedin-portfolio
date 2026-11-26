@@ -71,14 +71,14 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
   const handleUpdateCategory = (
     id: string,
     field: keyof SkillCategory,
-    value: any
+    value: any,
   ) => {
     setSkillCategories(
       skillCategories.map((cat) =>
         cat.id === id
           ? { ...cat, [field]: value, updatedAt: new Date().toISOString() }
-          : cat
-      )
+          : cat,
+      ),
     );
   };
 
@@ -98,7 +98,7 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
           };
         }
         return cat;
-      })
+      }),
     );
   };
 
@@ -111,8 +111,8 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
               items: cat.items.filter((item) => item !== itemToRemove),
               updatedAt: new Date().toISOString(),
             }
-          : cat
-      )
+          : cat,
+      ),
     );
   };
 
@@ -154,12 +154,12 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
       <DialogTrigger asChild>
         <div
           onClick={() => setIsDialogOpen(true)}
-          className="flex-none flex items-center justify-center rounded-full w-7 h-7 cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out shadow-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black"
+          className="flex h-7 w-7 flex-none cursor-pointer items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg transition-all duration-200 ease-in-out hover:scale-105 dark:bg-neutral-100 dark:text-black"
         >
           <PenBoxIcon className="size-4" />
         </div>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col p-0">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle className="flex items-center gap-2">
             <WrenchIcon className="size-5 text-primary" />
@@ -170,23 +170,23 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-6 py-4 overflow-y-auto no-scrollbar">
+        <ScrollArea className="no-scrollbar flex-1 overflow-y-auto px-6 py-4">
           <div className="space-y-6 pb-6">
             {skillCategories.map((category) => (
               <div
                 key={category.id}
-                className="p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50 space-y-4 relative group/card"
+                className="group/card relative space-y-4 rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50"
               >
                 <button
                   onClick={() => handleRemoveCategory(category.id)}
-                  className="absolute top-4 right-4 p-1.5 text-neutral-400 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all"
+                  className="absolute top-4 right-4 rounded-lg p-1.5 text-neutral-400 transition-all hover:bg-destructive/10 hover:text-destructive"
                 >
                   <Trash2Icon className="size-4" />
                 </button>
 
                 <div className="space-y-4 pr-10">
                   <div className="space-y-1.5">
-                    <Label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
+                    <Label className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase">
                       Category Title
                     </Label>
                     <Input
@@ -196,7 +196,7 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
                         handleUpdateCategory(
                           category.id,
                           "title",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       className="h-9 font-bold"
@@ -204,20 +204,20 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
+                    <Label className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase">
                       Skills
                     </Label>
-                    <div className="flex flex-wrap gap-2 mb-3">
+                    <div className="mb-3 flex flex-wrap gap-2">
                       {category.items.map((item) => (
                         <Badge
                           key={`${category.id}-${item}`}
                           variant="secondary"
-                          className="pl-3 pr-1 py-1 gap-1 bg-white dark:bg-dark border-neutral-200 dark:border-neutral-800"
+                          className="gap-1 border-neutral-200 bg-white py-1 pr-1 pl-3 dark:border-neutral-800 dark:bg-dark"
                         >
                           {item}
                           <button
                             onClick={() => handleRemoveItem(category.id, item)}
-                            className="p-0.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-full transition-colors"
+                            className="rounded-full p-0.5 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800"
                           >
                             <XIcon className="size-3" />
                           </button>
@@ -257,7 +257,7 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
 
             <Button
               variant="outline"
-              className="w-full h-12 border-dashed border-2 hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
+              className="flex h-12 w-full items-center justify-center gap-2 border-2 border-dashed transition-all hover:border-primary hover:text-primary"
               onClick={handleAddCategory}
             >
               <PlusIcon className="size-4" />
@@ -266,7 +266,7 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
           </div>
         </ScrollArea>
 
-        <DialogFooter className="p-6 pt-2 border-t">
+        <DialogFooter className="border-t p-6 pt-2">
           <Button
             type="button"
             variant="outline"

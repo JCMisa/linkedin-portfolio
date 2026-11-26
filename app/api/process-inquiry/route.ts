@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     if (!messages || messages.length === 0) {
       return NextResponse.json(
         { error: "No conversation data found" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     if (!userCheck.length || userCheck[0].credits <= 0) {
       return NextResponse.json(
         { error: "Insufficient contact credits" },
-        { status: 403 } // 403 Forbidden is standard for "quota exceeded"
+        { status: 403 }, // 403 Forbidden is standard for "quota exceeded"
       );
     }
 
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
       console.error("JSON Parse Error:", aiResponse);
       return NextResponse.json(
         { error: "AI processing failed" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
     console.error("Process Inquiry Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

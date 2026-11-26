@@ -47,7 +47,7 @@ export default function RootLayout({
               <Navbar />
               <UserStoreWatcher />
               {children}
-              <div className="fixed bottom-3 right-3">
+              <div className="fixed right-3 bottom-3">
                 <AIChatbot />
               </div>
             </TooltipProvider>

@@ -108,8 +108,8 @@ const ProjectsPage = async () => {
   ]);
 
   return (
-    <main className="relative py-18 px-6 md:px-10 lg:px-16">
-      <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row gap-6">
+    <main className="relative px-6 py-18 md:px-10 lg:px-16">
+      <div className="relative mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row">
         {/* projects list */}
         <ProjectsList
           currentUser={currentUser as any}
@@ -117,7 +117,7 @@ const ProjectsPage = async () => {
         />
 
         {/* profile and latest certificates and footer - fixed */}
-        <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
+        <div className="flex w-full flex-col gap-2 rounded-lg lg:w-[320px]">
           <ProfileCard personalInfo={personalInfo as PersonalInfoType} />
 
           <div className="sticky top-[73px]">

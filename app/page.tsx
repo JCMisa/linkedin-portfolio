@@ -106,14 +106,14 @@ export default async function Home() {
     "https://s3.tradingview.com/external-embedding/embed-widget-";
 
   return (
-    <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16">
-      <div className="max-w-7xl mx-auto relative">
-        <div className="hidden lg:block fixed w-[240px] rounded-lg">
+    <main className="relative px-6 py-14 md:px-10 lg:px-16 lg:py-18">
+      <div className="relative mx-auto max-w-7xl">
+        <div className="fixed hidden w-[240px] rounded-lg lg:block">
           <ProfileSection personalInfo={personalInfo as PersonalInfoType} />
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 py-5 lg:py-0 lg:pl-[265px]">
-          <div className="w-full lg:max-w-[640px] rounded-lg">
+        <div className="flex flex-col gap-6 py-5 lg:flex-row lg:py-0 lg:pl-[265px]">
+          <div className="w-full rounded-lg lg:max-w-[640px]">
             <ProjectsFeed
               userRole={userRole}
               initialProjects={typedProjects}
@@ -123,7 +123,7 @@ export default async function Home() {
             />
           </div>
 
-          <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
+          <div className="flex w-full flex-col gap-2 rounded-lg lg:w-[320px]">
             <ProfessionalActivities
               personalInfo={personalInfo as PersonalInfoType}
             />

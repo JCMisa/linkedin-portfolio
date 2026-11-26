@@ -72,7 +72,7 @@ export const ExperiencesEditorDialog = ({
           updatedAt: exp.updatedAt ? new Date(exp.updatedAt) : new Date(),
           dateFrom: exp.dateFrom || "",
           dateTo: exp.dateTo || "",
-        }))
+        })),
       );
     }
   }, [open, currentExperiences]);
@@ -98,7 +98,7 @@ export const ExperiencesEditorDialog = ({
   const updateExperience = (
     index: number,
     field: keyof ExperienceType,
-    value: string | Date
+    value: string | Date,
   ) => {
     const updated = [...experiences];
     updated[index] = {
@@ -134,7 +134,7 @@ export const ExperiencesEditorDialog = ({
   const handleDateSelect = (
     index: number,
     field: "dateFrom" | "dateTo",
-    date: Date | undefined
+    date: Date | undefined,
   ) => {
     if (date) {
       updateExperience(index, field, format(date, "yyyy-MM-dd"));
@@ -144,7 +144,7 @@ export const ExperiencesEditorDialog = ({
   const handleSave = async () => {
     // Validate experiences
     const hasEmptyFields = experiences.some(
-      (exp) => !exp.title.trim() || !exp.description.trim()
+      (exp) => !exp.title.trim() || !exp.description.trim(),
     );
 
     if (hasEmptyFields) {
@@ -184,7 +184,7 @@ export const ExperiencesEditorDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Edit Experiences</DialogTitle>
           <DialogDescription>
@@ -192,11 +192,11 @@ export const ExperiencesEditorDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto no-scrollbar space-y-6 pr-2">
+        <div className="no-scrollbar flex-1 space-y-6 overflow-y-auto pr-2">
           {experiences.map((experience, index) => (
             <div
               key={experience.id}
-              className="border rounded-lg p-4 space-y-4 bg-neutral-50 dark:bg-neutral-900"
+              className="space-y-4 rounded-lg border bg-neutral-50 p-4 dark:bg-neutral-900"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">
@@ -254,7 +254,7 @@ export const ExperiencesEditorDialog = ({
                         variant="outline"
                         className={cn(
                           "w-full justify-start text-left font-normal",
-                          !experience.dateFrom && "text-muted-foreground"
+                          !experience.dateFrom && "text-muted-foreground",
                         )}
                       >
                         <CalendarIcon className="mr-2 size-4" />
@@ -291,7 +291,7 @@ export const ExperiencesEditorDialog = ({
                         variant="outline"
                         className={cn(
                           "w-full justify-start text-left font-normal",
-                          !experience.dateTo && "text-muted-foreground"
+                          !experience.dateTo && "text-muted-foreground",
                         )}
                       >
                         <CalendarIcon className="mr-2 size-4" />
@@ -325,7 +325,7 @@ export const ExperiencesEditorDialog = ({
               <div className="space-y-2">
                 <Label>Banner Image</Label>
                 {experience.bannerImg ? (
-                  <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+                  <div className="relative h-48 w-full overflow-hidden rounded-lg border">
                     <Image
                       src={experience.bannerImg}
                       alt={`Banner for ${experience.title}`}
@@ -348,7 +348,7 @@ export const ExperiencesEditorDialog = ({
                       onChange={(files) => handleBannerUpload(index, files)}
                     />
                     {uploadingIndex === index && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-lg">
+                      <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/80">
                         <Loader2Icon className="size-6 animate-spin text-primary" />
                       </div>
                     )}
@@ -359,15 +359,17 @@ export const ExperiencesEditorDialog = ({
           ))}
 
           {experiences.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="py-8 text-center text-muted-foreground">
               <p>No experiences added yet.</p>
-              <p className="text-sm">Click &ldquo;Add Experience&rdquo; to get started.</p>
+              <p className="text-sm">
+                Click &ldquo;Add Experience&rdquo; to get started.
+              </p>
             </div>
           )}
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between gap-2 pt-4 border-t">
+        <div className="flex items-center justify-between gap-2 border-t pt-4">
           <Button
             type="button"
             variant="outline"

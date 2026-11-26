@@ -23,7 +23,7 @@ const TradingViewWidget = ({
 
   return (
     <div className="w-full">
-      {title && <h3 className="font-semibold text-2xl  mb-5">{title}</h3>}
+      {title && <h3 className="mb-5 text-2xl font-semibold">{title}</h3>}
       <div
         className={cn("tradingview-widget-container", className)}
         ref={containerRef}

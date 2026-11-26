@@ -20,7 +20,7 @@ interface ResumeEditorDialogProps {
   currentVAResumeLink: string;
   onSave: (
     updatedITResumeLink: string,
-    updatedVAResumeLink: string
+    updatedVAResumeLink: string,
   ) => Promise<void>;
 }
 
@@ -61,7 +61,7 @@ const ResumeEditorDialog = ({
   const handleSave = async () => {
     if (!itResumeLink.trim() || !vaResumeLink.trim()) {
       toast.error(
-        "Please fill in all required fields (IT Resume Link and VA Resume Link)"
+        "Please fill in all required fields (IT Resume Link and VA Resume Link)",
       );
       return;
     }

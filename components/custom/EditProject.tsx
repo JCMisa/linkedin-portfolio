@@ -44,7 +44,7 @@ const EditProject = ({ project }: { project: ProjectType }) => {
   });
 
   const [techStack, setTechStack] = useState<string[]>(
-    project.techStacks || []
+    project.techStacks || [],
   );
   const [currentTech, setCurrentTech] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -95,7 +95,7 @@ const EditProject = ({ project }: { project: ProjectType }) => {
 
   /* ---------- field handlers ---------- */
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -199,11 +199,11 @@ const EditProject = ({ project }: { project: ProjectType }) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="flex items-center justify-center">
-          <EditIcon className="size-3 cursor-pointer hover:text-primary transition-colors" />
+          <EditIcon className="size-3 cursor-pointer transition-colors hover:text-primary" />
         </button>
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto no-scrollbar">
+      <DialogContent className="no-scrollbar max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Project</DialogTitle>
           <DialogDescription>
@@ -256,13 +256,13 @@ const EditProject = ({ project }: { project: ProjectType }) => {
 
             {/* Current Image Preview - Clickable to upload new */}
             {formData.imageUrl && !uploadedImageUrl && (
-              <div className="space-y-2 mb-4">
+              <div className="mb-4 space-y-2">
                 <p className="text-xs text-muted-foreground">
                   Current image (click image to upload a new one)
                 </p>
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="relative w-full h-48 rounded-md overflow-hidden border cursor-pointer group"
+                  className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md border"
                 >
                   <Image
                     src={formData.imageUrl || "/empty-img.webp"}
@@ -270,8 +270,8 @@ const EditProject = ({ project }: { project: ProjectType }) => {
                     fill
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
-                    <p className="text-white opacity-0 group-hover:opacity-100 text-sm font-medium">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-200 group-hover:bg-black/40">
+                    <p className="text-sm font-medium text-white opacity-0 group-hover:opacity-100">
                       Click to upload new image
                     </p>
                   </div>
@@ -293,7 +293,7 @@ const EditProject = ({ project }: { project: ProjectType }) => {
                 <p className="text-xs text-muted-foreground">
                   New image uploaded successfully!
                 </p>
-                <div className="relative w-full h-48 rounded-md overflow-hidden border">
+                <div className="relative h-48 w-full overflow-hidden rounded-md border">
                   <Image
                     src={uploadedImageUrl}
                     alt="New project image preview"
@@ -322,7 +322,7 @@ const EditProject = ({ project }: { project: ProjectType }) => {
                 onChange={handleInputChange}
                 onBlur={handleBlur("githubUrl")}
                 className={cn(
-                  touched.githubUrl && !githubValid && "border-destructive"
+                  touched.githubUrl && !githubValid && "border-destructive",
                 )}
               />
               {touched.githubUrl && !githubValid && (
@@ -339,7 +339,7 @@ const EditProject = ({ project }: { project: ProjectType }) => {
                 onChange={handleInputChange}
                 onBlur={handleBlur("liveUrl")}
                 className={cn(
-                  touched.liveUrl && !liveValid && "border-destructive"
+                  touched.liveUrl && !liveValid && "border-destructive",
                 )}
               />
               {touched.liveUrl && !liveValid && (
@@ -383,11 +383,11 @@ const EditProject = ({ project }: { project: ProjectType }) => {
               </Button>
             </div>
             {techStack.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="mt-2 flex flex-wrap gap-2">
                 {techStack.map((tech, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-1 bg-accent px-2 py-1 rounded-md"
+                    className="flex items-center gap-1 rounded-md bg-accent px-2 py-1"
                   >
                     <span className="text-sm">{tech}</span>
                     <button onClick={() => handleRemoveTech(i)}>

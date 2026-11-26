@@ -90,9 +90,9 @@ const ServicesEditorDialog = ({
       <DialogTrigger asChild>
         <div
           onClick={() => setIsDialogOpen(true)}
-          className="flex-none flex items-center justify-center rounded-full w-7 h-7 cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out shadow-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black "
+          className="flex h-7 w-7 flex-none cursor-pointer items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg transition-all duration-200 ease-in-out hover:scale-105 dark:bg-neutral-100 dark:text-black"
         >
-          <PenBoxIcon className="size-4 " />
+          <PenBoxIcon className="size-4" />
         </div>
       </DialogTrigger>
       <DialogContent className="max-w-md">
@@ -110,7 +110,7 @@ const ServicesEditorDialog = ({
           <div className="space-y-2">
             <Label
               htmlFor="service"
-              className="text-xs font-bold text-neutral-500 uppercase tracking-wider"
+              className="text-xs font-bold tracking-wider text-neutral-500 uppercase"
             >
               Add New Service
             </Label>
@@ -139,29 +139,29 @@ const ServicesEditorDialog = ({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
+            <Label className="text-xs font-bold tracking-wider text-neutral-500 uppercase">
               Current Services ({services.length})
             </Label>
-            <ScrollArea className="h-[200px] w-full rounded-md border border-neutral-200 dark:border-neutral-800 p-4 bg-neutral-50 dark:bg-neutral-900/50">
+            <ScrollArea className="h-[200px] w-full rounded-md border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
               <div className="flex flex-wrap gap-2">
                 {services.length > 0 ? (
                   services.map((service) => (
                     <Badge
                       key={service}
                       variant="secondary"
-                      className="pl-3 pr-1 py-1 gap-1 bg-white dark:bg-dark border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 transition-all hover:bg-primary/5 hover:border-primary/20"
+                      className="gap-1 border-neutral-200 bg-white py-1 pr-1 pl-3 text-neutral-700 transition-all hover:border-primary/20 hover:bg-primary/5 dark:border-neutral-800 dark:bg-dark dark:text-neutral-300"
                     >
                       {service}
                       <button
                         onClick={() => handleRemoveService(service)}
-                        className="p-0.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-full transition-colors"
+                        className="rounded-full p-0.5 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800"
                       >
                         <XIcon className="size-3" />
                       </button>
                     </Badge>
                   ))
                 ) : (
-                  <p className="text-sm text-neutral-500 italic p-4 text-center w-full">
+                  <p className="w-full p-4 text-center text-sm text-neutral-500 italic">
                     No services added yet.
                   </p>
                 )}

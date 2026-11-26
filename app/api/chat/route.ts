@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   if (!userId) {
     return NextResponse.json(
       { response: "Please sign in first to access JCM AI chatbot." },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
         response: `Too many questions. Please wait ${waitSec}s before asking again.`,
         retryAfterSeconds: waitSec,
       },
-      { status: 429 }
+      { status: 429 },
     );
 
   const { message } = await req.json();
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       {
         error: "Message is required and must be a string",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     if (!response) {
       return NextResponse.json(
         { error: "No response from AI model" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
         error: "Failed to process request",
         details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

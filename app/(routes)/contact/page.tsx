@@ -108,12 +108,12 @@ const ContactPage = async () => {
   }
 
   return (
-    <main className="min-h-screen pt-16 bg-neutral-200/50 dark:bg-black/90">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="flex flex-col lg:flex-row gap-8">
+    <main className="min-h-screen bg-neutral-200/50 pt-16 dark:bg-black/90">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left Side: Map & Contact Info */}
-          <div className="lg:w-2/3 space-y-6">
-            <div className="bg-neutral-100 dark:bg-dark rounded-xl overflow-hidden shadow-sm border border-neutral-200 dark:border-neutral-800 h-[400px] lg:h-[500px] relative">
+          <div className="space-y-6 lg:w-2/3">
+            <div className="relative h-[400px] overflow-hidden rounded-xl border border-neutral-200 bg-neutral-100 shadow-sm lg:h-[500px] dark:border-neutral-800 dark:bg-dark">
               <iframe
                 title="map"
                 width="100%"
@@ -122,7 +122,7 @@ const ContactPage = async () => {
                 style={{ filter: "grayscale(0.5) contrast(1.1) opacity(0.8)" }}
                 className="border-0"
               />
-              <div className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-dark/90 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="absolute right-4 bottom-4 left-4 flex flex-col justify-between gap-4 rounded-lg border border-neutral-200 bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:flex-row sm:items-center dark:border-neutral-800 dark:bg-dark/90">
                 <div className="space-y-1">
                   <h3 className="font-bold text-neutral-900 dark:text-neutral-100">
                     Location
@@ -136,16 +136,16 @@ const ContactPage = async () => {
                   <p className="font-semibold text-neutral-500">
                     Available remotely worldwide
                   </p>
-                  <p className="text-primary font-medium">
+                  <p className="font-medium text-primary">
                     Timezone: UTC+8 (Manila)
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-neutral-100 dark:bg-dark p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
-                <h3 className="text-sm font-bold text-neutral-500 uppercase tracking-wider mb-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="rounded-xl border border-neutral-200 bg-neutral-100 p-6 shadow-sm dark:border-neutral-800 dark:bg-dark">
+                <h3 className="mb-4 text-sm font-bold tracking-wider text-neutral-500 uppercase">
                   Direct Contact
                 </h3>
                 <div className="space-y-3">
@@ -153,7 +153,7 @@ const ContactPage = async () => {
                     <span className="text-xs text-neutral-500">Email</span>
                     <a
                       href={`mailto:${personalInfo.email}`}
-                      className="text-neutral-900 dark:text-neutral-100 font-medium hover:text-primary transition-colors"
+                      className="font-medium text-neutral-900 transition-colors hover:text-primary dark:text-neutral-100"
                     >
                       {personalInfo.email}
                     </a>
@@ -162,7 +162,7 @@ const ContactPage = async () => {
                     <span className="text-xs text-neutral-500">Phone</span>
                     <a
                       href={`tel:${personalInfo.contactNumber}`}
-                      className="text-neutral-900 dark:text-neutral-100 font-medium hover:text-primary transition-colors"
+                      className="font-medium text-neutral-900 transition-colors hover:text-primary dark:text-neutral-100"
                     >
                       {personalInfo.contactNumber}
                     </a>
@@ -170,8 +170,8 @@ const ContactPage = async () => {
                 </div>
               </div>
 
-              <div className="bg-neutral-100 dark:bg-dark p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
-                <h3 className="text-sm font-bold text-neutral-500 uppercase tracking-wider mb-4">
+              <div className="rounded-xl border border-neutral-200 bg-neutral-100 p-6 shadow-sm dark:border-neutral-800 dark:bg-dark">
+                <h3 className="mb-4 text-sm font-bold tracking-wider text-neutral-500 uppercase">
                   Follow Me
                 </h3>
                 <div className="flex flex-wrap gap-4">
@@ -192,7 +192,7 @@ const ContactPage = async () => {
                         >
                           {social.label}
                         </Link>
-                      )
+                      ),
                   )}
                 </div>
               </div>
@@ -200,7 +200,7 @@ const ContactPage = async () => {
           </div>
 
           {/* Right Side: Form */}
-          <div className="lg:w-1/3 flex flex-col space-y-6">
+          <div className="flex flex-col space-y-6 lg:w-1/3">
             <SendMessageForm personalInfo={personalInfo} />
             <Button asChild className="cursor-pointer">
               <Link href={"/contact/assistant"}>Talk to JCM Assistant</Link>

@@ -71,7 +71,7 @@ const CreateProject = () => {
 
   /* ---------- handlers ---------- */
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -173,7 +173,7 @@ const CreateProject = () => {
         <PlusIcon className="size-4 cursor-pointer" />
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] xl:min-w-[70rem] overflow-y-auto no-scrollbar bg-neutral-100 dark:bg-neutral-900">
+      <DialogContent className="no-scrollbar max-h-[90vh] overflow-y-auto bg-neutral-100 xl:min-w-[70rem] dark:bg-neutral-900">
         <DialogHeader>
           <DialogTitle>Add New Project</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
@@ -245,7 +245,7 @@ const CreateProject = () => {
                 <p className="text-xs text-muted-foreground">
                   Image uploaded successfully!
                 </p>
-                <div className="relative w-full h-48 rounded-md overflow-hidden border">
+                <div className="relative h-48 w-full overflow-hidden rounded-md border">
                   <Image
                     src={uploadedImageUrl}
                     alt="Project preview"
@@ -263,8 +263,8 @@ const CreateProject = () => {
           </div>
 
           {/* GitHub & Live URLs */}
-          <div className="flex items-center gap-2 w-full">
-            <div className="space-y-1 w-full">
+          <div className="flex w-full items-center gap-2">
+            <div className="w-full space-y-1">
               <label htmlFor="githubUrl" className="text-sm font-medium">
                 GitHub URL
               </label>
@@ -278,7 +278,7 @@ const CreateProject = () => {
                 className={cn(
                   touched.githubUrl &&
                     !githubValid &&
-                    "border-destructive focus-visible:ring-destructive"
+                    "border-destructive focus-visible:ring-destructive",
                 )}
               />
               {touched.githubUrl && !githubValid && (
@@ -286,7 +286,7 @@ const CreateProject = () => {
               )}
             </div>
 
-            <div className="space-y-1 w-full">
+            <div className="w-full space-y-1">
               <label htmlFor="liveUrl" className="text-sm font-medium">
                 Live URL
               </label>
@@ -300,7 +300,7 @@ const CreateProject = () => {
                 className={cn(
                   touched.liveUrl &&
                     !liveValid &&
-                    "border-destructive focus-visible:ring-destructive"
+                    "border-destructive focus-visible:ring-destructive",
                 )}
               />
               {touched.liveUrl && !liveValid && (
@@ -310,7 +310,7 @@ const CreateProject = () => {
           </div>
 
           {/* Category */}
-          <div className="space-y-2 w-full">
+          <div className="w-full space-y-2">
             <label htmlFor="category" className="text-sm font-medium">
               Category
             </label>
@@ -349,11 +349,11 @@ const CreateProject = () => {
               </Button>
             </div>
             {techStack.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="mt-2 flex flex-wrap gap-2">
                 {techStack.map((tech, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-1 bg-accent px-2 py-1 rounded-md"
+                    className="flex items-center gap-1 rounded-md bg-accent px-2 py-1"
                   >
                     <span className="text-sm">{tech}</span>
                     <button

@@ -2,57 +2,57 @@ import React from "react";
 
 const ProjectsSkeletonCard = () => {
   return (
-    <div className="w-full dark:bg-dark flex flex-col items-start gap-3 rounded-lg py-2 px-3 overflow-hidden animate-pulse">
+    <div className="flex w-full animate-pulse flex-col items-start gap-3 overflow-hidden rounded-lg px-3 py-2 dark:bg-dark">
       {/* header skeleton */}
-      <div className="flex items-center gap-2 justify-between w-full">
+      <div className="flex w-full items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <div className="w-[24px] h-[24px] rounded-full bg-muted" />
-          <div className="h-2 w-32 bg-muted rounded-md" />
+          <div className="h-[24px] w-[24px] rounded-full bg-muted" />
+          <div className="h-2 w-32 rounded-md bg-muted" />
         </div>
-        <div className="w-4 h-4 rounded-md bg-muted" />
+        <div className="h-4 w-4 rounded-md bg-muted" />
       </div>
 
-      <div className="w-full h-[1px] bg-muted" />
+      <div className="h-[1px] w-full bg-muted" />
 
       {/* content header skeleton */}
-      <div className="flex items-center gap-2 justify-between w-full">
-        <div className="flex items-center gap-2 w-full">
-          <div className="w-[48px] h-[48px] rounded-full bg-muted" />
-          <div className="flex flex-col gap-2 w-[80%]">
-            <div className="h-4 w-32 bg-muted rounded-md" />
-            <div className="h-2 w-48 bg-muted rounded-md" />
-            <div className="h-2 w-24 bg-muted rounded-md mt-1" />
+      <div className="flex w-full items-center justify-between gap-2">
+        <div className="flex w-full items-center gap-2">
+          <div className="h-[48px] w-[48px] rounded-full bg-muted" />
+          <div className="flex w-[80%] flex-col gap-2">
+            <div className="h-4 w-32 rounded-md bg-muted" />
+            <div className="h-2 w-48 rounded-md bg-muted" />
+            <div className="mt-1 h-2 w-24 rounded-md bg-muted" />
           </div>
         </div>
-        <div className="w-4 h-4 rounded-md bg-muted" />
+        <div className="h-4 w-4 rounded-md bg-muted" />
       </div>
 
       {/* content caption skeleton */}
-      <div className="space-y-2 w-[90%]">
-        <div className="h-2 w-full bg-muted rounded-md" />
-        <div className="h-2 w-full bg-muted rounded-md" />
-        <div className="h-2 w-3/4 bg-muted rounded-md" />
-        <div className="h-2 w-16 bg-muted rounded-md" />
+      <div className="w-[90%] space-y-2">
+        <div className="h-2 w-full rounded-md bg-muted" />
+        <div className="h-2 w-full rounded-md bg-muted" />
+        <div className="h-2 w-3/4 rounded-md bg-muted" />
+        <div className="h-2 w-16 rounded-md bg-muted" />
       </div>
 
       {/* image skeleton */}
-      <div className="w-full h-[300px] bg-muted rounded-md" />
+      <div className="h-[300px] w-full rounded-md bg-muted" />
 
       {/* stats skeleton */}
-      <div className="flex items-center justify-between w-full">
+      <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-muted" />
-          <div className="h-2 w-8 bg-muted rounded-md" />
+          <div className="h-4 w-4 rounded-full bg-muted" />
+          <div className="h-2 w-8 rounded-md bg-muted" />
         </div>
-        <div className="h-2 w-16 bg-muted rounded-md" />
+        <div className="h-2 w-16 rounded-md bg-muted" />
       </div>
 
-      <div className="w-full h-[1px] bg-muted" />
+      <div className="h-[1px] w-full bg-muted" />
 
       {/* actions skeleton */}
-      <div className="w-full flex items-center justify-between px-10">
+      <div className="flex w-full items-center justify-between px-10">
         {[1, 2, 3, 4].map((item) => (
-          <div key={item} className="w-5 h-5 rounded-md bg-muted" />
+          <div key={item} className="h-5 w-5 rounded-md bg-muted" />
         ))}
       </div>
     </div>

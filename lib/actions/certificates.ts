@@ -24,7 +24,7 @@ export const getAllCertificates = unstable_cache(
   {
     revalidate: 3600, // Cache for 1 hour (adjust as needed)
     tags: ["certificates"], // Tag for manual revalidation later
-  }
+  },
 );
 
 export const getLatestThreeCertificates = unstable_cache(
@@ -44,7 +44,7 @@ export const getLatestThreeCertificates = unstable_cache(
   {
     revalidate: 3600, // Cache for 1 hour (adjust as needed)
     tags: ["certificates"], // Tag for manual revalidation later
-  }
+  },
 );
 
 export const addCertificate = withErrorHandling(
@@ -66,7 +66,7 @@ export const addCertificate = withErrorHandling(
       return { data: data.insertedCertificateTitle, success: true };
     }
     return { data: null, success: false };
-  }
+  },
 );
 
 export const updateCertificate = withErrorHandling(
@@ -77,7 +77,7 @@ export const updateCertificate = withErrorHandling(
       description: string;
       imageUrl: string;
       acquiredDate: Date;
-    }
+    },
   ) => {
     await requireAdmin();
 
@@ -130,7 +130,7 @@ export const updateCertificate = withErrorHandling(
       success: false,
       error: "Failed to update certificate",
     };
-  }
+  },
 );
 
 export const deleteCertificate = withErrorHandling(
@@ -170,5 +170,5 @@ export const deleteCertificate = withErrorHandling(
       return { data: null, success: true };
     }
     return { data: null, success: false };
-  }
+  },
 );

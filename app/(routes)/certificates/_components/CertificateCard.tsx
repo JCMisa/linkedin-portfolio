@@ -15,21 +15,27 @@ import {
 import { EyeIcon } from "lucide-react";
 
 const CertificateCard = memo(
-  ({ cert, currentUser }: { cert: CertificateType; currentUser: UserType | null }) => {
+  ({
+    cert,
+    currentUser,
+  }: {
+    cert: CertificateType;
+    currentUser: UserType | null;
+  }) => {
     return (
-      <div className="flex w-full h-full flex-col space-y-4 rounded-lg bg-neutral-200 dark:bg-dark/80 p-4 border border-transparent hover:border-border transition-all">
+      <div className="flex h-full w-full flex-col space-y-4 rounded-lg border border-transparent bg-neutral-200 p-4 transition-all hover:border-border dark:bg-dark/80">
         {/* header view and actions */}
-        <div className="w-full flex items-center justify-between gap-4">
+        <div className="flex w-full items-center justify-between gap-4">
           <Dialog>
             <DialogTrigger asChild>
-              <div className="cursor-pointer text-[10px] font-bold text-muted-foreground py-1 px-4 rounded-full border border-neutral-400 dark:border-neutral-600 hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-1 uppercase tracking-tight">
+              <div className="flex cursor-pointer items-center justify-center gap-1 rounded-full border border-neutral-400 px-4 py-1 text-[10px] font-bold tracking-tight text-muted-foreground uppercase transition-all hover:border-primary hover:bg-primary hover:text-white dark:border-neutral-600">
                 <EyeIcon className="size-3" />
                 View
               </div>
             </DialogTrigger>
             <DialogContent
               showCloseButton={false}
-              className="max-w-[800px] bg-transparent border-none p-0"
+              className="max-w-[800px] border-none bg-transparent p-0"
             >
               <DialogHeader className="sr-only">
                 <DialogTitle>{cert.title}</DialogTitle>
@@ -41,7 +47,7 @@ const CertificateCard = memo(
                   alt={cert.title}
                   width={1200}
                   height={1200}
-                  className="w-full h-auto object-contain rounded-lg"
+                  className="h-auto w-full rounded-lg object-contain"
                   priority
                 />
               </div>
@@ -57,23 +63,23 @@ const CertificateCard = memo(
         </div>
 
         {/* image preview */}
-        <div className="relative w-full h-48 overflow-hidden rounded-lg">
+        <div className="relative h-48 w-full overflow-hidden rounded-lg">
           <Image
             src={cert.image || "/empty-img.webp"}
             alt="certificate-preview"
             fill
-            className="object-cover object-top hover:scale-105 transition-transform duration-500"
+            className="object-cover object-top transition-transform duration-500 hover:scale-105"
           />
         </div>
 
         {/* info */}
-        <div className="flex flex-col items-start gap-1 flex-grow">
-          <div className="flex items-start justify-between gap-2 w-full">
-            <p className="text-md font-bold tracking-tight text-foreground line-clamp-1">
+        <div className="flex flex-grow flex-col items-start gap-1">
+          <div className="flex w-full items-start justify-between gap-2">
+            <p className="text-md line-clamp-1 font-bold tracking-tight text-foreground">
               {cert.title}
             </p>
           </div>
-          <p className="text-[10px] font-medium text-primary uppercase tracking-wider">
+          <p className="text-[10px] font-medium tracking-wider text-primary uppercase">
             {cert.acquiredDate
               ? new Date(cert.acquiredDate).toLocaleDateString("en-US", {
                   month: "long",
@@ -82,7 +88,7 @@ const CertificateCard = memo(
               : "Date not available"}
           </p>
 
-          <p className="text-xs text-muted-foreground mt-2 line-clamp-3 leading-relaxed">
+          <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
             {cert.description || "No description provided."}
           </p>
         </div>

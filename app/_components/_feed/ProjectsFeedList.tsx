@@ -21,7 +21,7 @@ const ProjectsFeedList = ({
   personalInfo: PersonalInfoType;
 }) => {
   return (
-    <div className="flex flex-col items-center gap-2 w-full">
+    <div className="flex w-full flex-col items-center gap-2">
       {projects && projects.length > 0 ? (
         <>
           {projects.map((project) => (
@@ -37,7 +37,7 @@ const ProjectsFeedList = ({
             <Button
               onClick={loadMore}
               variant="outline"
-              className="w-max mx-auto"
+              className="mx-auto w-max"
             >
               Load more
             </Button>
@@ -46,11 +46,11 @@ const ProjectsFeedList = ({
       ) : (
         /* If no projects exist AND we aren't fetching, 
            we only show skeletons during initial load. */
-        <div className="flex flex-col items-center gap-2 w-full">
+        <div className="flex w-full flex-col items-center gap-2">
           {isFetchingProjects &&
             [1, 2, 3].map((id) => <ProjectsSkeletonCard key={id} />)}
           {!isFetchingProjects && (
-            <p className="text-sm text-muted-foreground mt-4">
+            <p className="mt-4 text-sm text-muted-foreground">
               No projects found.
             </p>
           )}

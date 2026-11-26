@@ -22,7 +22,7 @@ const ProfileLeftInfo = ({
   userRole: string;
 }) => {
   return (
-    <div className="flex flex-col gap-2 py-5 lg:py-0 w-full min-w-0 rounded-lg">
+    <div className="flex w-full min-w-0 flex-col gap-2 rounded-lg py-5 lg:py-0">
       <ProfileBasicInfo userRole={userRole} />
       <ProfileAnalytics
         numberOfUsers={numberOfUsers}

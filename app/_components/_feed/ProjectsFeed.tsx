@@ -74,7 +74,7 @@ export default function ProjectsFeed({
         personalInfo={personalInfo}
       />
 
-      <div className="flex items-center gap-2 w-full">
+      <div className="flex w-full items-center gap-2">
         <Separator
           className={`${
             userRole === "admin" ? "!w-[93%] sm:!w-[95%]" : "w-full"

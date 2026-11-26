@@ -32,7 +32,8 @@ export async function fetchJson<TResponse, TErrorBody = unknown>(
       ...headers,
     },
     body: json !== undefined ? JSON.stringify(json) : undefined,
-    signal: init.signal ?? (timeoutMs ? AbortSignal.timeout(timeoutMs) : undefined),
+    signal:
+      init.signal ?? (timeoutMs ? AbortSignal.timeout(timeoutMs) : undefined),
   });
 
   const text = await res.text();

@@ -24,7 +24,7 @@ const PreferenceAndProfileLink = () => {
   };
 
   return (
-    <div className=" rounded-lg flex flex-col  bg-neutral-100 dark:bg-dark">
+    <div className="flex flex-col rounded-lg bg-neutral-100 dark:bg-dark">
       <Image
         src="/profile-banner.gif"
         alt="pixelated gif of person working"
@@ -40,9 +40,9 @@ const PreferenceAndProfileLink = () => {
 
       <Separator />
 
-      <div className="flex flex-col items-start gap-2 w-full p-3">
+      <div className="flex w-full flex-col items-start gap-2 p-3">
         <p className="text-lg font-bold">Public profile & URL</p>
-        <div className="flex sm:items-center flex-col sm:flex-row items-start gap-2 sm:justify-between w-full">
+        <div className="flex w-full flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
           <LinkPreview
             url="https://jcm-portfolio.vercel.app/profile"
             className="text-xs text-muted-foreground hover:underline"

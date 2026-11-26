@@ -126,15 +126,15 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
   };
 
   return (
-    <div className="w-full mt-2 rounded-lg p-4">
+    <div className="mt-2 w-full rounded-lg p-4">
       {/* Comment Input */}
-      <div className="flex items-start gap-2 mb-4">
+      <div className="mb-4 flex items-start gap-2">
         <Image
           src={user?.imageUrl || "/empty-img.webp"}
           alt="user-img"
           width={1000}
           height={1000}
-          className="w-8 h-8 rounded-full object-cover"
+          className="h-8 w-8 rounded-full object-cover"
         />
         <div className="flex-1">
           <textarea
@@ -146,13 +146,13 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
             disabled={!isLoaded || !user || isSubmitting}
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full min-h-[60px] p-2 text-xs rounded-lg border border-gray-600 dark:border-gray-400 focus:outline-none focus:ring-1 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="min-h-[60px] w-full resize-none rounded-lg border border-gray-600 p-2 text-xs focus:ring-1 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-400"
           />
-          <div className="flex justify-end mt-2">
+          <div className="mt-2 flex justify-end">
             <button
               onClick={handleSubmit}
               disabled={!content.trim() || isSubmitting || !user}
-              className="px-4 py-1 text-xs bg-primary text-primary-foreground rounded-full hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer rounded-full bg-primary px-4 py-1 text-xs text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Send
             </button>
@@ -168,7 +168,7 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
       ) : (
         <div
           ref={commentsContainerRef}
-          className="space-y-4 max-h-[300px] overflow-y-auto"
+          className="max-h-[300px] space-y-4 overflow-y-auto"
         >
           {comments && comments.length > 0 ? (
             comments.map((comment) => {
@@ -184,7 +184,7 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
                   <AlertDialogTrigger asChild>
                     <div
                       className={cn(
-                        "flex items-start gap-2 group  rounded-lg p-2 hover:bg-red-500/5 cursor-pointer transition-all duration-200 ease-in-out",
+                        "group flex cursor-pointer items-start gap-2 rounded-lg p-2 transition-all duration-200 ease-in-out hover:bg-red-500/5",
                       )}
                     >
                       <Image
@@ -192,7 +192,7 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
                         alt="commenter-img"
                         width={1000}
                         height={1000}
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="h-8 w-8 rounded-full object-cover"
                       />
                       <div className="flex-1">
                         <div className="rounded-lg px-2">
@@ -221,7 +221,7 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
                           )} */}
                             </div>
                           </div>
-                          <p className="text-xs mt-1 whitespace-pre-wrap">
+                          <p className="mt-1 text-xs whitespace-pre-wrap">
                             {comment.content}
                           </p>
                         </div>
@@ -253,14 +253,14 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
               ) : (
                 <div
                   key={comment.id}
-                  className={cn("flex items-start gap-2 group  rounded-lg p-2")}
+                  className={cn("group flex items-start gap-2 rounded-lg p-2")}
                 >
                   <Image
                     src={comment.user.image || "/empty-img.webp"}
                     alt="commenter-img"
                     width={1000}
                     height={1000}
-                    className="w-8 h-8 rounded-full object-cover"
+                    className="h-8 w-8 rounded-full object-cover"
                   />
                   <div className="flex-1">
                     <div className="rounded-lg px-2">
@@ -274,7 +274,7 @@ const CreateComment = ({ projectId }: { projectId: string }) => {
                           </span>
                         </div>
                       </div>
-                      <p className="text-xs mt-1 whitespace-pre-wrap">
+                      <p className="mt-1 text-xs whitespace-pre-wrap">
                         {comment.content}
                       </p>
                     </div>

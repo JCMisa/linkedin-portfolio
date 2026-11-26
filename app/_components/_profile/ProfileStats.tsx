@@ -3,8 +3,8 @@ import { PersonalInfoType } from "@/config/schema";
 
 const ProfileStats = ({ personalInfo }: { personalInfo: PersonalInfoType }) => {
   return (
-    <div className="h-[76px] w-full bg-neutral-100 dark:bg-dark flex flex-col items-center justify-center rounded-lg p-5">
-      <div className="flex flex-col gap-3 w-full">
+    <div className="flex h-[76px] w-full flex-col items-center justify-center rounded-lg bg-neutral-100 p-5 dark:bg-dark">
+      <div className="flex w-full flex-col gap-3">
         <div className="flex items-center justify-between">
           <p className="text-xs font-bold">Resume Link</p>
           <LinkPreview

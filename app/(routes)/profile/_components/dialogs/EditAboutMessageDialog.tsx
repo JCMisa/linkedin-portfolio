@@ -59,14 +59,14 @@ const EditAboutMessageDialog = ({ currentAbout }: { currentAbout: string }) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          className="w-full sm:w-auto cursor-pointer"
+          className="w-full cursor-pointer sm:w-auto"
           variant={"outline"}
           size={"sm"}
         >
           Edit About Message
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col p-0">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle>Edit About Message</DialogTitle>
           <DialogDescription>
@@ -75,12 +75,12 @@ const EditAboutMessageDialog = ({ currentAbout }: { currentAbout: string }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 px-6 py-4 overflow-y-auto no-scrollbar">
+        <div className="no-scrollbar flex-1 overflow-y-auto px-6 py-4">
           <Textarea
             placeholder="Write something about yourself..."
             value={about}
             onChange={(e) => setAbout(e.target.value)}
-            className="min-h-[300px] h-full resize-none bg-neutral-50 dark:bg-neutral-900 border-none focus-visible:ring-1 focus-visible:ring-primary p-4"
+            className="h-full min-h-[300px] resize-none border-none bg-neutral-50 p-4 focus-visible:ring-1 focus-visible:ring-primary dark:bg-neutral-900"
           />
         </div>
 

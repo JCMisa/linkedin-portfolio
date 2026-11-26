@@ -14,10 +14,10 @@ const CertificatesPreview = async () => {
   ]);
 
   return (
-    <div className="h-[394px] w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-4 rounded-lg p-3 overflow-x-hidden overflow-y-auto no-scrollbar">
+    <div className="no-scrollbar flex h-[394px] w-full flex-col items-start gap-4 overflow-x-hidden overflow-y-auto rounded-lg bg-neutral-100 p-3 dark:bg-dark">
       {/* header */}
-      <div className="flex items-center w-full gap-2 justify-between">
-        <h2 className="font-bold text-md">Proof in Paper</h2>
+      <div className="flex w-full items-center justify-between gap-2">
+        <h2 className="text-md font-bold">Proof in Paper</h2>
 
         {currentUser && currentUser.role === "admin" && (
           <div className="flex items-center gap-2">
@@ -27,7 +27,7 @@ const CertificatesPreview = async () => {
       </div>
 
       {/* certifications list */}
-      <div className="flex flex-col items-start gap-2 w-full">
+      <div className="flex w-full flex-col items-start gap-2">
         {latestCertificates && latestCertificates.length > 0
           ? latestCertificates.map((cert: CertificateType) => (
               <CertificatePreviewCard key={cert.id} cert={cert} />
@@ -37,7 +37,7 @@ const CertificatesPreview = async () => {
 
       <Link
         href={"/certificates"}
-        className="w-full px-4 flex items-center gap-1"
+        className="flex w-full items-center gap-1 px-4"
       >
         <p className="text-xs leading-[16px]">View All Certificates</p>
         <ArrowRightIcon className="size-3" />

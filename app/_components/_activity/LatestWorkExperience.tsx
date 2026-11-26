@@ -31,15 +31,15 @@ const LatestWorkExperience = ({
   if (!latestExp) return null;
 
   return (
-    <div className="w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-4 rounded-lg p-4 border border-transparent hover:border-neutral-200 dark:hover:border-neutral-800 transition-all duration-300 shadow-sm">
-      <div className="flex items-center justify-between w-full">
-        <h2 className="font-bold text-sm tracking-tight text-neutral-800 dark:text-neutral-200">
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg border border-transparent bg-neutral-100 p-4 shadow-sm transition-all duration-300 hover:border-neutral-200 dark:bg-dark dark:hover:border-neutral-800">
+      <div className="flex w-full items-center justify-between">
+        <h2 className="text-sm font-bold tracking-tight text-neutral-800 dark:text-neutral-200">
           Latest Work Experience
         </h2>
         <Tooltip>
           <TooltipTrigger asChild>
             <Link href={"/experiences"}>
-              <div className="p-1 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors">
+              <div className="rounded-full p-1 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800">
                 <ChevronRightIcon className="size-5 text-neutral-500" />
               </div>
             </Link>
@@ -50,19 +50,19 @@ const LatestWorkExperience = ({
         </Tooltip>
       </div>
 
-      <div className="flex items-start gap-3 w-full group">
+      <div className="group flex w-full items-start gap-3">
         <div className="relative flex-shrink-0">
           <Image
             src={latestExp.bannerImg || "/empty-img.webp"}
             alt={latestExp.title}
             width={1000}
             height={1000}
-            className="w-14 h-14 object-cover rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-800"
+            className="h-14 w-14 rounded-xl border border-neutral-200 object-cover shadow-sm dark:border-neutral-800"
           />
         </div>
 
-        <div className="flex flex-col flex-1 min-w-0">
-          <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate leading-tight mb-1">
+        <div className="flex min-w-0 flex-1 flex-col">
+          <p className="mb-1 truncate text-sm leading-tight font-bold text-neutral-900 dark:text-neutral-100">
             {latestExp.title}
           </p>
 
@@ -70,7 +70,7 @@ const LatestWorkExperience = ({
             <span className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400">
               {formatDate(latestExp.dateFrom)} — {formatDate(latestExp.dateTo)}
             </span>
-            <p className="text-[11px] text-neutral-600 dark:text-neutral-400 line-clamp-2 leading-normal">
+            <p className="line-clamp-2 text-[11px] leading-normal text-neutral-600 dark:text-neutral-400">
               {latestExp.description}
             </p>
           </div>

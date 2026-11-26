@@ -30,5 +30,5 @@ export const updateInquiry = withErrorHandling(
       return { data: data.insertedInquiryId, success: true };
     }
     return { data: null, success: false };
-  }
+  },
 );

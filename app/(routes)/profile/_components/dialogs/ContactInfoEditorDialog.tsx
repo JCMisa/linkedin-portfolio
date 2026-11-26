@@ -128,7 +128,7 @@ const ContactInfoEditorDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col p-0">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle>Edit Contact & Address Info</DialogTitle>
           <DialogDescription>
@@ -137,15 +137,15 @@ const ContactInfoEditorDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-6 overflow-auto no-scrollbar">
+        <ScrollArea className="no-scrollbar flex-1 overflow-auto px-6">
           <div className="space-y-6 py-4">
             {/* Address Section */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-primary font-semibold">
+              <div className="flex items-center gap-2 font-semibold text-primary">
                 <MapPinIcon className="size-4" />
                 <h3>Address Information</h3>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-1">
                   <Label htmlFor="city" className="text-xs">
                     City
@@ -186,17 +186,17 @@ const ContactInfoEditorDialog = ({
 
             {/* Contact Section */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-primary font-semibold">
+              <div className="flex items-center gap-2 font-semibold text-primary">
                 <MailIcon className="size-4" />
                 <h3>Contact Information</h3>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-1">
                   <Label htmlFor="email" className="text-xs">
                     Email Address
                   </Label>
                   <div className="relative">
-                    <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <MailIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="email"
                       type="email"
@@ -212,7 +212,7 @@ const ContactInfoEditorDialog = ({
                     Phone Number
                   </Label>
                   <div className="relative">
-                    <PhoneIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <PhoneIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="contactNumber"
                       className="pl-9"
@@ -231,7 +231,7 @@ const ContactInfoEditorDialog = ({
 
             {/* Social Links Section */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-primary font-semibold">
+              <div className="flex items-center gap-2 font-semibold text-primary">
                 <GlobeIcon className="size-4" />
                 <h3>Social & Professional Links</h3>
               </div>
@@ -241,7 +241,7 @@ const ContactInfoEditorDialog = ({
                     Portfolio Website
                   </Label>
                   <div className="relative">
-                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <LinkIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="portfolio"
                       className="pl-9"
@@ -254,13 +254,13 @@ const ContactInfoEditorDialog = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-1">
                     <Label htmlFor="linkedin" className="text-xs">
                       LinkedIn Profile
                     </Label>
                     <div className="relative">
-                      <FaLinkedin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <FaLinkedin className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         id="linkedin"
                         className="pl-9"
@@ -277,7 +277,7 @@ const ContactInfoEditorDialog = ({
                       GitHub Profile
                     </Label>
                     <div className="relative">
-                      <FaGithub className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <FaGithub className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         id="github"
                         className="pl-9"
@@ -291,13 +291,13 @@ const ContactInfoEditorDialog = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-1">
                     <Label htmlFor="facebook" className="text-xs">
                       Facebook Profile
                     </Label>
                     <div className="relative">
-                      <FaFacebook className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <FaFacebook className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         id="facebook"
                         className="pl-9"
@@ -314,7 +314,7 @@ const ContactInfoEditorDialog = ({
                       Instagram Profile
                     </Label>
                     <div className="relative">
-                      <FaInstagram className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <FaInstagram className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         id="instagram"
                         className="pl-9"
@@ -333,7 +333,7 @@ const ContactInfoEditorDialog = ({
                     X (Twitter) Profile
                   </Label>
                   <div className="relative">
-                    <XIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <XIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="x"
                       className="pl-9"

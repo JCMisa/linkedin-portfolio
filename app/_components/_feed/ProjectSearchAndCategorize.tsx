@@ -31,9 +31,9 @@ export default function ProjectSearchAndCategorize({
   personalInfo,
 }: Props) {
   return (
-    <div className="w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-4 rounded-lg py-3 px-5">
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-neutral-100 px-5 py-3 dark:bg-dark">
       {/* Search */}
-      <div className="flex items-center gap-2 w-full">
+      <div className="flex w-full items-center gap-2">
         {personalInfo?.profileImg ? (
           <Image
             src={personalInfo.profileImg}
@@ -45,7 +45,7 @@ export default function ProjectSearchAndCategorize({
             draggable={false}
           />
         ) : (
-          <div className="w-[48px] h-[44px] rounded-full bg-neutral-100 dark:bg-dark flex items-center justify-center">
+          <div className="flex h-[44px] w-[48px] items-center justify-center rounded-full bg-neutral-100 dark:bg-dark">
             <UserIcon className="size-4 text-neutral-500 dark:text-neutral-400" />
           </div>
         )}
@@ -54,12 +54,12 @@ export default function ProjectSearchAndCategorize({
           placeholder="Search a project"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="bg-transparent rounded-full border-black dark:border-white h-[48px]"
+          className="h-[48px] rounded-full border-black bg-transparent dark:border-white"
         />
       </div>
 
       {/* Category */}
-      <div className="flex flex-row gap-3 items-center justify-between px-5 w-full">
+      <div className="flex w-full flex-row items-center justify-between gap-3 px-5">
         {categorizations.map((c) => {
           const Icon = c.icon;
           const active = category === c.key;
@@ -67,7 +67,7 @@ export default function ProjectSearchAndCategorize({
             <button
               key={c.id}
               onClick={() => setCategory(active ? null : c.key)}
-              className="flex items-center gap-1 cursor-pointer hover:opacity-80"
+              className="flex cursor-pointer items-center gap-1 hover:opacity-80"
             >
               <Icon
                 className={`size-4 ${
@@ -79,7 +79,7 @@ export default function ProjectSearchAndCategorize({
                 }`}
               />
               <p
-                className={`font-bold text-xs hidden sm:block ${
+                className={`hidden text-xs font-bold sm:block ${
                   active ? "text-white" : "text-muted-foreground"
                 }`}
               >

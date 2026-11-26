@@ -291,10 +291,10 @@ const Agent = ({ userName, credits }: AgentProps) => {
 
   // --- CONDITIONAL RENDER 2: THE MAIN AGENT UI ---
   return (
-    <Card className="relative w-full overflow-hidden shadow-2xl rounded-3xl border border-border bg-card flex flex-col transition-all duration-300 h-[80vh] min-h-[500px] max-h-[800px]">
+    <Card className="relative flex h-[80vh] max-h-[800px] min-h-[500px] w-full flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-2xl transition-all duration-300">
       {/* --- HEADER: Badges and Timer --- */}
-      <div className="absolute top-0 left-0 right-0 p-4 md:p-6 flex justify-between items-start z-20 pointer-events-none">
-        <div className="flex items-center gap-3 pointer-events-auto bg-background/80 dark:bg-black/50 backdrop-blur-md px-4 py-2 rounded-full border border-border/50 shadow-sm mt-1">
+      <div className="pointer-events-none absolute top-0 right-0 left-0 z-20 flex items-start justify-between p-4 md:p-6">
+        <div className="pointer-events-auto mt-1 flex items-center gap-3 rounded-full border border-border/50 bg-background/80 px-4 py-2 shadow-sm backdrop-blur-md dark:bg-black/50">
           {/* Show a spinner if we are talking to Gemini */}
           {status === "processing" ? (
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
@@ -306,12 +306,12 @@ const Agent = ({ userName, credits }: AgentProps) => {
                 status === "active" ||
                   status === "listening" ||
                   status === "speaking"
-                  ? "bg-emerald-500 animate-pulse"
+                  ? "animate-pulse bg-emerald-500"
                   : "bg-destructive",
               )}
             />
           )}
-          <span className="text-xs md:text-sm font-semibold tracking-wide text-foreground uppercase">
+          <span className="text-xs font-semibold tracking-wide text-foreground uppercase md:text-sm">
             {status === "processing"
               ? "Analyzing..."
               : status === "idle"
@@ -321,14 +321,14 @@ const Agent = ({ userName, credits }: AgentProps) => {
         </div>
 
         {/* The Digital Timer Display */}
-        <div className="flex items-center gap-2 pointer-events-auto">
+        <div className="pointer-events-auto flex items-center gap-2">
           <div
             className={cn(
-              "hidden md:flex items-center justify-center px-3 py-1.5 rounded-full backdrop-blur-md border border-border/50 text-xs font-mono font-medium transition-colors",
+              "hidden items-center justify-center rounded-full border border-border/50 px-3 py-1.5 font-mono text-xs font-medium backdrop-blur-md transition-colors md:flex",
               // Turn timer red when user has less than 30 seconds left
               status !== "idle" && MAX_DURATION - secondsActive < 30
-                ? "bg-red-500/20 text-red-500 border-red-500/30 animate-pulse"
-                : "bg-background/80 dark:bg-black/50 text-muted-foreground",
+                ? "animate-pulse border-red-500/30 bg-red-500/20 text-red-500"
+                : "bg-background/80 text-muted-foreground dark:bg-black/50",
             )}
           >
             {status === "idle"
@@ -338,7 +338,7 @@ const Agent = ({ userName, credits }: AgentProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 text-muted-foreground hover:text-foreground rounded-full"
+            className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
           >
             <Settings className="h-5 w-5" />
           </Button>
@@ -346,7 +346,7 @@ const Agent = ({ userName, credits }: AgentProps) => {
       </div>
 
       {/* --- MAIN STAGE: The visual "Orb" and Text --- */}
-      <div className="flex-1 relative flex flex-col items-center justify-center bg-zinc-950 dark:bg-black w-full overflow-hidden">
+      <div className="relative flex w-full flex-1 flex-col items-center justify-center overflow-hidden bg-zinc-950 dark:bg-black">
         {/* Subtle grid background pattern */}
         <div
           className="absolute inset-0 opacity-10"
@@ -358,12 +358,12 @@ const Agent = ({ userName, credits }: AgentProps) => {
 
         {/* Analyzing Overlay: Blurs out the orb while AI extract data */}
         {status === "processing" && (
-          <div className="z-40 absolute inset-0 bg-black/80 flex flex-col items-center justify-center animate-fadeIn text-center p-4">
-            <Loader2 className="h-16 w-16 text-primary animate-spin mb-4" />
+          <div className="animate-fadeIn absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-4 text-center">
+            <Loader2 className="mb-4 h-16 w-16 animate-spin text-primary" />
             <h3 className="text-xl font-bold text-white">
               Analyzing Conversation
             </h3>
-            <p className="text-zinc-400 max-w-sm mt-2">
+            <p className="mt-2 max-w-sm text-zinc-400">
               JCM is organizing your details...
             </p>
           </div>
@@ -371,29 +371,29 @@ const Agent = ({ userName, credits }: AgentProps) => {
 
         {/* UI before the call starts */}
         {status === "idle" ? (
-          <div className="z-30 flex flex-col items-center gap-6 animate-fadeIn">
-            <div className="h-32 w-32 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20 shadow-[0_0_30px_rgba(var(--primary),0.2)]">
+          <div className="animate-fadeIn z-30 flex flex-col items-center gap-6">
+            <div className="flex h-32 w-32 items-center justify-center rounded-full border-2 border-primary/20 bg-primary/10 shadow-[0_0_30px_rgba(var(--primary),0.2)]">
               <Phone className="h-12 w-12 text-primary" />
             </div>
             <Button
               onClick={startCall}
               size="lg"
-              className="rounded-full px-8 h-14 text-lg shadow-lg hover:scale-105 transition-all"
+              className="h-14 rounded-full px-8 text-lg shadow-lg transition-all hover:scale-105"
             >
               Start Conversation
             </Button>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="mt-2 text-xs text-muted-foreground">
               Max duration: 3 minutes
             </p>
           </div>
         ) : (
           /* UI while call is active */
-          <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-2xl px-4">
-            <div className="relative group mb-8 md:mb-12">
+          <div className="relative z-10 flex w-full max-w-2xl flex-col items-center justify-center px-4">
+            <div className="group relative mb-8 md:mb-12">
               {/* Outer soft glow that matches the orb's color */}
               <div
                 className={cn(
-                  "absolute -inset-8 md:-inset-12 rounded-full blur-3xl transition-all duration-200",
+                  "absolute -inset-8 rounded-full blur-3xl transition-all duration-200 md:-inset-12",
                   status === "speaking"
                     ? "bg-primary/40 opacity-80"
                     : "bg-emerald-500/20 opacity-40",
@@ -403,19 +403,19 @@ const Agent = ({ userName, credits }: AgentProps) => {
               {/* The Inner Orb: Scales up based on getOrbScale() logic */}
               <div
                 className={cn(
-                  "relative h-32 w-32 md:h-48 md:w-48 rounded-full flex items-center justify-center border-2 transition-all duration-300",
+                  "relative flex h-32 w-32 items-center justify-center rounded-full border-2 transition-all duration-300 md:h-48 md:w-48",
                   status === "speaking"
                     ? "border-primary/50 bg-primary/10"
                     : "border-emerald-500/30 bg-emerald-500/5",
                 )}
                 style={{ transform: `scale(${getOrbScale()})` }}
               >
-                <Activity className="h-16 w-16 text-primary animate-spin" />
+                <Activity className="h-16 w-16 animate-spin text-primary" />
               </div>
             </div>
             {/* The real-time transcript subtitles */}
-            <div className="space-y-3 text-center w-full max-w-xl mx-auto min-h-[100px]">
-              <p className="text-xs md:text-sm font-bold text-zinc-500 uppercase tracking-widest">
+            <div className="mx-auto min-h-[100px] w-full max-w-xl space-y-3 text-center">
+              <p className="text-xs font-bold tracking-widest text-zinc-500 uppercase md:text-sm">
                 {status === "listening"
                   ? "Listening..."
                   : status === "speaking"
@@ -424,7 +424,7 @@ const Agent = ({ userName, credits }: AgentProps) => {
               </p>
               <p
                 className={cn(
-                  "text-lg md:text-2xl font-medium leading-relaxed transition-all duration-300",
+                  "text-lg leading-relaxed font-medium transition-all duration-300 md:text-2xl",
                   status === "listening"
                     ? "text-zinc-400 italic"
                     : "text-zinc-100",
@@ -439,10 +439,10 @@ const Agent = ({ userName, credits }: AgentProps) => {
 
       {/* --- FOOTER: Call controls --- */}
       {status !== "processing" && (
-        <div className="relative bg-card border-t border-border p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 z-20">
+        <div className="relative z-20 flex flex-col items-center justify-between gap-4 border-t border-border bg-card p-4 md:flex-row md:p-6">
           {/* Identity info */}
-          <div className="hidden md:flex items-center gap-3 text-left">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border border-primary/20">
+          <div className="hidden items-center gap-3 text-left md:flex">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/20 bg-primary/10 font-bold text-primary">
               {userName?.charAt(0) || "J"}
             </div>
             <div>
@@ -454,7 +454,7 @@ const Agent = ({ userName, credits }: AgentProps) => {
           </div>
 
           {/* Main call action buttons */}
-          <div className="flex items-center gap-4 w-full md:w-auto justify-center">
+          <div className="flex w-full items-center justify-center gap-4 md:w-auto">
             {/* Microphone Toggle Button */}
             {(status === "active" ||
               status === "listening" ||
@@ -464,9 +464,9 @@ const Agent = ({ userName, credits }: AgentProps) => {
                 size="icon"
                 onClick={toggleMic}
                 className={cn(
-                  "h-12 w-12 md:h-14 md:w-14 rounded-full transition-all shadow-sm border border-border",
+                  "h-12 w-12 rounded-full border border-border shadow-sm transition-all md:h-14 md:w-14",
                   !isMicOn &&
-                    "bg-destructive/10 text-destructive border-destructive/20",
+                    "border-destructive/20 bg-destructive/10 text-destructive",
                 )}
               >
                 {isMicOn ? (
@@ -480,13 +480,13 @@ const Agent = ({ userName, credits }: AgentProps) => {
             {status !== "idle" && (
               <Button
                 onClick={endCall}
-                className="h-12 md:h-14 px-8 rounded-full bg-destructive text-white hover:scale-105"
+                className="h-12 rounded-full bg-destructive px-8 text-white hover:scale-105 md:h-14"
               >
-                <PhoneOff className="h-6 w-6 mr-2" /> End Call
+                <PhoneOff className="mr-2 h-6 w-6" /> End Call
               </Button>
             )}
           </div>
-          <div className="hidden md:block w-[180px]"></div>
+          <div className="hidden w-[180px] md:block"></div>
         </div>
       )}
     </Card>

@@ -151,7 +151,7 @@ const AIChatbot = () => {
   const BotAvatar = () => (
     <Avatar className="h-6 w-6">
       <AvatarImage src="/logo.png" />
-      <AvatarFallback className="text-[10px] bg-blue-500 text-white">
+      <AvatarFallback className="bg-blue-500 text-[10px] text-white">
         B
       </AvatarFallback>
     </Avatar>
@@ -198,9 +198,9 @@ const AIChatbot = () => {
   const ChatBody = (
     <>
       {/* header */}
-      <div className="px-4 py-3 border-b shrink-0 flex items-center justify-between">
+      <div className="flex shrink-0 items-center justify-between border-b px-4 py-3">
         <div>
-          <h3 className="font-semibold text-sm">JCM AI</h3>
+          <h3 className="text-sm font-semibold">JCM AI</h3>
           <p className="text-xs text-muted-foreground">
             Ask me anything about John Carlo
           </p>
@@ -208,9 +208,9 @@ const AIChatbot = () => {
       </div>
 
       {/* messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {messages.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center mt-10">
+          <p className="mt-10 text-center text-sm text-muted-foreground">
             Hi! How can I help you today?
           </p>
         )}
@@ -223,7 +223,7 @@ const AIChatbot = () => {
           >
             {msg.sender === "bot" && <BotAvatar />}
             <div
-              className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
+              className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
                 msg.sender === "user"
                   ? "bg-blue-400 text-white"
                   : "bg-muted text-foreground"
@@ -242,10 +242,10 @@ const AIChatbot = () => {
                       </strong>
                     ),
                     ul: ({ children }) => (
-                      <ul className="list-disc ml-4 my-2">{children}</ul>
+                      <ul className="my-2 ml-4 list-disc">{children}</ul>
                     ),
                     ol: ({ children }) => (
-                      <ol className="list-decimal ml-4 my-2">{children}</ol>
+                      <ol className="my-2 ml-4 list-decimal">{children}</ol>
                     ),
                     li: ({ children }) => <li className="mb-1">{children}</li>,
                     a: ({ href, children }) => (
@@ -259,7 +259,7 @@ const AIChatbot = () => {
                       </a>
                     ),
                     code: ({ children }) => (
-                      <code className="bg-neutral-200 dark:bg-neutral-800 px-1 rounded text-xs font-mono">
+                      <code className="rounded bg-neutral-200 px-1 font-mono text-xs dark:bg-neutral-800">
                         {children}
                       </code>
                     ),
@@ -276,13 +276,13 @@ const AIChatbot = () => {
         ))}
 
         {loading && (
-          <div className="flex gap-2 justify-start">
+          <div className="flex justify-start gap-2">
             <BotAvatar />
-            <div className="bg-muted px-3 py-2 rounded-2xl text-sm">
+            <div className="rounded-2xl bg-muted px-3 py-2 text-sm">
               <span className="inline-flex space-x-1">
-                <span className="w-2 h-2 bg-current rounded-full animate-bounce" />
-                <span className="w-2 h-2 bg-current rounded-full animate-bounce [animation-delay=0.2s]" />
-                <span className="w-2 h-2 bg-current rounded-full animate-bounce [animation-delay=0.4s]" />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-current" />
+                <span className="[animation-delay=0.2s] h-2 w-2 animate-bounce rounded-full bg-current" />
+                <span className="[animation-delay=0.4s] h-2 w-2 animate-bounce rounded-full bg-current" />
               </span>
             </div>
           </div>
@@ -296,7 +296,7 @@ const AIChatbot = () => {
           e.preventDefault();
           sendMessage();
         }}
-        className="flex items-center gap-2 border-t px-4 py-3 shrink-0"
+        className="flex shrink-0 items-center gap-2 border-t px-4 py-3"
       >
         <Input
           value={input}
@@ -307,13 +307,13 @@ const AIChatbot = () => {
               : "What do you want to know?"
           }
           disabled={loading || rateLimit.blocked}
-          className="rounded-lg placeholder:text-xs focus:!outline-none focus:!ring-0 focus:!border-transparent"
+          className="rounded-lg placeholder:text-xs focus:!border-transparent focus:!ring-0 focus:!outline-none"
         />
         <Button
           type="submit"
           size="icon"
           disabled={loading || rateLimit.blocked}
-          className="rounded-full shrink-0 bg-blue-400 hover:bg-primary"
+          className="shrink-0 rounded-full bg-blue-400 hover:bg-primary"
         >
           <SendIcon className="h-4 w-4 text-white" />
         </Button>
@@ -334,7 +334,7 @@ const AIChatbot = () => {
             align="end"
             side="left"
             sideOffset={8}
-            className="w-[380px] h-[600px] flex flex-col p-0 rounded-2xl shadow-2xl"
+            className="flex h-[600px] w-[380px] flex-col rounded-2xl p-0 shadow-2xl"
           >
             {ChatBody}
           </PopoverContent>
@@ -345,7 +345,7 @@ const AIChatbot = () => {
       {user && isMobile && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger>{Trigger}</DialogTrigger>
-          <DialogContent className="h-screen w-screen max-w-none max-h-none p-0 gap-0 rounded-none">
+          <DialogContent className="h-screen max-h-none w-screen max-w-none gap-0 rounded-none p-0">
             <DialogHeader className="hidden">
               <DialogTitle>Chat</DialogTitle>
               <DialogDescription>Chat modal</DialogDescription>

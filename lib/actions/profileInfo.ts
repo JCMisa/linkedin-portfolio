@@ -4,9 +4,7 @@ import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
 import { PersonalInfo } from "@/config/schema";
 import { unstable_cache, revalidateTag } from "next/cache";
-import {
-  deleteImageFromCloudinary,
-} from "../cloudinary";
+import { deleteImageFromCloudinary } from "../cloudinary";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/auth";
 
@@ -25,12 +23,12 @@ export const getPersonalInfo = unstable_cache(
     revalidate: 3600, // Cache for 1 hour (adjust as needed)
     // revalidate: false, // Cache forever until manual revalidation
     tags: ["personalInfo"], // Tag for manual revalidation later
-  }
+  },
 );
 
 export const updateProfileImage = withErrorHandling(
   async (imageUrl: string | null) => {
-  await requireAdmin();
+    await requireAdmin();
 
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
@@ -74,12 +72,12 @@ export const updateProfileImage = withErrorHandling(
     revalidateTag("personalInfo", "");
 
     return { success: true, imageUrl: updated.profileImg };
-  }
+  },
 );
 
 export const updateCoverImage = withErrorHandling(
   async (imageUrl: string | null) => {
-  await requireAdmin();
+    await requireAdmin();
 
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
@@ -123,7 +121,7 @@ export const updateCoverImage = withErrorHandling(
     revalidateTag("personalInfo", "");
 
     return { success: true, imageUrl: updated.coverImg };
-  }
+  },
 );
 
 type ExperiencesType = {
@@ -139,7 +137,7 @@ type ExperiencesType = {
 
 export const updateExperiences = withErrorHandling(
   async (experiences: ExperiencesType[]) => {
-  await requireAdmin();
+    await requireAdmin();
 
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
@@ -155,7 +153,7 @@ export const updateExperiences = withErrorHandling(
     // Delete old banner images from Cloudinary that are no longer in the new array
     const oldExperiences = (currentInfo.experiences as ExperiencesType[]) || [];
     const newBannerImgs = new Set(
-      experiences.map((exp) => exp.bannerImg).filter(Boolean)
+      experiences.map((exp) => exp.bannerImg).filter(Boolean),
     );
 
     for (const oldExp of oldExperiences) {
@@ -197,7 +195,7 @@ export const updateExperiences = withErrorHandling(
       success: true,
       experiences: updated.experiences as ExperiencesType[],
     };
-  }
+  },
 );
 
 export const updateName = withErrorHandling(async (updatedName: string) => {
@@ -239,7 +237,7 @@ export const updateName = withErrorHandling(async (updatedName: string) => {
 
 export const updateIndustryRole = withErrorHandling(
   async (updatedIndustryRole: string) => {
-  await requireAdmin();
+    await requireAdmin();
 
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -270,12 +268,12 @@ export const updateIndustryRole = withErrorHandling(
     revalidateTag("personalInfo", "");
 
     return { success: true, industryRole: updated.industryRole };
-  }
+  },
 );
 
 export const updateResume = withErrorHandling(
   async (updatedITResumeLink: string, updatedVAResumeLink: string) => {
-  await requireAdmin();
+    await requireAdmin();
 
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -316,12 +314,12 @@ export const updateResume = withErrorHandling(
       itResumeLink: updated.itResumeLink,
       vaResumeLink: updated.vaResumeLink,
     };
-  }
+  },
 );
 
 export const updateContactInfo = withErrorHandling(
   async (updatedContactInfo: ContactInfoType) => {
-  await requireAdmin();
+    await requireAdmin();
 
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -407,12 +405,12 @@ export const updateContactInfo = withErrorHandling(
       instagramLink: updated.instagramLink,
       xLink: updated.xLink,
     };
-  }
+  },
 );
 
 export const updateAboutMessage = withErrorHandling(
   async (updatedAbout: string) => {
-  await requireAdmin();
+    await requireAdmin();
 
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
@@ -449,12 +447,12 @@ export const updateAboutMessage = withErrorHandling(
       success: true,
       about: updated.about,
     };
-  }
+  },
 );
 
 export const updateServices = withErrorHandling(
   async (updatedServices: string[]) => {
-  await requireAdmin();
+    await requireAdmin();
 
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -488,7 +486,7 @@ export const updateServices = withErrorHandling(
       success: true,
       services: updated.services,
     };
-  }
+  },
 );
 
 // skills table
@@ -503,7 +501,7 @@ type SkillsType = {
 
 export const updateSkills = withErrorHandling(
   async (updatedSkills: SkillsType[]) => {
-  await requireAdmin();
+    await requireAdmin();
 
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -537,7 +535,7 @@ export const updateSkills = withErrorHandling(
       success: true,
       skills: updated.skills as SkillsType[],
     };
-  }
+  },
 );
 
 // top voices table
@@ -553,7 +551,7 @@ type TopVoicesType = {
 
 export const updateTopVoices = withErrorHandling(
   async (topVoices: TopVoicesType[]) => {
-  await requireAdmin();
+    await requireAdmin();
 
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
@@ -569,7 +567,7 @@ export const updateTopVoices = withErrorHandling(
     // Delete old testimonial images from Cloudinary that are no longer in the new array
     const oldTopVoices = (currentInfo.topVoices as TopVoicesType[]) || [];
     const newProfileImgs = new Set(
-      topVoices.map((v) => v.profileImg).filter(Boolean)
+      topVoices.map((v) => v.profileImg).filter(Boolean),
     );
 
     for (const oldVoice of oldTopVoices) {
@@ -611,5 +609,5 @@ export const updateTopVoices = withErrorHandling(
       success: true,
       topVoices: updated.topVoices as TopVoicesType[],
     };
-  }
+  },
 );

@@ -8,7 +8,7 @@ const ProfessionalActivities = ({
   personalInfo: PersonalInfoType;
 }) => {
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
       {/* Normal scrolling content */}
       <div className="space-y-2">
         <LatestWorkExperience personalInfo={personalInfo} />

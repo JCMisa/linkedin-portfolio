@@ -41,7 +41,7 @@ const CertificatesList = ({
   return (
     <div
       ref={containerRef}
-      className="w-full lg:w-[85%] h-[840px] min-h-0 relative group"
+      className="group relative h-[840px] min-h-0 w-full lg:w-[85%]"
     >
       {certificates.length > 0 ? (
         <>
@@ -72,7 +72,7 @@ const CertificatesList = ({
           />
         </>
       ) : (
-        <div className="flex flex-col gap-4 w-full relative">
+        <div className="relative flex w-full flex-col gap-4">
           {[1, 2, 3, 4].map((item) => (
             <CertificateCardSkeleton key={item} />
           ))}

@@ -149,7 +149,7 @@ const ProfileTestimonials = async ({ userRole }: { userRole: string }) => {
       : fallbackTestimonials;
 
   return (
-    <div className="rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col p-[10px] px-5 overflow-hidden">
+    <div className="flex w-full flex-col overflow-hidden rounded-lg bg-neutral-100 p-[10px] px-5 dark:bg-dark">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-2xl font-medium">Top Voices</h2>
         {isOwner && (
@@ -160,7 +160,7 @@ const ProfileTestimonials = async ({ userRole }: { userRole: string }) => {
       </div>
 
       {/* testimonials carousel */}
-      <Carousel className="mt-5 px-5 w-full">
+      <Carousel className="mt-5 w-full px-5">
         <CarouselContent>
           {displayTestimonials
             .sort((a, b) => {
@@ -174,21 +174,21 @@ const ProfileTestimonials = async ({ userRole }: { userRole: string }) => {
                 key={index}
                 className="basis-full md:basis-1/2 lg:basis-1/2"
               >
-                <div className="flex items-start gap-2 h-full">
+                <div className="flex h-full items-start gap-2">
                   <Image
                     src={item.profileImg || "/empty-img.webp"}
                     alt="profile"
                     width={100}
                     height={100}
-                    className="object-cover size-10 rounded-full shrink-0"
+                    className="size-10 shrink-0 rounded-full object-cover"
                   />
 
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <h3 className="text-sm font-bold truncate">{item.name}</h3>
-                    <p className="text-xs text-muted-foreground line-clamp-2">
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <h3 className="truncate text-sm font-bold">{item.name}</h3>
+                    <p className="line-clamp-2 text-xs text-muted-foreground">
                       {item.comment}
                     </p>
-                    <span className="text-[10px] text-muted-foreground italic truncate">
+                    <span className="truncate text-[10px] text-muted-foreground italic">
                       ~ {item.company}
                     </span>
                   </div>

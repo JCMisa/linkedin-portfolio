@@ -59,9 +59,9 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
   };
 
   return (
-    <div className="bg-neutral-100 dark:bg-dark p-6 sm:p-8 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm space-y-6">
+    <div className="space-y-6 rounded-xl border border-neutral-200 bg-neutral-100 p-6 shadow-sm sm:p-8 dark:border-neutral-800 dark:bg-dark">
       <div className="space-y-1">
-        <h2 className="text-xl font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+        <h2 className="flex items-center gap-2 text-xl font-bold text-neutral-900 dark:text-neutral-100">
           <MessageSquareIcon className="size-5 text-primary" />
           Send Message
         </h2>
@@ -75,7 +75,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
         <div className="space-y-1.5">
           <Label
             htmlFor="name"
-            className="text-sm font-semibold flex items-center gap-2"
+            className="flex items-center gap-2 text-sm font-semibold"
           >
             <UserIcon className="size-3.5 text-neutral-500" />
             Full Name
@@ -86,14 +86,14 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             placeholder="John Doe"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="bg-neutral-50 dark:bg-neutral-900/50 border-neutral-200 dark:border-neutral-800 focus-visible:ring-primary"
+            className="border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
           />
         </div>
 
         <div className="space-y-1.5">
           <Label
             htmlFor="email"
-            className="text-sm font-semibold flex items-center gap-2"
+            className="flex items-center gap-2 text-sm font-semibold"
           >
             <MailIcon className="size-3.5 text-neutral-500" />
             Email Address
@@ -104,14 +104,14 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="bg-neutral-50 dark:bg-neutral-900/50 border-neutral-200 dark:border-neutral-800 focus-visible:ring-primary"
+            className="border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
           />
         </div>
 
         <div className="space-y-1.5">
           <Label
             htmlFor="message"
-            className="text-sm font-semibold flex items-center gap-2"
+            className="flex items-center gap-2 text-sm font-semibold"
           >
             <MessageSquareIcon className="size-3.5 text-neutral-500" />
             Your Message
@@ -121,7 +121,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
             placeholder="What project or collaboration do you have in mind?"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="min-h-[150px] bg-neutral-50 dark:bg-neutral-900/50 border-neutral-200 dark:border-neutral-800 focus-visible:ring-primary resize-none"
+            className="min-h-[150px] resize-none border-neutral-200 bg-neutral-50 focus-visible:ring-primary dark:border-neutral-800 dark:bg-neutral-900/50"
           />
         </div>
       </div>
@@ -129,7 +129,7 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
       <Button
         onClick={handleSend}
         disabled={isSending}
-        className="w-full bg-primary hover:bg-primary-600 text-white font-bold h-11 cursor-pointer transition-all active:scale-[0.98]"
+        className="h-11 w-full cursor-pointer bg-primary font-bold text-white transition-all hover:bg-primary-600 active:scale-[0.98]"
       >
         {isSending ? (
           "Preparing..."
@@ -141,8 +141,8 @@ const SendMessageForm = ({ personalInfo }: SendMessageFormProps) => {
         )}
       </Button>
 
-      <div className="flex items-start gap-2 p-3 bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/10">
-        <InfoIcon className="size-4 text-primary shrink-0 mt-0.5" />
+      <div className="flex items-start gap-2 rounded-lg border border-primary/10 bg-primary/5 p-3 dark:bg-primary/10">
+        <InfoIcon className="mt-0.5 size-4 shrink-0 text-primary" />
         <p className="text-[11px] leading-relaxed text-neutral-600 dark:text-neutral-400">
           Clicking send will open your default email client with a pre-filled
           draft. You can then review and send it directly to{" "}

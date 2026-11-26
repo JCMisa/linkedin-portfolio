@@ -71,7 +71,6 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
     );
   };
 
-
   /* ---------- reset form when dialog re-opens ---------- */
   useEffect(() => {
     if (!open) return;
@@ -143,7 +142,7 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
         </button>
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto no-scrollbar">
+      <DialogContent className="no-scrollbar max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Certificate</DialogTitle>
           <DialogDescription>
@@ -190,13 +189,13 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
 
             {/* Current Image Preview - Clickable to upload new */}
             {formData.imageUrl && !uploadedImageUrl && (
-              <div className="space-y-2 mb-4">
+              <div className="mb-4 space-y-2">
                 <p className="text-xs text-muted-foreground">
                   Current image (click image to upload a new one)
                 </p>
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="relative w-full h-48 rounded-md overflow-hidden border cursor-pointer group"
+                  className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md border"
                 >
                   <Image
                     src={formData.imageUrl || "/empty-img.webp"}
@@ -204,8 +203,8 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
                     fill
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
-                    <p className="text-white opacity-0 group-hover:opacity-100 text-sm font-medium">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-200 group-hover:bg-black/40">
+                    <p className="text-sm font-medium text-white opacity-0 group-hover:opacity-100">
                       Click to upload new image
                     </p>
                   </div>
@@ -227,7 +226,7 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
                 <p className="text-xs text-muted-foreground">
                   New image uploaded successfully!
                 </p>
-                <div className="relative w-full h-48 rounded-md overflow-hidden border">
+                <div className="relative h-48 w-full overflow-hidden rounded-md border">
                   <Image
                     src={uploadedImageUrl}
                     alt="New certificate image preview"
@@ -251,7 +250,7 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
                 variant="outline"
                 className={cn(
                   "w-full justify-start",
-                  !formData.acquiredDate && "text-muted-foreground"
+                  !formData.acquiredDate && "text-muted-foreground",
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />

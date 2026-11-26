@@ -1,7 +1,7 @@
 import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 
 export const configureAssistant = (
-  userName: string = "Guest"
+  userName: string = "Guest",
 ): CreateAssistantDTO => {
   return {
     name: "JCM Portfolio Assistant",

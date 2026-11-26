@@ -66,8 +66,8 @@ const Navbar = () => {
   const router = useRouter();
 
   return (
-    <div className="h-[53px] w-full px-4 lg:pl-[80px] lg:pr-[24px] border border-b bg-white dark:bg-dark flex items-center fixed top-0 z-50">
-      <div className="flex items-center justify-between w-full">
+    <div className="fixed top-0 z-50 flex h-[53px] w-full items-center border border-b bg-white px-4 lg:pr-[24px] lg:pl-[80px] dark:bg-dark">
+      <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           <Image
             src={"/logo.png"}
@@ -80,7 +80,7 @@ const Navbar = () => {
         </div>
 
         {/* menu items - large screen */}
-        <div className="hidden md:flex items-center">
+        <div className="hidden items-center md:flex">
           {menuItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -89,9 +89,9 @@ const Navbar = () => {
                 key={item.id}
                 href={item.path}
                 className={
-                  "w-[80px] h-[52px] flex flex-col items-center justify-center border-b " +
+                  "flex h-[52px] w-[80px] flex-col items-center justify-center border-b " +
                   (isActive
-                    ? "border-b-[2px] border-b-black dark:border-b-white text-black dark:text-white"
+                    ? "border-b-[2px] border-b-black text-black dark:border-b-white dark:text-white"
                     : "border-b-transparent text-muted-foreground")
                 }
               >
@@ -102,7 +102,7 @@ const Navbar = () => {
                 />
                 <span
                   className={
-                    "text-[12px] leading-none mt-1 " +
+                    "mt-1 text-[12px] leading-none " +
                     (isActive ? "" : "text-muted-foreground")
                   }
                 >
@@ -116,11 +116,11 @@ const Navbar = () => {
         {/* menu items - small screen */}
         <Sheet>
           <SheetTrigger>
-            <MenuIcon className="block md:hidden mr-2 cursor-pointer" />
+            <MenuIcon className="mr-2 block cursor-pointer md:hidden" />
           </SheetTrigger>
           <SheetContent
             side="left"
-            className="w-[300px] sm:w-[400px] bg-neutral-100 dark:bg-dark"
+            className="w-[300px] bg-neutral-100 sm:w-[400px] dark:bg-dark"
           >
             <SheetHeader className="space-y-4">
               <SheetTitle className="text-left text-lg font-bold">
@@ -139,7 +139,7 @@ const Navbar = () => {
                 <Separator />
 
                 {/* Menu Items */}
-                <div className="space-y-4 mt-2">
+                <div className="mt-2 space-y-4">
                   {menuItems.map((item) => {
                     const isActive = pathname === item.path;
                     const Icon = item.icon;
@@ -148,7 +148,7 @@ const Navbar = () => {
                         key={item.id}
                         href={item.path}
                         className={
-                          "flex items-center gap-4 p-2 rounded-lg transition-colors " +
+                          "flex items-center gap-4 rounded-lg p-2 transition-colors " +
                           (isActive
                             ? "bg-accent text-accent-foreground"
                             : "hover:bg-accent hover:text-accent-foreground")
@@ -167,14 +167,14 @@ const Navbar = () => {
                 <div className="space-y-4">
                   <Link
                     href="/profile"
-                    className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+                    className="flex items-center gap-4 rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
                   >
                     <UserIcon className="size-5" />
                     <span className="text-base">About Me</span>
                   </Link>
                   <Link
                     href="/contact"
-                    className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+                    className="flex items-center gap-4 rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
                   >
                     <PhoneIcon className="size-5" />
                     <span className="text-base">Contact Me</span>
@@ -187,13 +187,13 @@ const Navbar = () => {
       </div>
 
       {/* theme toggler */}
-      <div className="block md:hidden lg:block ml-1">
+      <div className="ml-1 block md:hidden lg:block">
         <ModeToggle />
       </div>
 
       {/* user icon */}
       {user ? (
-        <div className="w-[52px] h-[52px] flex flex-col items-start justify-center mx-2">
+        <div className="mx-2 flex h-[52px] w-[52px] flex-col items-start justify-center">
           <UserButton />
         </div>
       ) : (
@@ -209,25 +209,25 @@ const Navbar = () => {
 
       <Separator orientation="vertical" className="hidden lg:block" />
 
-      <div className="w-[20%] hidden lg:flex items-center">
+      <div className="hidden w-[20%] items-center lg:flex">
         <Link
           href={"/profile"}
           className={
-            "w-[80px] h-[52px] flex flex-col items-center justify-center border-b "
+            "flex h-[52px] w-[80px] flex-col items-center justify-center border-b"
           }
         >
-          <UserIcon className={"size-5 "} />
-          <span className={"text-[12px] leading-none mt-1 "}>About Me</span>
+          <UserIcon className={"size-5"} />
+          <span className={"mt-1 text-[12px] leading-none"}>About Me</span>
         </Link>
 
         <Link
           href={"/contact"}
           className={
-            "w-[80px] h-[52px] flex flex-col items-center justify-center border-b "
+            "flex h-[52px] w-[80px] flex-col items-center justify-center border-b"
           }
         >
-          <PhoneIcon className={"size-5 "} />
-          <span className={"text-[12px] leading-none mt-1 "}>Contact Me</span>
+          <PhoneIcon className={"size-5"} />
+          <span className={"mt-1 text-[12px] leading-none"}>Contact Me</span>
         </Link>
       </div>
     </div>

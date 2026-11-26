@@ -8,10 +8,10 @@ import Link from "next/link";
 
 const ProfileEngagements = () => {
   return (
-    <div className=" w-full bg-neutral-100 dark:bg-dark flex flex-col items-start gap-4 rounded-lg p-5">
+    <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-neutral-100 p-5 dark:bg-dark">
       <Link
         href={"/certificates"}
-        className="flex items-center gap-2 hover:opacity-[0.8] transition-opacity duration-200 ease-in-out"
+        className="flex items-center gap-2 transition-opacity duration-200 ease-in-out hover:opacity-[0.8]"
       >
         <GalleryVerticalEndIcon className="size-4" />
         <p className="text-xs font-bold">Certifications</p>
@@ -19,7 +19,7 @@ const ProfileEngagements = () => {
 
       <Link
         href={"/projects"}
-        className="flex items-center gap-2 hover:opacity-[0.8] transition-opacity duration-200 ease-in-out"
+        className="flex items-center gap-2 transition-opacity duration-200 ease-in-out hover:opacity-[0.8]"
       >
         <LaptopIcon className="size-4" />
         <p className="text-xs font-bold">Personal Projects</p>
@@ -27,7 +27,7 @@ const ProfileEngagements = () => {
 
       <Link
         href={"/experiences"}
-        className="flex items-center gap-2 hover:opacity-[0.8] transition-opacity duration-200 ease-in-out"
+        className="flex items-center gap-2 transition-opacity duration-200 ease-in-out hover:opacity-[0.8]"
       >
         <BriefcaseBusinessIcon className="size-4" />
         <p className="text-xs font-bold">Work Experiences</p>
@@ -35,7 +35,7 @@ const ProfileEngagements = () => {
 
       <Link
         href={"/contact"}
-        className="flex items-center gap-2 hover:opacity-[0.8] transition-opacity duration-200 ease-in-out"
+        className="flex items-center gap-2 transition-opacity duration-200 ease-in-out hover:opacity-[0.8]"
       >
         <PhoneIcon className="size-4" />
         <p className="text-xs font-bold">Contact Information</p>

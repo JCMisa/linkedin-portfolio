@@ -85,7 +85,7 @@ const ExperienceItem = ({
   const shouldTruncate = descLines.length > 150;
 
   return (
-    <div className="flex gap-3 sm:gap-4 relative group">
+    <div className="group relative flex gap-3 sm:gap-4">
       <div className="absolute top-[5px] right-[5px]">
         <ExperienceContentWrapper
           experience={experience}
@@ -95,32 +95,32 @@ const ExperienceItem = ({
       </div>
 
       {/* Timeline column */}
-      <div className="flex flex-col items-center pt-1 flex-shrink-0">
+      <div className="flex flex-shrink-0 flex-col items-center pt-1">
         <div
           className={
             isCurrent
-              ? "w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20 flex-shrink-0 animate-pulse"
-              : "w-3 h-3 rounded-full bg-primary ring-4 ring-card flex-shrink-0"
+              ? "h-3 w-3 flex-shrink-0 animate-pulse rounded-full bg-primary ring-4 ring-primary/20"
+              : "h-3 w-3 flex-shrink-0 rounded-full bg-primary ring-4 ring-card"
           }
         />
-        {!isLast && <div className="w-[2px] flex-1 bg-border mt-2" />}
+        {!isLast && <div className="mt-2 w-[2px] flex-1 bg-border" />}
       </div>
 
       {/* Content */}
       <div className={`flex-1 pb-8 ${isLast ? "pb-0" : ""}`}>
-        <div className="bg-card rounded-lg border border-border shadow-sm p-4 sm:p-5 hover:shadow-md transition-shadow duration-200">
+        <div className="rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow duration-200 hover:shadow-md sm:p-5">
           {/* Header */}
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-lg bg-accent dark:bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <BriefcaseIcon className="w-6 h-6 text-primary" />
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-accent dark:bg-primary/10">
+              <BriefcaseIcon className="h-6 w-6 text-primary" />
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground text-sm sm:text-base leading-tight">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm leading-tight font-semibold text-foreground sm:text-base">
                 {experience.title}
               </h3>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
-                <span className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
-                  <CalendarIcon className="w-3.5 h-3.5" />
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground sm:text-sm">
+                  <CalendarIcon className="h-3.5 w-3.5" />
                   {formatDate(experience.dateFrom)} –{" "}
                   {formatDate(experience.dateTo)}
                 </span>
@@ -129,8 +129,8 @@ const ExperienceItem = ({
                 </span>
               </div>
               {isCurrent && (
-                <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                   Current
                 </span>
               )}
@@ -139,7 +139,7 @@ const ExperienceItem = ({
 
           {/* Description */}
           <div className="mt-3 pl-0 sm:pl-[60px]">
-            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+            <p className="text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
               {shouldTruncate && !expanded
                 ? descLines.slice(0, 150) + "..."
                 : descLines}
@@ -149,15 +149,15 @@ const ExperienceItem = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => setExpanded(!expanded)}
-                className="mt-1 px-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent text-xs font-semibold"
+                className="mt-1 h-auto px-0 text-xs font-semibold text-primary hover:bg-transparent hover:text-primary/80"
               >
                 {expanded ? (
                   <>
-                    Show less <ChevronUpIcon className="w-3.5 h-3.5 ml-1" />
+                    Show less <ChevronUpIcon className="ml-1 h-3.5 w-3.5" />
                   </>
                 ) : (
                   <>
-                    Show more <ChevronDownIcon className="w-3.5 h-3.5 ml-1" />
+                    Show more <ChevronDownIcon className="ml-1 h-3.5 w-3.5" />
                   </>
                 )}
               </Button>
@@ -170,7 +170,7 @@ const ExperienceItem = ({
               <img
                 src={experience.bannerImg}
                 alt={experience.title}
-                className="w-full rounded-lg border border-border object-cover max-h-48"
+                className="max-h-48 w-full rounded-lg border border-border object-cover"
               />
             </div>
           )}
@@ -259,11 +259,11 @@ const ExperienceList = ({
   };
 
   return (
-    <div className="bg-card rounded-lg border border-border shadow-sm">
+    <div className="rounded-lg border border-border bg-card shadow-sm">
       {/* Section header */}
-      <div className="flex items-center justify-between p-4 sm:p-6 pb-0 sm:pb-0">
+      <div className="flex items-center justify-between p-4 pb-0 sm:p-6 sm:pb-0">
         <div className="flex items-center gap-2">
-          <BriefcaseIcon className="w-5 h-5 text-primary" />
+          <BriefcaseIcon className="h-5 w-5 text-primary" />
           <h2 className="text-xl font-semibold text-foreground">Experience</h2>
         </div>
         {/* <span className="text-xs text-muted-foreground">
@@ -298,7 +298,7 @@ const ExperienceList = ({
         )}
       </div>
 
-      <div className="p-4 sm:p-6 pt-4">
+      <div className="p-4 pt-4 sm:p-6">
         {sortedExperiences.map((exp, index) => (
           <ExperienceItem
             key={exp.id}
@@ -328,7 +328,7 @@ const ExperienceContentWrapper = ({
           <Tooltip>
             <TooltipTrigger asChild>
               <div
-                className="h-8 w-8 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full p-2 flex-none"
+                className="h-8 w-8 flex-none rounded-full p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 onClick={() => setIsDialogOpen(true)}
               >
                 <PenBoxIcon className="size-4 text-neutral-500" />

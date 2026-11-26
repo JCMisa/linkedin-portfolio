@@ -20,8 +20,8 @@ const ProfileAboutMessage = async ({ userRole }: { userRole: string }) => {
   const displayAbout = personalInfo.about || FALLBACK_ABOUT;
 
   return (
-    <div className="rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col p-[10px] px-5">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 justify-between">
+    <div className="flex w-full flex-col rounded-lg bg-neutral-100 p-[10px] px-5 dark:bg-dark">
+      <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
         <h2 className="text-2xl font-medium">About Me</h2>
         {(userRole === "admin" || userRole === "owner") && (
           <EditAboutMessageDialog currentAbout={personalInfo.about || ""} />

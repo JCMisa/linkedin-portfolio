@@ -138,8 +138,8 @@ const ProfilePage = async () => {
   }
 
   return (
-    <main className="relative py-18 px-6 md:px-10 lg:px-16 ">
-      <div className="max-w-7xl mx-auto relative flex flex-col xl:flex-row gap-6">
+    <main className="relative px-6 py-18 md:px-10 lg:px-16">
+      <div className="relative mx-auto flex max-w-7xl flex-col gap-6 xl:flex-row">
         {/* left info */}
         <ProfileLeftInfo
           numberOfUsers={numberOfUsers}
@@ -151,7 +151,7 @@ const ProfilePage = async () => {
         />
 
         {/* right info */}
-        <div className="w-full xl:w-[320px] rounded-lg flex flex-col gap-2">
+        <div className="flex w-full flex-col gap-2 rounded-lg xl:w-[320px]">
           <PreferenceAndProfileLink />
 
           <div className="sticky top-[73px]">

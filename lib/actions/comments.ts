@@ -33,7 +33,7 @@ export const createComment = withErrorHandling(
 
     revalidatePath("/");
     return { data: newComment, success: true };
-  }
+  },
 );
 
 export const deleteComment = withErrorHandling(async (commentId: string) => {
@@ -76,5 +76,5 @@ export const getProjectComments = withErrorHandling(
       .orderBy(desc(Comments.createdAt));
 
     return { data: comments, success: true };
-  }
+  },
 );

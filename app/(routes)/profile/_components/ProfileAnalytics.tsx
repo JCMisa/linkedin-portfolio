@@ -15,7 +15,7 @@ const ProfileAnalytics = ({
   numberOfPostComments: number;
 }) => {
   return (
-    <div className="rounded-lg w-full bg-neutral-100 dark:bg-dark flex flex-col p-5">
+    <div className="flex w-full flex-col rounded-lg bg-neutral-100 p-5 dark:bg-dark">
       <h2 className="text-2xl font-medium">Engagements</h2>
       <div className="flex items-center gap-1 text-muted-foreground">
         <EyeIcon className="size-4" />
@@ -24,7 +24,7 @@ const ProfileAnalytics = ({
         </p>
       </div>
 
-      <div className="mt-5 flex flex-col items-start lg:flex-row lg:items-center gap-2 w-full lg:justify-between">
+      <div className="mt-5 flex w-full flex-col items-start gap-2 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-start gap-2">
           <UsersIcon className="size-5" />
           <div className="flex flex-col items-start gap-[2px]">

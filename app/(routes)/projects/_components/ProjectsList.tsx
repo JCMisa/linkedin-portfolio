@@ -103,8 +103,8 @@ export default function ProjectsList({
   const columnWidth = containerWidth / columnCount;
 
   return (
-    <div className="flex flex-col items-center gap-5 w-full h-[800px]">
-      <div className="px-[10px] w-full flex flex-col gap-4">
+    <div className="flex h-[800px] w-full flex-col items-center gap-5">
+      <div className="flex w-full flex-col gap-4 px-[10px]">
         <ProjectSearchAndCategorize
           search={search}
           setSearch={setSearch}
@@ -115,10 +115,10 @@ export default function ProjectsList({
 
         {/* Results Counter */}
         {!loading && projects.length > 0 && (
-          <div className="flex items-center justify-between px-2 animate-in fade-in slide-in-from-top-1 duration-500">
-            <p className="text-sm text-muted-foreground font-medium">
+          <div className="flex animate-in items-center justify-between px-2 duration-500 fade-in slide-in-from-top-1">
+            <p className="text-sm font-medium text-muted-foreground">
               Showing{" "}
-              <span className="text-foreground font-bold">
+              <span className="font-bold text-foreground">
                 {projects.length.toLocaleString()}
               </span>{" "}
               {projects.length === 1 ? "project" : "projects"}
@@ -139,7 +139,7 @@ export default function ProjectsList({
                   setSearch("");
                   setCategory(null);
                 }}
-                className="text-[10px] uppercase tracking-wider font-bold text-primary hover:underline cursor-pointer"
+                className="cursor-pointer text-[10px] font-bold tracking-wider text-primary uppercase hover:underline"
               >
                 Reset Filters
               </button>
@@ -150,10 +150,10 @@ export default function ProjectsList({
 
       <div
         ref={containerRef}
-        className="w-full flex-1 min-h-0 overflow-hidden relative group"
+        className="group relative min-h-0 w-full flex-1 overflow-hidden"
       >
         {loading ? (
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex w-full flex-col gap-4">
             <ProjectsSkeletonCard />
             <ProjectsSkeletonCard />
           </div>
@@ -188,7 +188,7 @@ export default function ProjectsList({
             />
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-40 opacity-50">
+          <div className="flex h-40 flex-col items-center justify-center opacity-50">
             <p>No projects found matching your criteria.</p>
           </div>
         )}

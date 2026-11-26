@@ -6,11 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  CalendarIcon,
-  PlusIcon,
-  LoaderCircleIcon,
-} from "lucide-react";
+import { CalendarIcon, PlusIcon, LoaderCircleIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn, showConfetti } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -53,7 +49,6 @@ const CreateCertificate = () => {
     !formData.imageUrl ||
     formData.imageUrl.trim().startsWith("http") ||
     /^https?:\/\/.+\.(png|jpe?g|webp|svg)$/i.test(formData.imageUrl.trim());
-
 
   const handleFileUpload = async (files: File[]) => {
     if (files.length === 0) return;
@@ -117,7 +112,7 @@ const CreateCertificate = () => {
         <PlusIcon className="size-4 cursor-pointer" />
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto no-scrollbar">
+      <DialogContent className="no-scrollbar max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Certificate</DialogTitle>
           <DialogDescription>
@@ -170,7 +165,7 @@ const CreateCertificate = () => {
                 <p className="text-xs text-muted-foreground">
                   Image uploaded successfully!
                 </p>
-                <div className="relative w-full h-48 rounded-md overflow-hidden border">
+                <div className="relative h-48 w-full overflow-hidden rounded-md border">
                   <Image
                     src={uploadedImageUrl}
                     alt="Certificate preview"
@@ -196,7 +191,7 @@ const CreateCertificate = () => {
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !formData.acquiredDate && "text-muted-foreground"
+                    !formData.acquiredDate && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />

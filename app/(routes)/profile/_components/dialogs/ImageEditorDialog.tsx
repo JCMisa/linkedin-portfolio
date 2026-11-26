@@ -35,7 +35,7 @@ export const ImageEditorDialog = ({
   folder = "jcm",
 }: ImageEditorDialogProps) => {
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(
-    currentImageUrl
+    currentImageUrl,
   );
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -112,9 +112,9 @@ export const ImageEditorDialog = ({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 h-[30rem] overflow-y-auto no-scrollbar">
+        <div className="no-scrollbar h-[30rem] space-y-4 overflow-y-auto">
           {/* Current/Preview Image */}
-          <div className="relative w-full h-64 rounded-lg overflow-hidden border bg-neutral-100 dark:bg-neutral-800">
+          <div className="relative h-64 w-full overflow-hidden rounded-lg border bg-neutral-100 dark:bg-neutral-800">
             {uploadedImageUrl ? (
               <Image
                 src={uploadedImageUrl}
@@ -123,7 +123,7 @@ export const ImageEditorDialog = ({
                 className="object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+              <div className="flex h-full w-full items-center justify-center text-muted-foreground">
                 <p>No image</p>
               </div>
             )}
