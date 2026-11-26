@@ -4,7 +4,10 @@ import { Button } from "@/components/ui/button";
 import { DownloadIcon, PenBoxIcon, ShieldCheckIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { getActionError, type ActionResult } from "@/lib/action-result";
+import { isAdminRole } from "@/lib/roles";
 import {
   Popover,
   PopoverContent,
@@ -18,7 +21,6 @@ import {
 import { ImageEditorDialog } from "@/features/profile/components/dialogs/ImageEditorDialog";
 import { ExperiencesEditorDialog } from "@/features/profile/components/dialogs/ExperiencesEditorDialog";
 import {
-  getPersonalInfo,
   updateProfileImage,
   updateCoverImage,
   updateExperiences,
@@ -35,12 +37,18 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { showConfetti } from "@/lib/utils";
 import ContactInfoEditorDialog from "@/features/profile/components/dialogs/ContactInfoEditorDialog";
+import type { ExperiencesType } from "@/db/schema";
+import type { ContactInfoInput } from "../schemas";
 
 interface ProfileBasicInfoProps {
   userRole?: string;
+  personalInfo: PersonalInfoType;
 }
 
-const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
+const ProfileBasicInfo = ({
+  userRole = "user",
+  personalInfo: initialPersonalInfo,
+}: ProfileBasicInfoProps) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCoverDialogOpen, setIsCoverDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
@@ -50,345 +58,81 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
     useState(false);
   const [isResumeDialogOpen, setIsResumeDialogOpen] = useState(false);
   const [isContactInfoDialogOpen, setIsContactInfoDialogOpen] = useState(false);
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfoType | null>(
-    null,
-  );
+  const router = useRouter();
+  const [personalInfo, setPersonalInfo] =
+    useState<PersonalInfoType>(initialPersonalInfo);
+  const isOwner = isAdminRole(userRole);
 
-  const isOwner = userRole === "admin" || userRole === "owner";
-
-  useEffect(() => {
-    const fetchPersonalInfo = async () => {
-      try {
-        const data = await getPersonalInfo();
-        if (data && typeof data === "object" && "id" in data) {
-          setPersonalInfo(data as PersonalInfoType);
-        }
-      } catch (error) {
-        console.error("Error fetching personal info:", error);
-      }
-    };
-
-    fetchPersonalInfo();
-  }, []);
-
-  const handleCoverImageSave = async (imageUrl: string | null) => {
-    try {
-      const result = await updateCoverImage(imageUrl);
-
-      // Check if result is an error string (from withErrorHandling)
-      if (typeof result === "string") {
-        console.error("Error updating cover image:", result);
-        throw new Error(result);
-      }
-
-      if (
-        result &&
-        typeof result === "object" &&
-        "success" in result &&
-        result.success
-      ) {
-        // Update local state with the actual saved URL from database
-        const savedUrl = result.imageUrl || imageUrl;
-        setPersonalInfo((prev) =>
-          prev ? { ...prev, coverImg: savedUrl } : null,
-        );
-        // Refetch to ensure consistency
-        const data = await getPersonalInfo();
-        if (data && typeof data === "object" && "id" in data) {
-          setPersonalInfo(data as PersonalInfoType);
-        }
-        toast.success("Cover image updated successfully");
-        showConfetti();
-      } else {
-        const errorMsg = result?.error || "Failed to update cover image";
-        console.error("Error updating cover image:", errorMsg);
-        throw new Error(errorMsg);
-      }
-    } catch (error) {
-      console.error("Error in handleCoverImageSave:", error);
-      throw error;
-    }
-  };
-
-  const handleProfileImageSave = async (imageUrl: string | null) => {
-    try {
-      const result = await updateProfileImage(imageUrl);
-
-      // Check if result is an error string (from withErrorHandling)
-      if (typeof result === "string") {
-        console.error("Error updating profile image:", result);
-        throw new Error(result);
-      }
-
-      if (
-        result &&
-        typeof result === "object" &&
-        "success" in result &&
-        result.success
-      ) {
-        // Update local state with the actual saved URL from database
-        const savedUrl = result.imageUrl || imageUrl;
-        setPersonalInfo((prev) =>
-          prev ? { ...prev, profileImg: savedUrl } : null,
-        );
-        // Refetch to ensure consistency
-        const data = await getPersonalInfo();
-        if (data && typeof data === "object" && "id" in data) {
-          setPersonalInfo(data as PersonalInfoType);
-        }
-        toast.success("Profile image updated successfully");
-        showConfetti();
-      } else {
-        const errorMsg = result?.error || "Failed to update profile image";
-        console.error("Error updating profile image:", errorMsg);
-        throw new Error(errorMsg);
-      }
-    } catch (error) {
-      console.error("Error in handleProfileImageSave:", error);
-      throw error;
-    }
-  };
-
-  const handleExperiencesSave = async (experiences: any[]) => {
-    try {
-      const result = await updateExperiences(experiences);
-
-      // Check if result is an error string (from withErrorHandling)
-      if (typeof result === "string") {
-        console.error("Error updating experiences:", result);
-        throw new Error(result);
-      }
-
-      if (
-        result &&
-        typeof result === "object" &&
-        "success" in result &&
-        result.success
-      ) {
-        // Update local state
-        setPersonalInfo((prev) =>
-          prev
-            ? { ...prev, experiences: result.experiences || experiences }
-            : null,
-        );
-        // Refetch to ensure consistency
-        const data = await getPersonalInfo();
-        if (data && typeof data === "object" && "id" in data) {
-          setPersonalInfo(data as PersonalInfoType);
-        }
-        toast.success("Experiences updated successfully");
-        showConfetti();
-      } else {
-        const errorMsg = result?.error || "Failed to update experiences";
-        console.error("Error updating experiences:", errorMsg);
-        throw new Error(errorMsg);
-      }
-    } catch (error) {
-      console.error("Error in handleExperiencesSave:", error);
-      throw error;
-    }
-  };
-
-  const handleNameSave = async (updatedName: string) => {
-    try {
-      const result = await updateName(updatedName);
-
-      // Check if result is an error string (from withErrorHandling)
-      if (typeof result === "string") {
-        console.error("Error updating name:", result);
-        throw new Error(result);
-      }
-
-      if (
-        result &&
-        typeof result === "object" &&
-        "success" in result &&
-        result.success
-      ) {
-        // Update local state
-        setPersonalInfo((prev) =>
-          prev ? { ...prev, name: result.name || updatedName } : null,
-        );
-        // Refetch to ensure consistency
-        const data = await getPersonalInfo();
-        if (data && typeof data === "object" && "id" in data) {
-          setPersonalInfo(data as PersonalInfoType);
-        }
-        toast.success("Name updated successfully");
-        showConfetti();
-      } else {
-        const errorMsg = result?.error || "Failed to update name";
-        console.error("Error updating name:", errorMsg);
-        throw new Error(errorMsg);
-      }
-    } catch (error) {
-      console.error("Error in handleNameSave:", error);
-      throw error;
-    }
-  };
-
-  const handleIndustryRoleSave = async (updatedIndustryRole: string) => {
-    try {
-      const result = await updateIndustryRole(updatedIndustryRole);
-
-      // Check if result is an error string (from withErrorHandling)
-      if (typeof result === "string") {
-        console.error("Error updating industry role:", result);
-        throw new Error(result);
-      }
-
-      if (
-        result &&
-        typeof result === "object" &&
-        "success" in result &&
-        result.success
-      ) {
-        // Update local state
-        setPersonalInfo((prev) =>
-          prev
-            ? {
-                ...prev,
-                industryRole: result.industryRole || updatedIndustryRole,
-              }
-            : null,
-        );
-        // Refetch to ensure consistency
-        const data = await getPersonalInfo();
-        if (data && typeof data === "object" && "id" in data) {
-          setPersonalInfo(data as PersonalInfoType);
-        }
-        toast.success("Industry role updated successfully");
-        showConfetti();
-      } else {
-        const errorMsg = result?.error || "Failed to update industry role";
-        console.error("Error updating industry role:", errorMsg);
-        throw new Error(errorMsg);
-      }
-    } catch (error) {
-      console.error("Error in handleIndustryRoleSave:", error);
-      throw error;
-    }
-  };
-
-  const handleResumeSave = async (
-    updatedITResumeLink: string,
-    updatedVAResumeLink: string,
+  /**
+   * Applies an action result: on success merges the returned fields into local
+   * state and refreshes server components; on failure throws so the editor
+   * dialog can show the message.
+   */
+  const save = <T extends Partial<PersonalInfoType>>(
+    result: ActionResult<T>,
+    successMessage: string,
   ) => {
-    try {
-      const result = await updateResume(
-        updatedITResumeLink,
-        updatedVAResumeLink,
-      );
-
-      // Check if result is an error string (from withErrorHandling)
-      if (typeof result === "string") {
-        console.error("Error updating resume:", result);
-        throw new Error(result);
-      }
-
-      if (
-        result &&
-        typeof result === "object" &&
-        "success" in result &&
-        result.success
-      ) {
-        // Update local state
-        setPersonalInfo((prev) =>
-          prev
-            ? {
-                ...prev,
-                itResumeLink: result.itResumeLink || updatedITResumeLink,
-                vaResumeLink: result.vaResumeLink || updatedVAResumeLink,
-              }
-            : null,
-        );
-        // Refetch to ensure consistency
-        const data = await getPersonalInfo();
-        if (data && typeof data === "object" && "id" in data) {
-          setPersonalInfo(data as PersonalInfoType);
-        }
-        toast.success("Resumes saved successfully");
-        showConfetti();
-      } else {
-        const errorMsg = result?.error || "Failed to update resume";
-        console.error("Error updating resume:", errorMsg);
-        throw new Error(errorMsg);
-      }
-    } catch (error) {
-      console.error("Error in handleResumeSave:", error);
-      throw error;
-    }
+    const error = getActionError(result);
+    if (error || !result?.data) throw new Error(error ?? "Save failed");
+    const patch = result.data;
+    setPersonalInfo((prev) => ({ ...prev, ...patch }));
+    router.refresh();
+    toast.success(successMessage);
+    showConfetti();
   };
 
-  const handleContactInfoSave = async (updatedContactInfo: ContactInfoType) => {
-    try {
-      const result = await updateContactInfo(updatedContactInfo);
+  const handleCoverImageSave = async (imageUrl: string | null) =>
+    save(
+      await updateCoverImage({ imageUrl }),
+      "Cover image updated successfully",
+    );
 
-      // Check if result is an error string (from withErrorHandling)
-      if (typeof result === "string") {
-        console.error("Error updating contact info:", result);
-        throw new Error(result);
-      }
+  const handleProfileImageSave = async (imageUrl: string | null) =>
+    save(
+      await updateProfileImage({ imageUrl }),
+      "Profile image updated successfully",
+    );
 
-      if (
-        result &&
-        typeof result === "object" &&
-        "success" in result &&
-        result.success
-      ) {
-        // Update local state
-        setPersonalInfo((prev) =>
-          prev
-            ? {
-                ...prev,
-                city: result.city || updatedContactInfo.city,
-                province: result.province || updatedContactInfo.province,
-                country: result.country || updatedContactInfo.country,
-                email: result.email || updatedContactInfo.email,
-                contactNumber:
-                  result.contactNumber || updatedContactInfo.contactNumber,
-                linkedinLink:
-                  result.linkedinLink || updatedContactInfo.linkedinLink,
-                portfolioLink:
-                  result.portfolioLink || updatedContactInfo.portfolioLink,
-                githubLink: result.githubLink || updatedContactInfo.githubLink,
-                facebookLink:
-                  result.facebookLink || updatedContactInfo.facebookLink,
-                instagramLink:
-                  result.instagramLink || updatedContactInfo.instagramLink,
-                xLink: result.xLink || updatedContactInfo.xLink,
-              }
-            : null,
-        );
-        // Refetch to ensure consistency
-        const data = await getPersonalInfo();
-        if (data && typeof data === "object" && "id" in data) {
-          setPersonalInfo(data as PersonalInfoType);
-        }
-        toast.success("Contact info updated successfully");
-        showConfetti();
-      } else {
-        const errorMsg = result?.error || "Failed to update contact info";
-        console.error("Error updating contact info:", errorMsg);
-        throw new Error(errorMsg);
-      }
-    } catch (error) {
-      console.error("Error in handleContactInfoSave:", error);
-      throw error;
-    }
-  };
+  const handleExperiencesSave = async (
+    experiences: PersonalInfoType["experiences"],
+  ) =>
+    save(
+      await updateExperiences({ experiences }),
+      "Experiences updated successfully",
+    );
+
+  const handleNameSave = async (name: string) =>
+    save(await updateName({ name }), "Name updated successfully");
+
+  const handleIndustryRoleSave = async (industryRole: string) =>
+    save(
+      await updateIndustryRole({ industryRole }),
+      "Industry role updated successfully",
+    );
+
+  const handleResumeSave = async (itResumeLink: string, vaResumeLink: string) =>
+    save(
+      await updateResume({ itResumeLink, vaResumeLink }),
+      "Resumes saved successfully",
+    );
+
+  const handleContactInfoSave = async (contactInfo: ContactInfoInput) =>
+    save(
+      await updateContactInfo(contactInfo),
+      "Contact info updated successfully",
+    );
 
   const displayCoverImage = personalInfo?.coverImg || "/empty-img.webp";
   const displayProfileImage = personalInfo?.profileImg || "/empty-img.webp";
 
   // Find latest experience
-  let latestExperience: any = null;
+  let latestExperience: ExperiencesType | null = null;
   if (
     personalInfo?.experiences &&
     Array.isArray(personalInfo.experiences) &&
     personalInfo.experiences.length > 0
   ) {
-    const sorted = [...personalInfo.experiences].sort((a: any, b: any) => {
+    const sorted = [...personalInfo.experiences].sort((a, b) => {
       const aIsCurrent = !a.dateTo || new Date(a.dateTo) >= new Date();
       const bIsCurrent = !b.dateTo || new Date(b.dateTo) >= new Date();
       if (aIsCurrent && !bIsCurrent) return -1;
@@ -719,7 +463,7 @@ const ProfileBasicInfo = ({ userRole = "user" }: ProfileBasicInfoProps) => {
           <ExperiencesEditorDialog
             open={isExperiencesDialogOpen}
             onOpenChange={setIsExperiencesDialogOpen}
-            currentExperiences={(personalInfo?.experiences as any[]) || []}
+            currentExperiences={personalInfo.experiences ?? []}
             onSave={handleExperiencesSave}
           />
           <NameEditorDialog

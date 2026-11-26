@@ -1,45 +1,29 @@
 import "server-only";
-import { db } from "@/db";
-import { withErrorHandling } from "@/lib/utils";
-import { Certificates } from "@/db/schema";
-import { unstable_cache } from "next/cache";
 import { desc } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
+import { db } from "@/db";
+import { Certificates } from "@/db/schema";
 
+/** Cache tag shared by all certificate reads; mutations call updateTag(). */
+export const CERTIFICATES_TAG = "certificates";
+
+const cacheOptions = { revalidate: 3600, tags: [CERTIFICATES_TAG] };
+
+// TODO(v3 phase 6): migrate unstable_cache to "use cache" + cacheTag()
 export const getAllCertificates = unstable_cache(
-  withErrorHandling(async () => {
-    const data = await db
-      .select()
-      .from(Certificates)
-      .orderBy(desc(Certificates.acquiredDate));
-
-    if (data && data.length > 0) {
-      return { data: data ?? [], success: true };
-    }
-    return { data: null, success: false };
-  }),
-  ["all-certificates-list-full"], // Key parts (cache tag)
-  {
-    revalidate: 3600, // Cache for 1 hour (adjust as needed)
-    tags: ["certificates"], // Tag for manual revalidation later
-  },
+  async () =>
+    db.select().from(Certificates).orderBy(desc(Certificates.acquiredDate)),
+  ["certificates", "all"],
+  cacheOptions,
 );
 
-export const getLatestThreeCertificates = unstable_cache(
-  withErrorHandling(async () => {
-    const data = await db
+export const getLatestCertificates = unstable_cache(
+  async (limit: number) =>
+    db
       .select()
       .from(Certificates)
       .orderBy(desc(Certificates.acquiredDate))
-      .limit(3);
-
-    if (data && data.length > 0) {
-      return { data: data ?? [], success: true };
-    }
-    return { data: null, success: false };
-  }),
-  ["all-certificates-list-three"], // Key parts (cache tag)
-  {
-    revalidate: 3600, // Cache for 1 hour (adjust as needed)
-    tags: ["certificates"], // Tag for manual revalidation later
-  },
+      .limit(limit),
+  ["certificates", "latest"],
+  cacheOptions,
 );

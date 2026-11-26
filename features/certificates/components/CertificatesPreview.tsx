@@ -5,12 +5,12 @@ import Link from "next/link";
 import CertificatePreviewCard from "./CertificatePreviewCard";
 import { CertificatePreviewSkeleton } from "./CertificatePreviewSkeleton";
 
-import { getLatestThreeCertificates } from "@/features/certificates/queries";
+import { getLatestCertificates } from "@/features/certificates/queries";
 import { getSessionUser } from "@/lib/auth";
 const CertificatesPreview = async () => {
-  const [currentUser, { data: latestCertificates }] = await Promise.all([
+  const [currentUser, latestCertificates] = await Promise.all([
     getSessionUser(),
-    getLatestThreeCertificates(),
+    getLatestCertificates(3),
   ]);
 
   return (
@@ -29,7 +29,7 @@ const CertificatesPreview = async () => {
       {/* certifications list */}
       <div className="flex w-full flex-col items-start gap-2">
         {latestCertificates && latestCertificates.length > 0
-          ? latestCertificates.map((cert: CertificateType) => (
+          ? latestCertificates.map((cert) => (
               <CertificatePreviewCard key={cert.id} cert={cert} />
             ))
           : [1, 2, 3].map((item) => <CertificatePreviewSkeleton key={item} />)}

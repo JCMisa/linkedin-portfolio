@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Grid, type CellComponentProps } from "react-window";
 import ProjectSearchFilter from "./ProjectSearchFilter";
 import ProjectGridCard from "./ProjectGridCard";
-import { getFilteredProjects } from "@/features/projects/actions/projects";
-import { toast } from "sonner";
+import { useProjectSearch } from "../hooks";
+import type { ProjectCategory } from "../schemas";
 import { useDebounce } from "@/hooks/use-debounce";
 import ProjectCardSkeleton from "./ProjectCardSkeleton";
 import { PersonalInfoType, ProjectsType } from "@/db/schema";
@@ -24,12 +24,14 @@ export default function ProjectsList({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(1000);
-  const [projects, setProjects] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
 
   const debouncedSearch = useDebounce(search, 300);
+  const { data: projects = [], isFetching: loading } = useProjectSearch({
+    q: debouncedSearch,
+    category: category as ProjectCategory | null,
+  });
 
   // Resize logic from your Trucks project
   useEffect(() => {
@@ -41,58 +43,6 @@ export default function ProjectsList({
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      setLoading(true);
-      try {
-        const res = await getFilteredProjects({
-          query: debouncedSearch,
-          category,
-        });
-        if (res.success) setProjects(res.data || []);
-      } catch {
-        toast.error("Failed to load projects");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProjects();
-  }, [debouncedSearch, category]);
-
-  // useEffect(() => {
-  //   const fetchProjects = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const res = await getFilteredProjects({
-  //         query: debouncedSearch,
-  //         category,
-  //       });
-
-  //       if (res.success && res.data) {
-  //         // --- SIMULATION LOGIC START ---
-  //         // If you have 5 projects, this makes 5000 projects (1000 copies)
-  //         const simulatedProjects = Array.from({ length: 1000 }).flatMap(() =>
-  //           res.data.map((project: any) => ({
-  //             ...project,
-  //             id: crypto.randomUUID(), // Generate unique IDs to avoid key collisions
-  //           })),
-  //         );
-
-  //         setProjects(simulatedProjects);
-  //         // --- SIMULATION LOGIC END ---
-
-  //         // Use this instead if you want real data only:
-  //         // setProjects(res.data);
-  //       }
-  //     } catch (error) {
-  //       toast.error("Failed to load projects");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchProjects();
-  // }, [debouncedSearch, category]);
 
   // Responsive Breakpoints
   const columnCount = 1;

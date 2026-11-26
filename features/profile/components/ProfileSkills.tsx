@@ -1,4 +1,4 @@
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
 import SkillsContent from "./SkillsContent";
 
@@ -168,7 +168,7 @@ const ProfileSkills = async ({ userRole }: { userRole: string }) => {
       ? personalInfo.skills
       : FALLBACK_SKILLS;
 
-  return <SkillsContent skills={displaySkills as any} userRole={userRole} />;
+  return <SkillsContent skills={displaySkills} userRole={userRole} />;
 };
 
 export default ProfileSkills;

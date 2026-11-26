@@ -27,8 +27,9 @@ import { toast } from "sonner";
 import { showConfetti } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileUpload } from "@/components/ui/file-upload";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImageFile } from "@/lib/upload-image";
 import Image from "next/image";
+import { getActionError } from "@/lib/action-result";
 
 type TopVoicesType = {
   id: string;
@@ -94,10 +95,7 @@ const TestimonialsEditorDialog = ({
     if (files.length === 0) return;
     setIsUploading(id);
     try {
-      const imageUrl = await uploadImageToCloudinary(
-        files[0],
-        "jcm/testimonials",
-      );
+      const imageUrl = await uploadImageFile(files[0], "jcm/testimonials");
       if (imageUrl) {
         handleUpdateTestimonial(id, "profileImg", imageUrl);
         toast.success("Image uploaded!");
@@ -118,13 +116,14 @@ const TestimonialsEditorDialog = ({
 
     setIsSaving(true);
     try {
-      const result = await updateTopVoices(testimonials);
-      if (result && result.success) {
+      const result = await updateTopVoices({ topVoices: testimonials });
+      const error = getActionError(result);
+      if (!error) {
         toast.success("Testimonials updated successfully!");
         showConfetti();
         setIsDialogOpen(false);
       } else {
-        toast.error(result?.error || "Failed to update testimonials");
+        toast.error(error ?? "Failed to update testimonials");
       }
     } catch {
       toast.error("An error occurred. Please try again.");

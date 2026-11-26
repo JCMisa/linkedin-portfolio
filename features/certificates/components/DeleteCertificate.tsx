@@ -16,6 +16,7 @@ import { showConfetti } from "@/lib/utils";
 import { LoaderCircleIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getActionError } from "@/lib/action-result";
 
 const DeleteCertificate = ({
   certificate,
@@ -28,9 +29,11 @@ const DeleteCertificate = ({
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      const result = await deleteCertificate(certificate.id);
-
-      if (result.success) {
+      const result = await deleteCertificate({ certificateId: certificate.id });
+      const error = getActionError(result);
+      if (error) {
+        toast.error(error);
+      } else {
         showConfetti();
         setOpen(false);
         toast.success(`Certificate deleted successfully`);

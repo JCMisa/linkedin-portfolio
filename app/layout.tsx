@@ -6,8 +6,8 @@ import Navbar from "@/components/layout/Navbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
 import AIChatbot from "@/features/chatbot/components/AIChatbot";
-import { UserStoreWatcher } from "@/features/users/UserStoreWatcher";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import { shadcn } from "@clerk/ui/themes";
 
 const sourceSans3 = Source_Sans_3({
@@ -43,14 +43,15 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <TooltipProvider>
-              <Navbar />
-              <UserStoreWatcher />
-              {children}
-              <div className="fixed right-3 bottom-3">
-                <AIChatbot />
-              </div>
-            </TooltipProvider>
+            <QueryProvider>
+              <TooltipProvider>
+                <Navbar />
+                {children}
+                <div className="fixed right-3 bottom-3">
+                  <AIChatbot />
+                </div>
+              </TooltipProvider>
+            </QueryProvider>
             <Toaster />
           </ThemeProvider>
         </body>

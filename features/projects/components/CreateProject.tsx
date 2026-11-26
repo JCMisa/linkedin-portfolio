@@ -28,7 +28,9 @@ import { addProject } from "@/features/projects/actions/projects";
 import { showConfetti } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { FileUpload } from "@/components/ui/file-upload";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImageFile } from "@/lib/upload-image";
+import { getActionError } from "@/lib/action-result";
+import type { ProjectCategory } from "../schemas";
 
 /* ---------- regexes ---------- */
 const imageRegex = /^https?:\/\/.+\.(png|jpe?g|webp|svg)$/i;
@@ -111,7 +113,7 @@ const CreateProject = () => {
 
     try {
       const file = files[0];
-      const imageUrl = await uploadImageToCloudinary(file, "projects");
+      const imageUrl = await uploadImageFile(file, "projects");
 
       if (imageUrl) {
         setUploadedImageUrl(imageUrl);
@@ -132,9 +134,14 @@ const CreateProject = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const res = await addProject(formData, techStack);
-      if (res?.success) {
-        toast.success(`${res.data} created successfully!`);
+      const res = await addProject({
+        ...formData,
+        category: formData.category as ProjectCategory, // validated server-side
+        techStacks: techStack,
+      });
+      const error = getActionError(res);
+      if (!error && res?.data) {
+        toast.success(`${res.data.title} created successfully!`);
         showConfetti();
         setOpen(false);
         setFormData({
@@ -149,7 +156,7 @@ const CreateProject = () => {
         setUploadedImageUrl("");
         setTouched({ imageUrl: false, githubUrl: false, liveUrl: false });
       } else {
-        toast.error("Could not create project");
+        toast.error(error ?? "Could not create project");
       }
     } finally {
       setIsSubmitting(false);

@@ -5,13 +5,9 @@ import { db } from "@/db";
 import { Users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
+import { env } from "@/lib/env";
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
-
-  if (!WEBHOOK_SECRET) {
-    console.error("Missing CLERK_WEBHOOK_SECRET");
-    return new Response("Server configuration error", { status: 500 });
-  }
+  const WEBHOOK_SECRET = env.CLERK_WEBHOOK_SECRET;
 
   // Get headers
   const headerPayload = await headers();

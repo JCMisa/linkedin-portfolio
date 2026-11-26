@@ -11,8 +11,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { EyeIcon } from "lucide-react";
+import type { CertificatesType } from "@/db/schema";
 
-const CertificatePreviewCard = ({ cert }: { cert: any }) => {
+const CertificatePreviewCard = ({ cert }: { cert: CertificatesType }) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

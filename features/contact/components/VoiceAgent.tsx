@@ -27,6 +27,15 @@ import { toast } from "sonner";
 import InquiryReview, { InquiryData } from "./InquiryReview";
 import { updateInquiry } from "@/features/contact/actions";
 import { useRouter } from "next/navigation";
+import { getActionError } from "@/lib/action-result";
+
+/** The subset of Vapi client messages this component handles. */
+type VapiMessage = {
+  type: string;
+  transcriptType?: "partial" | "final";
+  role?: string;
+  transcript?: string;
+};
 
 // Define what information the parent component must provide
 interface VoiceAgentProps {
@@ -131,10 +140,10 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
     const onSpeechEnd = () => setStatus("speaking");
 
     // Fired whenever words are transcribed
-    const onMessage = (message: any) => {
+    const onMessage = (message: VapiMessage) => {
       if (message.type === "transcript") {
         // Update the live text on screen (includes partial sentences)
-        setTranscript(message.transcript);
+        setTranscript(message.transcript ?? "");
 
         // Only save "final" (complete) sentences to the history ref
         if (message.transcriptType === "final") {
@@ -142,7 +151,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
 
           const newMessage: Message = {
             role: roleType,
-            content: message.transcript,
+            content: message.transcript ?? "",
           };
 
           messagesRef.current.push(newMessage);
@@ -155,7 +164,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
     // Captures raw audio volume for the pulsing orb effect
     const onVolumeLevel = (volume: number) => setVolumeLevel(volume);
 
-    const onError = (error: any) => {
+    const onError = (error: unknown) => {
       console.error("Vapi Error:", error);
       setStatus("idle");
     };
@@ -218,10 +227,7 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
     try {
       // The server identifies the user from the session
       const data = await fetchJson<InquiryData>("/api/process-inquiry", {
-        json: {
-          messages: messagesRef.current,
-          userName: userNameRef.current,
-        },
+        json: { messages: messagesRef.current },
       });
 
       setExtractedData(data);
@@ -243,17 +249,23 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
   const handleUpdateAndSave = async (updatedData: InquiryData) => {
     try {
       // Calls a Server Action to save/update the record in NeonDB using Drizzle
-      const result = await updateInquiry(updatedData);
+      const result = await updateInquiry({
+        id: updatedData.id ?? "",
+        visitorName: updatedData.visitorName,
+        email: updatedData.email,
+        phoneNumber: updatedData.phoneNumber,
+        purpose: updatedData.purpose,
+        summary: updatedData.summary,
+      });
+      const error = getActionError(result);
 
-      if (result) {
-        if (result.data && result.success) {
-          toast.success("Details updated and sent to John!");
-          setStatus("idle");
-          // Redirect back to the main contact page after success
-          setTimeout(() => router.push("/contact"), 1000);
-        } else {
-          toast.error("Could not update details.");
-        }
+      if (!error) {
+        toast.success("Details updated and sent to John!");
+        setStatus("idle");
+        // Redirect back to the main contact page after success
+        setTimeout(() => router.push("/contact"), 1000);
+      } else {
+        toast.error(error);
       }
     } catch (error) {
       console.error("Failed to update", error);

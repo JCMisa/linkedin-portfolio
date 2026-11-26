@@ -1,5 +1,5 @@
 import React from "react";
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
 import ServicesEditorDialog from "@/features/profile/components/dialogs/ServicesEditorDialog";
 

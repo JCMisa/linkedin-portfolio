@@ -13,6 +13,7 @@ import {
 import { SingleExperienceEditorDialog } from "@/features/profile/components/dialogs/SingleExperienceEditorDialog";
 import { updateExperiences } from "@/features/profile/actions";
 import { toast } from "sonner";
+import { getActionError } from "@/lib/action-result";
 import {
   Tooltip,
   TooltipContent,
@@ -206,19 +207,14 @@ const ExperienceList = ({
 
     // 2. Call server action
     try {
-      const result = await updateExperiences(newExperiences);
-      if (typeof result === "object" && result?.success) {
-        if (result.experiences) {
-          setExperiences(result.experiences as ExperienceType[]);
-        }
+      const result = await updateExperiences({ experiences: newExperiences });
+      const error = getActionError(result);
+      if (!error && result?.data) {
+        setExperiences(result.data.experiences as ExperienceType[]);
         toast.success("Experience added successfully");
       } else {
         setExperiences(experiences); // Revert
-        const errorMsg =
-          typeof result === "string"
-            ? result
-            : result?.error || "Failed to add experience";
-        toast.error(errorMsg);
+        toast.error(error ?? "Failed to add experience");
       }
     } catch (error) {
       console.error("Failed to add experience", error);
@@ -236,20 +232,14 @@ const ExperienceList = ({
 
     // 2. Call server action
     try {
-      const result = await updateExperiences(newExperiences);
-      if (typeof result === "object" && result?.success) {
-        // Already updated state, maybe sync with server response if needed (date formats etc)
-        if (result.experiences) {
-          setExperiences(result.experiences as ExperienceType[]);
-        }
+      const result = await updateExperiences({ experiences: newExperiences });
+      const error = getActionError(result);
+      if (!error && result?.data) {
+        // Sync with the server's normalized data (dates etc.)
+        setExperiences(result.data.experiences as ExperienceType[]);
       } else {
-        // Revert on error
-        setExperiences(experiences);
-        const errorMsg =
-          typeof result === "string"
-            ? result
-            : result?.error || "Failed to update";
-        toast.error(errorMsg);
+        setExperiences(experiences); // Revert on error
+        toast.error(error ?? "Failed to update");
       }
     } catch (error) {
       console.error("Failed to update experience", error);

@@ -2,13 +2,14 @@
 
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useCurrentUser } from "@/features/users/hooks";
 import {
-  createComment,
-  deleteComment,
-  getProjectComments,
-} from "@/features/projects/actions/comments";
-import { getCurrentUser } from "@/features/users/actions";
+  useCreateComment,
+  useDeleteComment,
+  useProjectComments,
+  type ProjectComment,
+} from "../hooks";
 import { LoaderCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -24,92 +25,42 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const CreateComment = ({ projectId }: { projectId: string }) => {
+const CreateComment = ({
+  projectId,
+  initialComments,
+}: {
+  projectId: string;
+  initialComments?: ProjectComment[];
+}) => {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const commentsContainerRef = useRef<HTMLDivElement>(null);
 
-  const [comments, setComments] = useState<CommentType[]>([]);
   const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserType>();
-  const [fetchingComments, setFetchingComments] = useState(false);
+  const { user: currentUser } = useCurrentUser();
+  const { data, isLoading: fetchingComments } = useProjectComments(
+    projectId,
+    initialComments,
+  );
+  const createMutation = useCreateComment(projectId);
+  const deleteMutation = useDeleteComment(projectId);
+  const isSubmitting = createMutation.isPending || deleteMutation.isPending;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Fetch comments
-      setFetchingComments(true);
-      const commentsResult = await getProjectComments(projectId);
-      if (commentsResult.success) {
-        setComments(commentsResult.data as CommentType[]);
-        setFetchingComments(false);
-      }
+  // Comments whose author was deleted have no user row; skip them
+  const comments = (data ?? []).filter((c) => c.user) as CommentType[];
 
-      // Fetch user role if user is logged in
-      if (user) {
-        try {
-          const data = await getCurrentUser();
-          if (data) {
-            setCurrentUser(data);
-          }
-        } catch (error) {
-          console.error("Error fetching user role:", error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [projectId, user]);
-
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!isLoaded || !user) {
       router.push("/sign-in");
       return;
     }
-
     if (!content.trim() || isSubmitting) return;
-
-    setIsSubmitting(true);
-    try {
-      const result = await createComment(projectId, content.trim());
-      if (result.success && result.data) {
-        setContent("");
-        // Add the new comment to the list
-        const newComment: CommentType = {
-          id: result.data.id,
-          content: result.data.content,
-          createdAt: result.data.createdAt,
-          user: {
-            id: parseInt(user.id),
-            name: user.fullName || user.username || "User",
-            image: user.imageUrl || null,
-            role: currentUser?.role,
-          },
-        };
-        setComments((prev) => [newComment, ...prev]);
-      }
-    } catch (error) {
-      console.error("Error creating comment:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    createMutation.mutate(content.trim(), { onSuccess: () => setContent("") });
   };
 
-  const handleDelete = async (commentId: string) => {
+  const handleDelete = (commentId: string) => {
     if (!user || isSubmitting) return;
-
-    setIsSubmitting(true);
-    try {
-      const result = await deleteComment(commentId);
-      if (result.success) {
-        // Remove the comment from the list
-        setComments((prev) => prev.filter((c) => c.id !== commentId));
-      }
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    deleteMutation.mutate(commentId);
   };
 
   const formatDate = (date: Date) => {

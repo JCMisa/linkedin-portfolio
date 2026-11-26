@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
+// Validate environment variables at build time (fails fast on missing keys)
+import "./lib/env";
+
 const nextConfig: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   experimental: {
     serverActions: {
       bodySizeLimit: "100MB",

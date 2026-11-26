@@ -4,24 +4,10 @@ import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { OptimizedProject } from "@/features/projects/types";
 
+import { env } from "@/lib/env";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export const withErrorHandling = <T, A extends unknown[]>(
-  fn: (...args: A) => Promise<T>,
-) => {
-  return async (...args: A): Promise<T> => {
-    try {
-      const result = await fn(...args);
-      return result;
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
-      return errorMessage as unknown as T;
-    }
-  };
-};
 
 export const showConfetti = () => {
   const end = Date.now() + 3 * 1000; // 3 seconds
@@ -65,7 +51,7 @@ export const handleShare = async (project: OptimizedProject) => {
   const shareData = {
     title: project.title,
     text: `Check out this project: ${project.title}`,
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}projects/${project.id}`,
+    url: `${env.NEXT_PUBLIC_SITE_URL}/projects/${project.id}`,
   };
 
   try {

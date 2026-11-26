@@ -3,16 +3,15 @@ import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { Users, type UsersType } from "@/db/schema";
+import { ActionError } from "@/lib/errors";
+import { isAdminRole } from "@/lib/roles";
 
 /**
  * Server-only auth helpers. This file is intentionally NOT a "use server"
  * module, so none of these functions are exposed as callable server actions.
  */
 
-const ADMIN_ROLES = new Set(["admin", "owner"]);
-
-export const isAdminRole = (role: string | null | undefined): boolean =>
-  !!role && ADMIN_ROLES.has(role);
+export { isAdminRole };
 
 /** Returns the signed-in user's DB record, or null. Never throws. */
 export async function getSessionUser(): Promise<UsersType | null> {
@@ -35,13 +34,14 @@ export async function getSessionUser(): Promise<UsersType | null> {
 /** Throws unless a user is signed in and exists in the DB. */
 export async function requireUser(): Promise<UsersType> {
   const user = await getSessionUser();
-  if (!user) throw new Error("Unauthorized");
+  if (!user) throw new ActionError("Please sign in to continue.");
   return user;
 }
 
 /** Throws unless the signed-in user has an admin/owner role. */
 export async function requireAdmin(): Promise<UsersType> {
   const user = await requireUser();
-  if (!isAdminRole(user.role)) throw new Error("Forbidden");
+  if (!isAdminRole(user.role))
+    throw new ActionError("You don't have permission to do that.");
   return user;
 }

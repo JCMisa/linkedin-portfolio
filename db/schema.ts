@@ -11,7 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-type SkillsType = {
+export type SkillsType = {
   id: string;
   title: string;
   description: string;
@@ -20,7 +20,7 @@ type SkillsType = {
   updatedAt: Date;
 };
 
-type TopVoicesType = {
+export type TopVoicesType = {
   id: string;
   name: string;
   profileImg: string;
@@ -30,7 +30,7 @@ type TopVoicesType = {
   updatedAt: Date;
 };
 
-type ExperiencesType = {
+export type ExperiencesType = {
   id: string;
   title: string;
   description: string;
@@ -183,6 +183,11 @@ export type PersonalInfoType = InferSelectModel<typeof PersonalInfo>;
 
 export const ContactInquiries = pgTable("contact_inquiries", {
   id: uuid("id").defaultRandom().primaryKey(),
+
+  // The signed-in user who made the call (null for rows created before v3)
+  userId: integer("userId").references(() => Users.id, {
+    onDelete: "set null",
+  }),
 
   // Extracted Info
   visitorName: varchar("visitor_name").default("Guest"),

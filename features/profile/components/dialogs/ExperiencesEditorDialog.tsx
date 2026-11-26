@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import Image from "next/image";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImageFile } from "@/lib/upload-image";
 import { toast } from "sonner";
 import {
   Trash2Icon,
@@ -115,7 +115,7 @@ export const ExperiencesEditorDialog = ({
     setUploadingIndex(index);
     try {
       const file = files[0];
-      const imageUrl = await uploadImageToCloudinary(file, "jcm/experiences");
+      const imageUrl = await uploadImageFile(file, "jcm/experiences");
 
       if (imageUrl) {
         updateExperience(index, "bannerImg", imageUrl);
@@ -154,17 +154,10 @@ export const ExperiencesEditorDialog = ({
 
     setIsSaving(true);
     try {
-      // Ensure dates are properly serialized for JSONB storage
-      const experiencesToSave = experiences.map((exp) => ({
-        ...exp,
-        createdAt:
-          exp.createdAt instanceof Date
-            ? exp.createdAt.toISOString()
-            : exp.createdAt,
-        updatedAt: new Date().toISOString(), // Always update to current time
-      }));
-
-      await onSave(experiencesToSave as any);
+      // The server validates and serializes dates for JSONB storage
+      await onSave(
+        experiences.map((exp) => ({ ...exp, updatedAt: new Date() })),
+      );
       toast.success("Experiences updated successfully!");
       onOpenChange(false);
     } catch (error) {
@@ -277,7 +270,7 @@ export const ExperiencesEditorDialog = ({
                         onSelect={(date) =>
                           handleDateSelect(index, "dateFrom", date)
                         }
-                        initialFocus
+                        autoFocus
                       />
                     </PopoverContent>
                   </Popover>
@@ -314,7 +307,7 @@ export const ExperiencesEditorDialog = ({
                         onSelect={(date) =>
                           handleDateSelect(index, "dateTo", date)
                         }
-                        initialFocus
+                        autoFocus
                       />
                     </PopoverContent>
                   </Popover>

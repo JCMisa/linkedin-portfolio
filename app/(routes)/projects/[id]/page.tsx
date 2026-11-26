@@ -1,5 +1,5 @@
-import { getProjectComments } from "@/features/projects/actions/comments";
 import { notFound } from "next/navigation";
+import { z } from "zod";
 import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
@@ -15,9 +15,9 @@ import CreateComment from "@/features/projects/components/CreateComment";
 import { FaGithub } from "react-icons/fa";
 import {
   getProjectById,
-  getProjectLikesWithUserDetails,
+  getProjectComments,
+  getProjectLikes,
 } from "@/features/projects/queries";
-// import ProjectComments from "@/features/projects/components/ProjectComments";
 
 interface ProjectDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -27,17 +27,15 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
   const { id } = await params;
 
   // Fetch all data in parallel for speed
-  const [projectData, likesWithUsersData, commentsData] = await Promise.all([
+  if (!z.uuid().safeParse(id).success) notFound();
+
+  const [project, likesWithUser, comments] = await Promise.all([
     getProjectById(id),
-    getProjectLikesWithUserDetails(id),
+    getProjectLikes(id),
     getProjectComments(id),
   ]);
 
-  if (!projectData || !projectData.data) notFound();
-
-  const project = projectData.data;
-  const likesWithUser = likesWithUsersData.data || [];
-  const comments = commentsData.data || [];
+  if (!project) notFound();
 
   return (
     <main className="min-h-screen bg-secondary/30 px-4 py-13 md:px-10 lg:px-16 lg:py-17">
@@ -110,11 +108,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
                 </h2>
               </div>
 
-              <CreateComment projectId={id} />
-
-              {/* <div className="mt-8">
-                <ProjectComments initialComments={comments} />
-              </div> */}
+              <CreateComment projectId={id} initialComments={comments} />
             </section>
           </div>
 

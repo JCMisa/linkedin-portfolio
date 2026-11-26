@@ -1,6 +1,6 @@
 import { LinkPreview } from "@/components/ui/link-preview";
 import { PersonalInfoType } from "@/db/schema";
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 import React from "react";
 import EditAboutMessageDialog from "@/features/profile/components/dialogs/EditAboutMessageDialog";
 

@@ -2,11 +2,13 @@ import ProfessionalActivities from "@/features/profile/components/experience/Pro
 import ProfileCard from "@/features/profile/components/ProfileCard";
 import Footer from "@/components/layout/Footer";
 import { Metadata } from "next";
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 import ExperienceList from "@/features/profile/components/experience/ExperienceList";
 import { PersonalInfoType } from "@/db/schema";
 
 import { getSessionUser } from "@/lib/auth";
+import { env } from "@/lib/env";
+import type { ExperiencesType } from "@/db/schema";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Experience";
 
@@ -17,8 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "AWS certified, Google Gemini certified, Cisco networking graduate. " +
     "Freelance milestones, open-source contributions, certificates, and client success stories in chronological order.";
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL;
 
   return {
     title,
@@ -111,7 +112,7 @@ const ExperiencesPage = async () => {
     getSessionUser(),
   ]);
 
-  let experiences: any[] = [];
+  let experiences: ExperiencesType[] = [];
 
   if (
     personalInfo &&

@@ -1,613 +1,166 @@
 "use server";
 
-import { db } from "@/db";
-import { withErrorHandling } from "@/lib/utils";
-import { PersonalInfo } from "@/db/schema";
-import { unstable_cache, revalidateTag } from "next/cache";
-import { deleteImageFromCloudinary } from "@/lib/cloudinary";
 import { eq } from "drizzle-orm";
-import { requireAdmin } from "@/lib/auth";
+import { updateTag } from "next/cache";
+import { db } from "@/db";
+import { PersonalInfo } from "@/db/schema";
+import { deleteImage } from "@/lib/cloudinary";
+import { ActionError } from "@/lib/errors";
+import { adminActionClient } from "@/lib/safe-action";
+import { PERSONAL_INFO_TAG } from "./queries";
+import {
+  aboutSchema,
+  contactInfoSchema,
+  experiencesSchema,
+  imageUrlSchema,
+  industryRoleSchema,
+  nameSchema,
+  resumeSchema,
+  servicesSchema,
+  skillsSchema,
+  testimonialsSchema,
+} from "./schemas";
 
-export const getPersonalInfo = unstable_cache(
-  withErrorHandling(async () => {
-    const [data] = await db.select().from(PersonalInfo);
+type PersonalInfoRow = typeof PersonalInfo.$inferSelect;
+type PersonalInfoPatch = Partial<Omit<typeof PersonalInfo.$inferInsert, "id">>;
 
-    if (data) {
-      return data;
-    }
-
-    return null;
-  }),
-  ["personal-info"], // Key parts (cache tag)
-  {
-    revalidate: 3600, // Cache for 1 hour (adjust as needed)
-    // revalidate: false, // Cache forever until manual revalidation
-    tags: ["personalInfo"], // Tag for manual revalidation later
-  },
-);
-
-export const updateProfileImage = withErrorHandling(
-  async (imageUrl: string | null) => {
-    await requireAdmin();
-
-    // Get current personal info
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        imageUrl: null,
-      };
-    }
-
-    // Delete old image from Cloudinary if it exists and is different
-    if (currentInfo.profileImg && currentInfo.profileImg !== imageUrl) {
-      try {
-        await deleteImageFromCloudinary(currentInfo.profileImg);
-      } catch (error) {
-        console.error("Error deleting old image from Cloudinary:", error);
-        // Continue with update even if deletion fails
-      }
-    }
-
-    // Update database and verify the update
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        profileImg: imageUrl,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({ profileImg: PersonalInfo.profileImg });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update profile image",
-        imageUrl: null,
-      };
-    }
-
-    // Revalidate cache
-    revalidateTag("personalInfo", "");
-
-    return { success: true, imageUrl: updated.profileImg };
-  },
-);
-
-export const updateCoverImage = withErrorHandling(
-  async (imageUrl: string | null) => {
-    await requireAdmin();
-
-    // Get current personal info
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        imageUrl: null,
-      };
-    }
-
-    // Delete old image from Cloudinary if it exists and is different
-    if (currentInfo.coverImg && currentInfo.coverImg !== imageUrl) {
-      try {
-        await deleteImageFromCloudinary(currentInfo.coverImg);
-      } catch (error) {
-        console.error("Error deleting old image from Cloudinary:", error);
-        // Continue with update even if deletion fails
-      }
-    }
-
-    // Update database and verify the update
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        coverImg: imageUrl,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({ coverImg: PersonalInfo.coverImg });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update cover image",
-        imageUrl: null,
-      };
-    }
-
-    // Revalidate cache
-    revalidateTag("personalInfo", "");
-
-    return { success: true, imageUrl: updated.coverImg };
-  },
-);
-
-type ExperiencesType = {
-  id: string;
-  title: string;
-  description: string;
-  bannerImg: string;
-  dateFrom: string;
-  dateTo: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-};
-
-export const updateExperiences = withErrorHandling(
-  async (experiences: ExperiencesType[]) => {
-    await requireAdmin();
-
-    // Get current personal info
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        experiences: null,
-      };
-    }
-
-    // Delete old banner images from Cloudinary that are no longer in the new array
-    const oldExperiences = (currentInfo.experiences as ExperiencesType[]) || [];
-    const newBannerImgs = new Set(
-      experiences.map((exp) => exp.bannerImg).filter(Boolean),
+/** Loads the single PersonalInfo row (the portfolio owner's profile). */
+async function loadProfile(): Promise<PersonalInfoRow> {
+  const [row] = await db.select().from(PersonalInfo).limit(1);
+  if (!row)
+    throw new ActionError(
+      "Profile not found. Seed the personalInfo table first.",
     );
+  return row;
+}
 
-    for (const oldExp of oldExperiences) {
-      if (
-        oldExp.bannerImg &&
-        !newBannerImgs.has(oldExp.bannerImg) &&
-        oldExp.bannerImg.includes("cloudinary.com")
-      ) {
-        try {
-          await deleteImageFromCloudinary(oldExp.bannerImg);
-        } catch (error) {
-          console.error("Error deleting old banner image:", error);
-          // Continue even if deletion fails
-        }
-      }
-    }
-
-    // Update database
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        experiences: experiences as any,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({ experiences: PersonalInfo.experiences });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update experiences",
-        experiences: null,
-      };
-    }
-
-    // Revalidate cache
-    revalidateTag("personalInfo", "");
-
-    return {
-      success: true,
-      experiences: updated.experiences as ExperiencesType[],
-    };
-  },
-);
-
-export const updateName = withErrorHandling(async (updatedName: string) => {
-  await requireAdmin();
-
-  // Get current personal info
-  const [currentInfo] = await db.select().from(PersonalInfo);
-
-  if (!currentInfo) {
-    return {
-      success: false,
-      error: "Personal info not found",
-      name: null,
-    };
-  }
-
-  // Update database and verify the update
-  const [updated] = await db
+/** Applies a patch to the profile row, refreshes the cache, returns the row. */
+async function saveProfile(id: string, patch: PersonalInfoPatch) {
+  const [row] = await db
     .update(PersonalInfo)
-    .set({
-      name: updatedName,
-    })
-    .where(eq(PersonalInfo.id, currentInfo.id))
-    .returning({ name: PersonalInfo.name });
+    .set(patch)
+    .where(eq(PersonalInfo.id, id))
+    .returning();
+  updateTag(PERSONAL_INFO_TAG);
+  return row;
+}
 
-  if (!updated) {
+/** Deletes Cloudinary images that were in `before` but are gone from `after`. */
+async function deleteRemovedImages(before: string[], after: string[]) {
+  const kept = new Set(after.filter(Boolean));
+  await Promise.all(
+    before.filter((url) => url && !kept.has(url)).map(deleteImage),
+  );
+}
+
+export const updateProfileImage = adminActionClient
+  .inputSchema(imageUrlSchema)
+  .action(async ({ parsedInput: { imageUrl } }) => {
+    const current = await loadProfile();
+    const row = await saveProfile(current.id, { profileImg: imageUrl });
+    await deleteRemovedImages([current.profileImg ?? ""], [imageUrl ?? ""]);
+    return { profileImg: row.profileImg };
+  });
+
+export const updateCoverImage = adminActionClient
+  .inputSchema(imageUrlSchema)
+  .action(async ({ parsedInput: { imageUrl } }) => {
+    const current = await loadProfile();
+    const row = await saveProfile(current.id, { coverImg: imageUrl });
+    await deleteRemovedImages([current.coverImg ?? ""], [imageUrl ?? ""]);
+    return { coverImg: row.coverImg };
+  });
+
+export const updateName = adminActionClient
+  .inputSchema(nameSchema)
+  .action(async ({ parsedInput }) => {
+    const row = await saveProfile((await loadProfile()).id, parsedInput);
+    return { name: row.name };
+  });
+
+export const updateIndustryRole = adminActionClient
+  .inputSchema(industryRoleSchema)
+  .action(async ({ parsedInput }) => {
+    const row = await saveProfile((await loadProfile()).id, parsedInput);
+    return { industryRole: row.industryRole };
+  });
+
+export const updateResume = adminActionClient
+  .inputSchema(resumeSchema)
+  .action(async ({ parsedInput }) => {
+    const row = await saveProfile((await loadProfile()).id, parsedInput);
+    return { itResumeLink: row.itResumeLink, vaResumeLink: row.vaResumeLink };
+  });
+
+export const updateContactInfo = adminActionClient
+  .inputSchema(contactInfoSchema)
+  .action(async ({ parsedInput }) => {
+    const row = await saveProfile((await loadProfile()).id, parsedInput);
+    const { city, province, country, email, contactNumber } = row;
+    const {
+      linkedinLink,
+      portfolioLink,
+      githubLink,
+      facebookLink,
+      instagramLink,
+      xLink,
+    } = row;
     return {
-      success: false,
-      error: "Failed to update name",
-      name: null,
+      city,
+      province,
+      country,
+      email,
+      contactNumber,
+      linkedinLink,
+      portfolioLink,
+      githubLink,
+      facebookLink,
+      instagramLink,
+      xLink,
     };
-  }
+  });
 
-  // Revalidate cache
-  revalidateTag("personalInfo", "");
+export const updateAboutMessage = adminActionClient
+  .inputSchema(aboutSchema)
+  .action(async ({ parsedInput }) => {
+    const row = await saveProfile((await loadProfile()).id, parsedInput);
+    return { about: row.about };
+  });
 
-  return { success: true, name: updated.name };
-});
+export const updateServices = adminActionClient
+  .inputSchema(servicesSchema)
+  .action(async ({ parsedInput }) => {
+    const row = await saveProfile((await loadProfile()).id, parsedInput);
+    return { services: row.services };
+  });
 
-export const updateIndustryRole = withErrorHandling(
-  async (updatedIndustryRole: string) => {
-    await requireAdmin();
+export const updateSkills = adminActionClient
+  .inputSchema(skillsSchema)
+  .action(async ({ parsedInput }) => {
+    const row = await saveProfile((await loadProfile()).id, parsedInput);
+    return { skills: row.skills };
+  });
 
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        industryRole: null,
-      };
-    }
-
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        industryRole: updatedIndustryRole,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({ industryRole: PersonalInfo.industryRole });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update industry role",
-        industryRole: null,
-      };
-    }
-
-    revalidateTag("personalInfo", "");
-
-    return { success: true, industryRole: updated.industryRole };
-  },
-);
-
-export const updateResume = withErrorHandling(
-  async (updatedITResumeLink: string, updatedVAResumeLink: string) => {
-    await requireAdmin();
-
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        itResumeLink: null,
-        vaResumeLink: null,
-      };
-    }
-
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        itResumeLink: updatedITResumeLink,
-        vaResumeLink: updatedVAResumeLink,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({
-        itResumeLink: PersonalInfo.itResumeLink,
-        vaResumeLink: PersonalInfo.vaResumeLink,
-      });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update resume",
-        itResumeLink: null,
-        vaResumeLink: null,
-      };
-    }
-
-    revalidateTag("personalInfo", "");
-
-    return {
-      success: true,
-      itResumeLink: updated.itResumeLink,
-      vaResumeLink: updated.vaResumeLink,
-    };
-  },
-);
-
-export const updateContactInfo = withErrorHandling(
-  async (updatedContactInfo: ContactInfoType) => {
-    await requireAdmin();
-
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        city: null,
-        province: null,
-        country: null,
-        email: null,
-        contactNumber: null,
-        linkedinLink: null,
-        portfolioLink: null,
-        githubLink: null,
-        facebookLink: null,
-        instagramLink: null,
-        xLink: null,
-      };
-    }
-
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        city: updatedContactInfo.city,
-        province: updatedContactInfo.province,
-        country: updatedContactInfo.country,
-        email: updatedContactInfo.email,
-        contactNumber: updatedContactInfo.contactNumber,
-        linkedinLink: updatedContactInfo.linkedinLink,
-        portfolioLink: updatedContactInfo.portfolioLink,
-        githubLink: updatedContactInfo.githubLink,
-        facebookLink: updatedContactInfo.facebookLink,
-        instagramLink: updatedContactInfo.instagramLink,
-        xLink: updatedContactInfo.xLink,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({
-        city: PersonalInfo.city,
-        province: PersonalInfo.province,
-        country: PersonalInfo.country,
-        email: PersonalInfo.email,
-        contactNumber: PersonalInfo.contactNumber,
-        linkedinLink: PersonalInfo.linkedinLink,
-        portfolioLink: PersonalInfo.portfolioLink,
-        githubLink: PersonalInfo.githubLink,
-        facebookLink: PersonalInfo.facebookLink,
-        instagramLink: PersonalInfo.instagramLink,
-        xLink: PersonalInfo.xLink,
-      });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update contact info",
-        city: null,
-        province: null,
-        country: null,
-        email: null,
-        contactNumber: null,
-        linkedinLink: null,
-        portfolioLink: null,
-        githubLink: null,
-        facebookLink: null,
-        instagramLink: null,
-        xLink: null,
-      };
-    }
-
-    revalidateTag("personalInfo", "");
-
-    return {
-      success: true,
-      city: updated.city,
-      province: updated.province,
-      country: updated.country,
-      email: updated.email,
-      contactNumber: updated.contactNumber,
-      linkedinLink: updated.linkedinLink,
-      portfolioLink: updated.portfolioLink,
-      githubLink: updated.githubLink,
-      facebookLink: updated.facebookLink,
-      instagramLink: updated.instagramLink,
-      xLink: updated.xLink,
-    };
-  },
-);
-
-export const updateAboutMessage = withErrorHandling(
-  async (updatedAbout: string) => {
-    await requireAdmin();
-
-    // Get current personal info
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        about: null,
-      };
-    }
-
-    // Update database and verify the update
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        about: updatedAbout,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({ about: PersonalInfo.about });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update about message",
-        about: null,
-      };
-    }
-
-    // Revalidate cache
-    revalidateTag("personalInfo", "");
-
-    return {
-      success: true,
-      about: updated.about,
-    };
-  },
-);
-
-export const updateServices = withErrorHandling(
-  async (updatedServices: string[]) => {
-    await requireAdmin();
-
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        services: null,
-      };
-    }
-
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        services: updatedServices,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({ services: PersonalInfo.services });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update services",
-        services: null,
-      };
-    }
-
-    revalidateTag("personalInfo", "");
-
-    return {
-      success: true,
-      services: updated.services,
-    };
-  },
-);
-
-// skills table
-type SkillsType = {
-  id: string;
-  title: string;
-  description: string;
-  items: string[];
-  createdAt: Date | string;
-  updatedAt: Date | string;
-};
-
-export const updateSkills = withErrorHandling(
-  async (updatedSkills: SkillsType[]) => {
-    await requireAdmin();
-
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        skills: null,
-      };
-    }
-
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        skills: updatedSkills as any,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({ skills: PersonalInfo.skills });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update skills",
-        skills: null,
-      };
-    }
-
-    revalidateTag("personalInfo", "");
-
-    return {
-      success: true,
-      skills: updated.skills as SkillsType[],
-    };
-  },
-);
-
-// top voices table
-type TopVoicesType = {
-  id: string;
-  name: string;
-  profileImg: string;
-  company: string;
-  comment: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-};
-
-export const updateTopVoices = withErrorHandling(
-  async (topVoices: TopVoicesType[]) => {
-    await requireAdmin();
-
-    // Get current personal info
-    const [currentInfo] = await db.select().from(PersonalInfo);
-
-    if (!currentInfo) {
-      return {
-        success: false,
-        error: "Personal info not found",
-        topVoices: null,
-      };
-    }
-
-    // Delete old testimonial images from Cloudinary that are no longer in the new array
-    const oldTopVoices = (currentInfo.topVoices as TopVoicesType[]) || [];
-    const newProfileImgs = new Set(
-      topVoices.map((v) => v.profileImg).filter(Boolean),
+export const updateExperiences = adminActionClient
+  .inputSchema(experiencesSchema)
+  .action(async ({ parsedInput: { experiences } }) => {
+    const current = await loadProfile();
+    const row = await saveProfile(current.id, { experiences });
+    await deleteRemovedImages(
+      current.experiences.map((e) => e.bannerImg),
+      experiences.map((e) => e.bannerImg),
     );
+    return { experiences: row.experiences };
+  });
 
-    for (const oldVoice of oldTopVoices) {
-      if (
-        oldVoice.profileImg &&
-        !newProfileImgs.has(oldVoice.profileImg) &&
-        oldVoice.profileImg.includes("cloudinary.com")
-      ) {
-        try {
-          await deleteImageFromCloudinary(oldVoice.profileImg);
-        } catch (error) {
-          console.error("Error deleting old profile image:", error);
-          // Continue even if deletion fails
-        }
-      }
-    }
-
-    // Update database
-    const [updated] = await db
-      .update(PersonalInfo)
-      .set({
-        topVoices: topVoices as any,
-      })
-      .where(eq(PersonalInfo.id, currentInfo.id))
-      .returning({ topVoices: PersonalInfo.topVoices });
-
-    if (!updated) {
-      return {
-        success: false,
-        error: "Failed to update top voices",
-        topVoices: null,
-      };
-    }
-
-    // Revalidate cache
-    revalidateTag("personalInfo", "");
-
-    return {
-      success: true,
-      topVoices: updated.topVoices as TopVoicesType[],
-    };
-  },
-);
+export const updateTopVoices = adminActionClient
+  .inputSchema(testimonialsSchema)
+  .action(async ({ parsedInput: { topVoices } }) => {
+    const current = await loadProfile();
+    const row = await saveProfile(current.id, { topVoices });
+    await deleteRemovedImages(
+      current.topVoices.map((v) => v.profileImg),
+      topVoices.map((v) => v.profileImg),
+    );
+    return { topVoices: row.topVoices };
+  });

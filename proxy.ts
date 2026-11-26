@@ -11,7 +11,12 @@ const isPublicRoute = createRouteMatcher([
   "/contact",
   "/Resume-IT.pdf(.*)",
   "/Resume-VA-General.pdf(.*)",
+  "/sitemap.xml",
+  "/robots.txt",
   "/api/webhooks(.*)",
+  // Public read APIs (they check the session themselves where it matters)
+  "/api/projects(.*)",
+  "/api/users",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

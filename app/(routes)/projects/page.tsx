@@ -14,8 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "Freelance software development, virtual assistance, and end-to-end digital solutions. " +
     "Case studies, live demos, GitHub repos, and client results included.";
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL;
 
   return {
     title,
@@ -97,10 +96,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
 
 import { getSessionUser } from "@/lib/auth";
+import { env } from "@/lib/env";
 const ProjectsPage = async () => {
   const [currentUser, personalInfo] = await Promise.all([
     getSessionUser(),
@@ -112,7 +112,7 @@ const ProjectsPage = async () => {
       <div className="relative mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row">
         {/* projects list */}
         <ProjectsList
-          currentUser={currentUser as any}
+          userRole={currentUser?.role ?? "user"}
           personalInfo={personalInfo as PersonalInfoType}
         />
 

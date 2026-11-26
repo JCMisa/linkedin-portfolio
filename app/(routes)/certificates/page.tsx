@@ -4,10 +4,11 @@ import Footer from "@/components/layout/Footer";
 import CertificatesList from "@/features/certificates/components/CertificatesList";
 import { Metadata } from "next";
 import { PersonalInfoType } from "@/db/schema";
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 
 import { getAllCertificates } from "@/features/certificates/queries";
 import { getSessionUser } from "@/lib/auth";
+import { env } from "@/lib/env";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Certificates";
 
@@ -17,8 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "and more. Download badges, view issuance dates, verify authenticity, and explore learning paths. " +
     "Cloud, AI, networking, and modern web development certifications showcased.";
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL;
 
   return {
     title,
@@ -101,9 +101,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const CertificatesPage = async () => {
-  const [currentUser, { data: certificates }, personalInfo] = await Promise.all(
-    [getSessionUser(), getAllCertificates(), getPersonalInfo()],
-  );
+  const [currentUser, certificates, personalInfo] = await Promise.all([
+    getSessionUser(),
+    getAllCertificates(),
+    getPersonalInfo(),
+  ]);
 
   return (
     <main className="relative px-6 py-18 md:px-10 lg:px-16">

@@ -25,8 +25,10 @@ import { toast } from "sonner";
 import { updateProject } from "@/features/projects/actions/projects";
 import { showConfetti } from "@/lib/utils";
 import { cn } from "@/lib/utils"; // shadcn helper
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImageFile } from "@/lib/upload-image";
 import Image from "next/image";
+import { getActionError } from "@/lib/action-result";
+import type { ProjectCategory } from "../schemas";
 
 /* ---------- validation helpers ---------- */
 const imageRegex = /^https?:\/\/.+\.(png|jpe?g)$/i;
@@ -136,7 +138,7 @@ const EditProject = ({ project }: { project: ProjectType }) => {
 
     try {
       const file = files[0];
-      const imageUrl = await uploadImageToCloudinary(file, "jcm");
+      const imageUrl = await uploadImageFile(file, "jcm");
 
       if (imageUrl) {
         setUploadedImageUrl(imageUrl);
@@ -158,13 +160,19 @@ const EditProject = ({ project }: { project: ProjectType }) => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const result = await updateProject(project.id, formData, techStack);
-      if (result.success) {
+      const result = await updateProject({
+        id: project.id,
+        ...formData,
+        category: formData.category as ProjectCategory, // validated server-side
+        techStacks: techStack,
+      });
+      const error = getActionError(result);
+      if (!error && result?.data) {
         showConfetti();
-        toast.success(`${result.data} updated successfully!`);
+        toast.success(`${result.data.title} updated successfully!`);
         setOpen(false);
       } else {
-        toast.error(result.error || "Failed to update project");
+        toast.error(error ?? "Failed to update project");
       }
     } catch (err) {
       console.error(err);

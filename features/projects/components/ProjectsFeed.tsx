@@ -1,68 +1,34 @@
 "use client";
 
+import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import ProjectSearchFilter from "./ProjectSearchFilter";
-import ProjectsFeedList from "./ProjectsFeedList"; // Import the type
-import CreateProject from "./CreateProject";
-import { useEffect, useState } from "react";
+import type { PersonalInfoType } from "@/db/schema";
 import { useDebounce } from "@/hooks/use-debounce";
-import { getProjectsPaginated } from "@/features/projects/actions/projects";
-import { PersonalInfoType } from "@/db/schema";
-import { OptimizedProject } from "@/features/projects/types";
+import { useProjectsFeed } from "../hooks";
+import type { ProjectCategory } from "../schemas";
+import type { OptimizedProject } from "../types";
+import CreateProject from "./CreateProject";
+import ProjectSearchFilter from "./ProjectSearchFilter";
+import ProjectsFeedList from "./ProjectsFeedList";
 
 export default function ProjectsFeed({
   userRole,
-  initialProjects,
-  initialCursor,
-  initialHasMore,
+  initialPage,
   personalInfo,
 }: {
   userRole: string;
-  initialProjects: OptimizedProject[];
-  initialCursor?: string;
-  initialHasMore: boolean;
+  initialPage: { items: OptimizedProject[]; nextCursor: string | null };
   personalInfo: PersonalInfoType;
 }) {
-  const [projects, setProjects] = useState<OptimizedProject[]>(initialProjects);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
-  const [cursor, setCursor] = useState(initialCursor);
-  const [hasMore, setHasMore] = useState(initialHasMore);
-  const [loading, setLoading] = useState(false);
-
   const debouncedSearch = useDebounce(search, 300);
 
-  // reset + fetch first page on filter change
-  useEffect(() => {
-    setLoading(true);
-    getProjectsPaginated({ query: debouncedSearch, category, limit: 5 }).then(
-      ({ data, nextCursor }) => {
-        setProjects((data as unknown as OptimizedProject[]) ?? []);
-        setCursor(nextCursor ?? undefined);
-        setHasMore(!!nextCursor);
-        setLoading(false);
-      },
-    );
-  }, [debouncedSearch, category]);
-
-  const loadMore = () => {
-    if (loading || !hasMore) return;
-    setLoading(true);
-    getProjectsPaginated({
-      query: debouncedSearch,
-      category,
-      cursor,
-      limit: 5,
-    }).then(({ data, nextCursor }) => {
-      setProjects((prev) => [
-        ...prev,
-        ...((data as unknown as OptimizedProject[]) ?? []),
-      ]);
-      setCursor(nextCursor ?? undefined);
-      setHasMore(!!nextCursor);
-      setLoading(false);
-    });
-  };
+  const feed = useProjectsFeed(
+    { q: debouncedSearch, category: category as ProjectCategory | null },
+    initialPage,
+  );
+  const projects = feed.data?.pages.flatMap((page) => page.items) ?? [];
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -76,19 +42,19 @@ export default function ProjectsFeed({
 
       <div className="flex w-full items-center gap-2">
         <Separator
-          className={`${
-            userRole === "admin" ? "!w-[93%] sm:!w-[95%]" : "w-full"
-          }`}
+          className={userRole === "admin" ? "!w-[93%] sm:!w-[95%]" : "w-full"}
         />
         {userRole === "admin" && <CreateProject />}
       </div>
 
       <ProjectsFeedList
         projects={projects}
-        isFetchingProjects={loading}
+        isFetchingProjects={feed.isFetching}
         userRole={userRole}
-        hasMore={hasMore}
-        loadMore={loadMore}
+        hasMore={!!feed.hasNextPage}
+        loadMore={() => {
+          if (!feed.isFetchingNextPage) feed.fetchNextPage();
+        }}
         personalInfo={personalInfo}
       />
     </div>

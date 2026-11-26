@@ -6,7 +6,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from "next/image";
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
 import TestimonialsEditorDialog from "@/features/profile/components/dialogs/TestimonialsEditorDialog";
 

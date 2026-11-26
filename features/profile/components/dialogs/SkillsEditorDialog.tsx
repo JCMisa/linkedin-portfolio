@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { showConfetti } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getActionError } from "@/lib/action-result";
 
 type SkillCategory = {
   id: string;
@@ -68,10 +69,10 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
     setSkillCategories(skillCategories.filter((cat) => cat.id !== id));
   };
 
-  const handleUpdateCategory = (
+  const handleUpdateCategory = <K extends keyof SkillCategory>(
     id: string,
-    field: keyof SkillCategory,
-    value: any,
+    field: K,
+    value: SkillCategory[K],
   ) => {
     setSkillCategories(
       skillCategories.map((cat) =>
@@ -125,18 +126,15 @@ const SkillsEditorDialog = ({ currentSkills }: SkillsEditorDialogProps) => {
 
     setIsSaving(true);
     try {
-      const result = await updateSkills(skillCategories);
+      const result = await updateSkills({ skills: skillCategories });
+      const error = getActionError(result);
 
-      if (typeof result === "string") {
-        throw new Error(result);
-      }
-
-      if (result && result.success) {
+      if (!error) {
         toast.success("Skills updated successfully");
         showConfetti();
         setIsDialogOpen(false);
       } else {
-        toast.error(result?.error || "Failed to update skills");
+        toast.error(error ?? "Failed to update skills");
       }
     } catch (error) {
       console.error("Error updating skills:", error);

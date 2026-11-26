@@ -64,8 +64,12 @@ const ProjectPostCard = ({
     setLikesCount((prev) => (previousIsLiked ? prev - 1 : prev + 1));
 
     try {
-      const result = await toggleProjectLike(project.id);
-      if (!result.success) {
+      const result = await toggleProjectLike({ projectId: project.id });
+      if (result?.data) {
+        // Reconcile with the server's authoritative state
+        setIsLiked(result.data.liked);
+        setLikesCount(result.data.likesCount);
+      } else {
         // Revert on failure
         setIsLiked(previousIsLiked);
         setLikesCount(previousCount);

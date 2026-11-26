@@ -11,7 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/ui/file-upload";
 import Image from "next/image";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImageFile } from "@/lib/upload-image";
+import type { UploadFolder } from "@/lib/upload-folders";
 import { toast } from "sonner";
 import { Trash2Icon, Loader2Icon } from "lucide-react";
 
@@ -22,7 +23,7 @@ interface ImageEditorDialogProps {
   onSave: (imageUrl: string | null) => Promise<void>;
   title: string;
   description?: string;
-  folder?: string;
+  folder?: UploadFolder;
 }
 
 export const ImageEditorDialog = ({
@@ -63,7 +64,7 @@ export const ImageEditorDialog = ({
 
     try {
       const file = uploadedFiles[0];
-      const imageUrl = await uploadImageToCloudinary(file, folder);
+      const imageUrl = await uploadImageFile(file, folder);
 
       if (imageUrl) {
         setUploadedImageUrl(imageUrl);

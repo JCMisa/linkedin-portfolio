@@ -6,12 +6,13 @@ import PreferenceAndProfileLink from "@/features/profile/components/PreferenceAn
 import DownloadResumeMobile from "@/features/profile/components/DownloadResumeMobile";
 
 import {
-  getAllProjects,
+  getLatestProjects,
   getLikeCount,
   getCommentCount,
 } from "@/features/projects/queries";
 import { getUserCount } from "@/features/users/queries";
 import { getSessionUser } from "@/lib/auth";
+import { env } from "@/lib/env";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Profile";
 
@@ -24,8 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "San Pablo City, Laguna, Philippines. Open-source contributor, 90% client retention, 99% uptime. " +
     "View resume, testimonials, education, and flagship projects.";
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL;
 
   return {
     title,
@@ -129,16 +129,10 @@ const ProfilePage = async () => {
     getUserCount(),
     getLikeCount(),
     getCommentCount(),
-    getAllProjects(),
+    getLatestProjects(2),
   ]);
 
-  let latestProject1;
-  let latestProject2;
-
-  if (projects && projects.success && projects.data) {
-    latestProject1 = projects.data[0];
-    latestProject2 = projects.data[1];
-  }
+  const [latestProject1, latestProject2] = projects;
 
   return (
     <main className="relative px-6 py-18 md:px-10 lg:px-16">

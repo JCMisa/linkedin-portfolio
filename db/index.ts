@@ -4,7 +4,8 @@ import { neon } from "@neondatabase/serverless";
 import * as tables from "./schema";
 import * as relations from "./relations";
 
-const sql = neon(process.env.DATABASE_URL!);
+import { env } from "@/lib/env";
+const sql = neon(env.DATABASE_URL);
 
 export const db = drizzle({
   client: sql,

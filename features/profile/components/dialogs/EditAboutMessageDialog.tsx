@@ -16,6 +16,7 @@ import { showConfetti } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { getActionError } from "@/lib/action-result";
 
 const EditAboutMessageDialog = ({ currentAbout }: { currentAbout: string }) => {
   const [open, setOpen] = useState(false);
@@ -32,18 +33,15 @@ const EditAboutMessageDialog = ({ currentAbout }: { currentAbout: string }) => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const result = await updateAboutMessage(about);
+      const result = await updateAboutMessage({ about });
+      const error = getActionError(result);
 
-      if (typeof result === "string") {
-        throw new Error(result);
-      }
-
-      if (result && result.success) {
+      if (!error) {
         toast.success("About message updated successfully");
         showConfetti();
         setOpen(false);
       } else {
-        toast.error(result?.error || "Failed to update about message");
+        toast.error(error ?? "Failed to update about message");
       }
     } catch (error) {
       console.error("Error updating about message:", error);

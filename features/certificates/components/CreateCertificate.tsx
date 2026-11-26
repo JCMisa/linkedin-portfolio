@@ -25,8 +25,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { addCertificate } from "@/features/certificates/actions";
 import { FileUpload } from "@/components/ui/file-upload";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImageFile } from "@/lib/upload-image";
 import Image from "next/image";
+import { getActionError } from "@/lib/action-result";
 
 const CreateCertificate = () => {
   const [formData, setFormData] = useState({
@@ -57,7 +58,7 @@ const CreateCertificate = () => {
 
     try {
       const file = files[0];
-      const imageUrl = await uploadImageToCloudinary(file, "jcm");
+      const imageUrl = await uploadImageFile(file, "jcm");
 
       if (imageUrl) {
         setUploadedImageUrl(imageUrl);
@@ -78,8 +79,9 @@ const CreateCertificate = () => {
     setIsSubmitting(true);
     try {
       const res = await addCertificate(formData);
-      if (res?.success) {
-        toast.success(`${res.data} created successfully!`);
+      const error = getActionError(res);
+      if (!error && res?.data) {
+        toast.success(`${res.data.title} created successfully!`);
         showConfetti();
         setOpen(false);
         setFormData({
@@ -91,7 +93,7 @@ const CreateCertificate = () => {
         setUploadedImageUrl("");
         setTouched({ imageUrl: false });
       } else {
-        toast.error("Could not create certificate");
+        toast.error(error ?? "Could not create certificate");
       }
     } finally {
       setIsSubmitting(false);

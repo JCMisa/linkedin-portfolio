@@ -1,34 +1,24 @@
 "use server";
 
-import { eq } from "drizzle-orm";
-import { withErrorHandling } from "@/lib/utils";
-import { ContactInquiries } from "@/db/schema";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { InquiryData } from "@/features/contact/components/InquiryReview";
-import { revalidateTag } from "next/cache";
-import { requireUser } from "@/lib/auth";
+import { ContactInquiries } from "@/db/schema";
+import { ActionError } from "@/lib/errors";
+import { authActionClient } from "@/lib/safe-action";
+import { updateInquirySchema } from "./schemas";
 
-export const updateInquiry = withErrorHandling(
-  async (updatedData: InquiryData) => {
-    // TODO(v3 phase 4): add an owner column so users can only edit their own inquiry.
-    await requireUser();
-
-    const [data] = await db
+/** A visitor may only edit an inquiry they created themselves. */
+export const updateInquiry = authActionClient
+  .inputSchema(updateInquirySchema)
+  .action(async ({ parsedInput: { id, email, ...fields }, ctx: { user } }) => {
+    const [row] = await db
       .update(ContactInquiries)
-      .set({
-        visitorName: updatedData.visitorName,
-        email: updatedData.email,
-        phoneNumber: updatedData.phoneNumber,
-        purpose: updatedData.purpose,
-        summary: updatedData.summary,
-      })
-      .where(eq(ContactInquiries.id, updatedData.id as string))
-      .returning({ insertedInquiryId: ContactInquiries.id });
+      .set({ ...fields, email: email || null })
+      .where(
+        and(eq(ContactInquiries.id, id), eq(ContactInquiries.userId, user.id)),
+      )
+      .returning({ id: ContactInquiries.id });
 
-    if (data && data.insertedInquiryId) {
-      revalidateTag("inquiries", "");
-      return { data: data.insertedInquiryId, success: true };
-    }
-    return { data: null, success: false };
-  },
-);
+    if (!row) throw new ActionError("Inquiry not found.");
+    return row;
+  });

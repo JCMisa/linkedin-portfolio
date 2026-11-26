@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import Image from "next/image";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImageFile } from "@/lib/upload-image";
 import { toast } from "sonner";
 import { Loader2Icon, CalendarIcon, XIcon } from "lucide-react";
 import { format } from "date-fns";
@@ -62,7 +62,10 @@ export const SingleExperienceEditorDialog = ({
     }
   }, [open, initialExperience]);
 
-  const updateField = (field: keyof ExperienceType, value: any) => {
+  const updateField = <K extends keyof ExperienceType>(
+    field: K,
+    value: ExperienceType[K],
+  ) => {
     setExperience((prev) => ({
       ...prev,
       [field]: value,
@@ -76,7 +79,7 @@ export const SingleExperienceEditorDialog = ({
     setIsUploading(true);
     try {
       const file = files[0];
-      const imageUrl = await uploadImageToCloudinary(file, "jcm/experiences");
+      const imageUrl = await uploadImageFile(file, "jcm/experiences");
 
       if (imageUrl) {
         updateField("bannerImg", imageUrl);
@@ -184,7 +187,7 @@ export const SingleExperienceEditorDialog = ({
                         date ? format(date, "yyyy-MM-dd") : "",
                       )
                     }
-                    initialFocus
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -229,7 +232,7 @@ export const SingleExperienceEditorDialog = ({
                         date ? format(date, "yyyy-MM-dd") : "",
                       )
                     }
-                    initialFocus
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>

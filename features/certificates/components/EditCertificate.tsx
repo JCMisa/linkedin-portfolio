@@ -24,8 +24,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { updateCertificate } from "@/features/certificates/actions";
 import { useState, useEffect, useRef } from "react";
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
+import { uploadImageFile } from "@/lib/upload-image";
 import Image from "next/image";
+import { getActionError } from "@/lib/action-result";
 
 const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
   // pre-fill
@@ -92,7 +93,7 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
 
     try {
       const file = files[0];
-      const imageUrl = await uploadImageToCloudinary(file, "jcm");
+      const imageUrl = await uploadImageFile(file, "jcm");
 
       if (imageUrl) {
         setUploadedImageUrl(imageUrl);
@@ -113,13 +114,14 @@ const EditCertificate = ({ certificate }: { certificate: CertificateType }) => {
     if (!hasChanges()) return;
     setIsSubmitting(true);
     try {
-      const res = await updateCertificate(certificate.id, formData);
-      if (res.success) {
-        toast.success(`${res.data} updated successfully!`);
+      const res = await updateCertificate({ id: certificate.id, ...formData });
+      const error = getActionError(res);
+      if (!error && res?.data) {
+        toast.success(`${res.data.title} updated successfully!`);
         showConfetti();
         setOpen(false);
       } else {
-        toast.error("Could not update certificate");
+        toast.error(error ?? "Could not update certificate");
       }
     } finally {
       setIsSubmitting(false);

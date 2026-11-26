@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import SendMessageForm from "@/features/contact/components/SendMessageForm";
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+import { env } from "@/lib/env";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Contact | John Carlo Misa";
 
@@ -13,8 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "Book a call, email jcmisa.dev@gmail.com, or DM on LinkedIn/Twitter. " +
     "Freelance web/mobile development, AI integrations, virtual assistance, and more.";
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL;
 
   return {
     title,

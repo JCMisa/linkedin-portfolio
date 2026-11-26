@@ -16,6 +16,7 @@ import { showConfetti } from "@/lib/utils";
 import { LoaderCircleIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getActionError } from "@/lib/action-result";
 
 const DeleteProject = ({ project }: { project: ProjectType }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,9 +25,11 @@ const DeleteProject = ({ project }: { project: ProjectType }) => {
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      const result = await deleteProject(project.id);
-
-      if (result.success) {
+      const result = await deleteProject({ projectId: project.id });
+      const error = getActionError(result);
+      if (error) {
+        toast.error(error);
+      } else {
         showConfetti();
         setOpen(false);
         toast.success(`Project deleted successfully`);

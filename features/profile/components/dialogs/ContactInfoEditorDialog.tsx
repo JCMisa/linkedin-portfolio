@@ -24,6 +24,7 @@ import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import type { ContactInfoInput } from "@/features/profile/schemas";
 
 interface ContactInfoEditorDialogProps {
   open: boolean;
@@ -44,7 +45,7 @@ interface ContactInfoEditorDialogProps {
   currentInstagramLink: string;
   currentXLink: string;
 
-  onSave: (data: any) => Promise<void>;
+  onSave: (data: ContactInfoInput) => Promise<void>;
 }
 
 const ContactInfoEditorDialog = ({

@@ -4,20 +4,19 @@ import ProfessionalActivities from "@/features/profile/components/experience/Pro
 import ProjectsFeed from "@/features/projects/components/ProjectsFeed";
 import CertificatesPreview from "@/features/certificates/components/CertificatesPreview";
 import Footer from "@/components/layout/Footer";
-import { getProjectsPaginated } from "@/features/projects/actions/projects";
+import { getProjectsPage } from "@/features/projects/queries";
 import { MarketNewsWidget } from "@/components/shared/MarketNewsWidget";
-import { getPersonalInfo } from "@/features/profile/actions";
+import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
-import { OptimizedProject } from "@/features/projects/types";
 
 import { getSessionUser } from "@/lib/auth";
+import { env } from "@/lib/env";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Feed | JCM Portfolio";
   const description =
     "Explore real-world projects, open-source contributions, and professional certificates " +
     "built with Next.js, TypeScript, Javascript, Tailwindcss, AWS, Serverless database (Neon), Drizzle ORM, .NET Web API, FastAPI (Modal), with modern cloud and software developer tools.";
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL;
 
   return {
     title,
@@ -90,15 +89,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [currentUser, initialProjects, personalInfo] = await Promise.all([
-    getSessionUser(),
-    getProjectsPaginated({ limit: 5 }), // first 5 projects
+  const currentUser = await getSessionUser();
+  const [initialPage, personalInfo] = await Promise.all([
+    getProjectsPage({ limit: 5 }, currentUser?.id ?? null), // first 5 projects
     getPersonalInfo(),
   ]);
-
-  // Handle the type cast here so the data passed to ProjectsFeed is correct
-  const typedProjects = (initialProjects.data ??
-    []) as unknown as OptimizedProject[];
 
   const userRole = currentUser && currentUser.role ? currentUser.role : "user";
 
@@ -113,9 +108,7 @@ export default async function Home() {
           <div className="w-full rounded-lg lg:max-w-[640px]">
             <ProjectsFeed
               userRole={userRole}
-              initialProjects={typedProjects}
-              initialCursor={initialProjects.nextCursor ?? undefined}
-              initialHasMore={!!initialProjects.nextCursor}
+              initialPage={initialPage}
               personalInfo={personalInfo as PersonalInfoType}
             />
           </div>
