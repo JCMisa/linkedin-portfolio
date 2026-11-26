@@ -1,13 +1,13 @@
-import CertificatesPreview from "@/app/_components/_activity/CertificatesPreview";
-import ProfileCard from "@/app/_components/_profile/ProfileCard";
-import Footer from "@/components/custom/Footer";
-import CertificatesList from "./_components/CertificatesList";
-import { getCurrentUser } from "@/lib/actions/users";
-import { getAllCertificates } from "@/lib/actions/certificates";
+import CertificatesPreview from "@/features/certificates/components/CertificatesPreview";
+import ProfileCard from "@/features/profile/components/ProfileCard";
+import Footer from "@/components/layout/Footer";
+import CertificatesList from "@/features/certificates/components/CertificatesList";
 import { Metadata } from "next";
-import { PersonalInfoType } from "@/config/schema";
-import { getPersonalInfo } from "@/lib/actions/profileInfo";
+import { PersonalInfoType } from "@/db/schema";
+import { getPersonalInfo } from "@/features/profile/actions";
 
+import { getAllCertificates } from "@/features/certificates/queries";
+import { getSessionUser } from "@/lib/auth";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Certificates";
 
@@ -102,7 +102,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const CertificatesPage = async () => {
   const [currentUser, { data: certificates }, personalInfo] = await Promise.all(
-    [getCurrentUser(), getAllCertificates(), getPersonalInfo()],
+    [getSessionUser(), getAllCertificates(), getPersonalInfo()],
   );
 
   return (

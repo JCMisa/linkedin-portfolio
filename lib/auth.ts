@@ -1,8 +1,8 @@
 import "server-only";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
-import { db } from "@/config/db";
-import { Users, type UsersType } from "@/config/schema";
+import { db } from "@/db";
+import { Users, type UsersType } from "@/db/schema";
 
 /**
  * Server-only auth helpers. This file is intentionally NOT a "use server"

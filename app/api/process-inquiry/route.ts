@@ -1,7 +1,7 @@
 // app/api/process-inquiry/route.ts
 
-import { db } from "@/config/db";
-import { ContactInquiries, Users } from "@/config/schema";
+import { db } from "@/db";
+import { ContactInquiries, Users } from "@/db/schema";
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { eq, sql } from "drizzle-orm"; // We need 'sql' for the atomic decrement logic

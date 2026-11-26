@@ -1,14 +1,17 @@
-import CertificatesPreview from "@/app/_components/_activity/CertificatesPreview";
-import Footer from "@/components/custom/Footer";
-import ProfileLeftInfo from "./_components/ProfileLeftInfo";
-import { getCurrentUser, getUserCount } from "@/lib/actions/users";
-import { getLikeCount } from "@/lib/actions/likes";
-import { getCommentCount } from "@/lib/actions/comments";
+import CertificatesPreview from "@/features/certificates/components/CertificatesPreview";
+import Footer from "@/components/layout/Footer";
+import ProfileLeftInfo from "@/features/profile/components/ProfileLeftInfo";
 import { Metadata } from "next";
-import { getAllProjects } from "@/lib/actions/projects";
-import PreferenceAndProfileLink from "./_components/PreferenceAndProfileLink";
-import DownloadResumeMobile from "./_components/DownloadResumeMobile";
+import PreferenceAndProfileLink from "@/features/profile/components/PreferenceAndProfileLink";
+import DownloadResumeMobile from "@/features/profile/components/DownloadResumeMobile";
 
+import {
+  getAllProjects,
+  getLikeCount,
+  getCommentCount,
+} from "@/features/projects/queries";
+import { getUserCount } from "@/features/users/queries";
+import { getSessionUser } from "@/lib/auth";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Profile";
 
@@ -122,7 +125,7 @@ const ProfilePage = async () => {
     numberOfPostComments,
     projects,
   ] = await Promise.all([
-    getCurrentUser(),
+    getSessionUser(),
     getUserCount(),
     getLikeCount(),
     getCommentCount(),

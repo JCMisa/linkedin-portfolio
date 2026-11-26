@@ -1,17 +1,16 @@
 import { Metadata } from "next";
-import ProfileSection from "./_components/_profile/ProfileSection";
-import ProfessionalActivities from "./_components/_activity/ProfessionalActivities";
-import ProjectsFeed from "./_components/_feed/ProjectsFeed";
-import CertificatesPreview from "./_components/_activity/CertificatesPreview";
-import Footer from "@/components/custom/Footer";
-import { getCurrentUser } from "@/lib/actions/users";
-import { getProjectsPaginated } from "@/lib/actions/projects";
-import { ThemedTradingViewWidget } from "@/components/custom/ThemedTradingViewWidget";
-import { TOP_STORIES_WIDGET_CONFIG } from "@/lib/constants";
-import { getPersonalInfo } from "@/lib/actions/profileInfo";
-import { PersonalInfoType } from "@/config/schema";
-import { OptimizedProject } from "@/types/index.e";
+import ProfileSection from "@/features/profile/components/ProfileSection";
+import ProfessionalActivities from "@/features/profile/components/experience/ProfessionalActivities";
+import ProjectsFeed from "@/features/projects/components/ProjectsFeed";
+import CertificatesPreview from "@/features/certificates/components/CertificatesPreview";
+import Footer from "@/components/layout/Footer";
+import { getProjectsPaginated } from "@/features/projects/actions/projects";
+import { MarketNewsWidget } from "@/components/shared/MarketNewsWidget";
+import { getPersonalInfo } from "@/features/profile/actions";
+import { PersonalInfoType } from "@/db/schema";
+import { OptimizedProject } from "@/features/projects/types";
 
+import { getSessionUser } from "@/lib/auth";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Feed | JCM Portfolio";
   const description =
@@ -92,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const [currentUser, initialProjects, personalInfo] = await Promise.all([
-    getCurrentUser(),
+    getSessionUser(),
     getProjectsPaginated({ limit: 5 }), // first 5 projects
     getPersonalInfo(),
   ]);
@@ -102,8 +101,6 @@ export default async function Home() {
     []) as unknown as OptimizedProject[];
 
   const userRole = currentUser && currentUser.role ? currentUser.role : "user";
-  const scriptUrl =
-    "https://s3.tradingview.com/external-embedding/embed-widget-";
 
   return (
     <main className="relative px-6 py-14 md:px-10 lg:px-16 lg:py-18">
@@ -127,10 +124,7 @@ export default async function Home() {
             <ProfessionalActivities
               personalInfo={personalInfo as PersonalInfoType}
             />
-            <ThemedTradingViewWidget
-              scriptUrl={`${scriptUrl}timeline.js`}
-              config={TOP_STORIES_WIDGET_CONFIG}
-            />
+            <MarketNewsWidget />
             <div className="sticky top-[73px]">
               <CertificatesPreview />
               <div className="mt-4">

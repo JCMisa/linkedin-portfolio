@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import SendMessageForm from "./_components/SendMessageForm";
-import { getPersonalInfo } from "@/lib/actions/profileInfo";
-import { PersonalInfoType } from "@/config/schema";
+import SendMessageForm from "@/features/contact/components/SendMessageForm";
+import { getPersonalInfo } from "@/features/profile/actions";
+import { PersonalInfoType } from "@/db/schema";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 

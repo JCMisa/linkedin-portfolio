@@ -1,9 +1,9 @@
-import { getCurrentUser } from "@/lib/actions/users";
-import Agent from "./_components/Agent";
+import VoiceAgent from "@/features/contact/components/VoiceAgent";
 import { redirect } from "next/navigation";
 
+import { getSessionUser } from "@/lib/auth";
 const ContactAssistant = async () => {
-  const user = await getCurrentUser();
+  const user = await getSessionUser();
 
   if (!user) {
     redirect("/sign-in");
@@ -21,7 +21,7 @@ const ContactAssistant = async () => {
           </p>
         </div>
 
-        <Agent userName={user.name} credits={user.remainingContactReq} />
+        <VoiceAgent userName={user.name} credits={user.remainingContactReq} />
       </div>
     </main>
   );

@@ -1,6 +1,4 @@
-import { getProjectById } from "@/lib/actions/projects";
-import { getProjectLikesWithUserDetails } from "@/lib/actions/likes";
-import { getProjectComments } from "@/lib/actions/comments";
+import { getProjectComments } from "@/features/projects/actions/comments";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,9 +11,13 @@ import {
   MessageSquare,
   ArrowLeft,
 } from "lucide-react";
-import CreateComment from "@/components/custom/CreateComment";
+import CreateComment from "@/features/projects/components/CreateComment";
 import { FaGithub } from "react-icons/fa";
-// import ProjectCommentsList from "../_components/ProjectCommentsList";
+import {
+  getProjectById,
+  getProjectLikesWithUserDetails,
+} from "@/features/projects/queries";
+// import ProjectComments from "@/features/projects/components/ProjectComments";
 
 interface ProjectDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -111,7 +113,7 @@ const ProjectDetailsPage = async ({ params }: ProjectDetailsPageProps) => {
               <CreateComment projectId={id} />
 
               {/* <div className="mt-8">
-                <ProjectCommentsList initialComments={comments} />
+                <ProjectComments initialComments={comments} />
               </div> */}
             </section>
           </div>

@@ -1,12 +1,12 @@
-import ProfessionalActivities from "@/app/_components/_activity/ProfessionalActivities";
-import ProfileCard from "@/app/_components/_profile/ProfileCard";
-import Footer from "@/components/custom/Footer";
+import ProfessionalActivities from "@/features/profile/components/experience/ProfessionalActivities";
+import ProfileCard from "@/features/profile/components/ProfileCard";
+import Footer from "@/components/layout/Footer";
 import { Metadata } from "next";
-import { getPersonalInfo } from "@/lib/actions/profileInfo";
-import { getCurrentUser } from "@/lib/actions/users";
-import ExperienceList from "./_components/ExperienceList";
-import { PersonalInfoType } from "@/config/schema";
+import { getPersonalInfo } from "@/features/profile/actions";
+import ExperienceList from "@/features/profile/components/experience/ExperienceList";
+import { PersonalInfoType } from "@/db/schema";
 
+import { getSessionUser } from "@/lib/auth";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Experience";
 
@@ -108,7 +108,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const ExperiencesPage = async () => {
   const [personalInfo, currentUser] = await Promise.all([
     getPersonalInfo(),
-    getCurrentUser(),
+    getSessionUser(),
   ]);
 
   let experiences: any[] = [];

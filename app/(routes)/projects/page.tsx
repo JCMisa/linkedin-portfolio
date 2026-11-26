@@ -1,8 +1,7 @@
-import CertificatesPreview from "@/app/_components/_activity/CertificatesPreview";
-import ProfileCard from "@/app/_components/_profile/ProfileCard";
-import Footer from "@/components/custom/Footer";
-import ProjectsList from "./_components/ProjectsList";
-import { getCurrentUser } from "@/lib/actions/users";
+import CertificatesPreview from "@/features/certificates/components/CertificatesPreview";
+import ProfileCard from "@/features/profile/components/ProfileCard";
+import Footer from "@/components/layout/Footer";
+import ProjectsList from "@/features/projects/components/ProjectsList";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -98,12 +97,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-import { getPersonalInfo } from "@/lib/actions/profileInfo";
-import { PersonalInfoType } from "@/config/schema";
+import { getPersonalInfo } from "@/features/profile/actions";
+import { PersonalInfoType } from "@/db/schema";
 
+import { getSessionUser } from "@/lib/auth";
 const ProjectsPage = async () => {
   const [currentUser, personalInfo] = await Promise.all([
-    getCurrentUser(),
+    getSessionUser(),
     getPersonalInfo(),
   ]);
 

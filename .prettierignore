@@ -1,6 +1,6 @@
 .next
 node_modules
-migrations
+db/migrations
 public
 package-lock.json
 next-env.d.ts

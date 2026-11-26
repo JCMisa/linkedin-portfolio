@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/custom/theme-provider";
-import Navbar from "@/components/custom/Navbar";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import Navbar from "@/components/layout/Navbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
-import AIChatbot from "@/components/custom/AIChatbot";
-import { UserStoreWatcher } from "@/providers/UserStoreWatcher";
+import AIChatbot from "@/features/chatbot/components/AIChatbot";
+import { UserStoreWatcher } from "@/features/users/UserStoreWatcher";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { shadcn } from "@clerk/ui/themes";
 
