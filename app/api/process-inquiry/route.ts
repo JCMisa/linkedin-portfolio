@@ -6,13 +6,20 @@ import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { eq, sql } from "drizzle-orm"; // We need 'sql' for the atomic decrement logic
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: NextRequest) {
   try {
     // ---------------------------------------------------------
     // 1. INPUT VALIDATION
     // ---------------------------------------------------------
-    const { messages, userName, userId } = await req.json();
+    // Identify the caller from the session — never trust a userId from the body
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { messages, userName } = await req.json();
 
     // Ensure we have a conversation history to process
     if (!messages || messages.length === 0) {
@@ -20,11 +27,6 @@ export async function POST(req: NextRequest) {
         { error: "No conversation data found" },
         { status: 400 }
       );
-    }
-
-    // Ensure we know WHO is making the request (for credit tracking)
-    if (!userId) {
-      return NextResponse.json({ error: "User ID required" }, { status: 401 });
     }
 
     // ---------------------------------------------------------

@@ -3,29 +3,19 @@
 import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
 import { Comments, Users } from "@/config/schema";
-import { desc, eq } from "drizzle-orm";
-import { getCurrentUser } from "./users";
+import { count, desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { isAdminRole, requireUser } from "@/lib/auth";
 
-export const getAllComments = withErrorHandling(async () => {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    return { data: null, success: false };
-  }
-
-  const comments = await db.select().from(Comments);
-
-  return { data: comments, success: true };
-});
+/** Public aggregate used by the profile stats. */
+export const getCommentCount = async () => {
+  const [row] = await db.select({ value: count() }).from(Comments);
+  return row?.value ?? 0;
+};
 
 export const createComment = withErrorHandling(
   async (projectId: string, content: string) => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: null, success: false, error: "Unauthorized" };
-    }
+    const user = await requireUser();
 
     const [newComment] = await db
       .insert(Comments)
@@ -47,20 +37,16 @@ export const createComment = withErrorHandling(
 );
 
 export const deleteComment = withErrorHandling(async (commentId: string) => {
-  const user = await getCurrentUser();
+  const user = await requireUser();
 
-  if (!user) {
-    return { data: null, success: false, error: "Unauthorized" };
-  }
-
-  // First check if the comment belongs to the user
-  const comment = await db
-    .select()
+  const [comment] = await db
+    .select({ userId: Comments.userId })
     .from(Comments)
     .where(eq(Comments.id, commentId))
     .limit(1);
 
-  if (!comment.length || comment[0].userId !== user.id) {
+  // Only the author (or an admin) may delete a comment
+  if (!comment || (comment.userId !== user.id && !isAdminRole(user.role))) {
     return { data: null, success: false, error: "Unauthorized" };
   }
 

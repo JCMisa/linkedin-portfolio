@@ -2,36 +2,16 @@
 
 import { eq } from "drizzle-orm";
 import { withErrorHandling } from "../utils";
-import { getCurrentUser } from "./users";
 import { ContactInquiries } from "@/config/schema";
 import { db } from "@/config/db";
 import { InquiryData } from "@/app/(routes)/contact/assistant/_components/InquiryReview";
-import { revalidateTag, unstable_cache } from "next/cache";
-
-export const getAllInquiries = unstable_cache(
-  withErrorHandling(async () => {
-    const data = await db.select().from(ContactInquiries);
-
-    if (data.length > 0) {
-      return { data: data ?? [], success: true };
-    } else {
-      return { data: null, success: false };
-    }
-  }),
-  ["all-inquiries"], // Key parts (cache tag)
-  {
-    revalidate: 3600, // Cache for 1 hour (adjust as needed)
-    tags: ["inquiries"], // Tag for manual revalidation later
-  }
-);
+import { revalidateTag } from "next/cache";
+import { requireUser } from "@/lib/auth";
 
 export const updateInquiry = withErrorHandling(
   async (updatedData: InquiryData) => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: null, success: false };
-    }
+    // TODO(v3 phase 4): add an owner column so users can only edit their own inquiry.
+    await requireUser();
 
     const [data] = await db
       .update(ContactInquiries)

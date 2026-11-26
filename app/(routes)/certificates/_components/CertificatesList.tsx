@@ -15,7 +15,7 @@ const CertificatesList = ({
   currentUser,
   certificates,
 }: {
-  currentUser: UserType;
+  currentUser: UserType | null;
   certificates: CertificateType[];
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -93,7 +93,7 @@ const CellComponent = ({
   data: {
     certificates: CertificateType[];
     columnCount: number;
-    currentUser: UserType;
+    currentUser: UserType | null;
   };
 }>) => {
   const { certificates, columnCount, currentUser } = data;

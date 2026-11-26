@@ -2,7 +2,7 @@
 
 import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
-import { getCurrentUser } from "./users";
+import { requireAdmin } from "@/lib/auth";
 import { Certificates } from "@/config/schema";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { desc, eq } from "drizzle-orm";
@@ -10,12 +10,6 @@ import { deleteImageFromCloudinary } from "../cloudinary";
 
 export const getAllCertificates = unstable_cache(
   withErrorHandling(async () => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: null, success: false };
-    }
-
     const data = await db
       .select()
       .from(Certificates)
@@ -35,12 +29,6 @@ export const getAllCertificates = unstable_cache(
 
 export const getLatestThreeCertificates = unstable_cache(
   withErrorHandling(async () => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: null, success: false };
-    }
-
     const data = await db
       .select()
       .from(Certificates)
@@ -61,11 +49,7 @@ export const getLatestThreeCertificates = unstable_cache(
 
 export const addCertificate = withErrorHandling(
   async (certificateData: CertificateInsertedDataType) => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: null, success: false };
-    }
+    await requireAdmin();
 
     const [data] = await db
       .insert(Certificates)
@@ -95,11 +79,7 @@ export const updateCertificate = withErrorHandling(
       acquiredDate: Date;
     }
   ) => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: null, success: false, error: "Unauthorized" };
-    }
+    await requireAdmin();
 
     // Get the current certificate to check if image is being changed
     const [currentCertificate] = await db
@@ -155,11 +135,7 @@ export const updateCertificate = withErrorHandling(
 
 export const deleteCertificate = withErrorHandling(
   async (certificateId: string) => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: null, success: false };
-    }
+    await requireAdmin();
 
     // First, get the certificate to retrieve the image URL
     const [certificate] = await db

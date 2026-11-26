@@ -9,6 +9,7 @@ import {
   deleteImageFromCloudinary,
 } from "../cloudinary";
 import { eq } from "drizzle-orm";
+import { requireAdmin } from "@/lib/auth";
 
 export const getPersonalInfo = unstable_cache(
   withErrorHandling(async () => {
@@ -30,6 +31,8 @@ export const getPersonalInfo = unstable_cache(
 
 export const updateProfileImage = withErrorHandling(
   async (imageUrl: string | null) => {
+  await requireAdmin();
+
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -77,6 +80,8 @@ export const updateProfileImage = withErrorHandling(
 
 export const updateCoverImage = withErrorHandling(
   async (imageUrl: string | null) => {
+  await requireAdmin();
+
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -135,6 +140,8 @@ type ExperiencesType = {
 
 export const updateExperiences = withErrorHandling(
   async (experiences: ExperiencesType[]) => {
+  await requireAdmin();
+
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -195,6 +202,8 @@ export const updateExperiences = withErrorHandling(
 );
 
 export const updateName = withErrorHandling(async (updatedName: string) => {
+  await requireAdmin();
+
   // Get current personal info
   const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -231,6 +240,8 @@ export const updateName = withErrorHandling(async (updatedName: string) => {
 
 export const updateIndustryRole = withErrorHandling(
   async (updatedIndustryRole: string) => {
+  await requireAdmin();
+
     const [currentInfo] = await db.select().from(PersonalInfo);
 
     if (!currentInfo) {
@@ -265,6 +276,8 @@ export const updateIndustryRole = withErrorHandling(
 
 export const updateResume = withErrorHandling(
   async (updatedITResumeLink: string, updatedVAResumeLink: string) => {
+  await requireAdmin();
+
     const [currentInfo] = await db.select().from(PersonalInfo);
 
     if (!currentInfo) {
@@ -309,6 +322,8 @@ export const updateResume = withErrorHandling(
 
 export const updateContactInfo = withErrorHandling(
   async (updatedContactInfo: ContactInfoType) => {
+  await requireAdmin();
+
     const [currentInfo] = await db.select().from(PersonalInfo);
 
     if (!currentInfo) {
@@ -398,6 +413,8 @@ export const updateContactInfo = withErrorHandling(
 
 export const updateAboutMessage = withErrorHandling(
   async (updatedAbout: string) => {
+  await requireAdmin();
+
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
 
@@ -438,6 +455,8 @@ export const updateAboutMessage = withErrorHandling(
 
 export const updateServices = withErrorHandling(
   async (updatedServices: string[]) => {
+  await requireAdmin();
+
     const [currentInfo] = await db.select().from(PersonalInfo);
 
     if (!currentInfo) {
@@ -485,6 +504,8 @@ type SkillsType = {
 
 export const updateSkills = withErrorHandling(
   async (updatedSkills: SkillsType[]) => {
+  await requireAdmin();
+
     const [currentInfo] = await db.select().from(PersonalInfo);
 
     if (!currentInfo) {
@@ -533,6 +554,8 @@ type TopVoicesType = {
 
 export const updateTopVoices = withErrorHandling(
   async (topVoices: TopVoicesType[]) => {
+  await requireAdmin();
+
     // Get current personal info
     const [currentInfo] = await db.select().from(PersonalInfo);
 

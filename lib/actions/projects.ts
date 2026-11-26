@@ -3,7 +3,7 @@
 import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
 import { Comments, Likes, Projects, Users } from "@/config/schema";
-import { getCurrentUser } from "./users";
+import { getSessionUser, requireAdmin } from "@/lib/auth";
 import {
   and,
   count,
@@ -18,9 +18,6 @@ import { revalidatePath } from "next/cache";
 import { deleteImageFromCloudinary } from "../cloudinary";
 
 export const getAllProjects = withErrorHandling(async () => {
-  const user = await getCurrentUser();
-  if (!user) return { data: null, success: false };
-
   const data = await db
     .select()
     .from(Projects)
@@ -33,8 +30,7 @@ export const getAllProjects = withErrorHandling(async () => {
 
 export const addProject = withErrorHandling(
   async (projectData: ProjectInsertedDataType, techStacks: string[]) => {
-    const user = await getCurrentUser();
-    if (!user) return { data: null, success: false };
+    await requireAdmin();
 
     const [data] = await db
       .insert(Projects)
@@ -63,8 +59,7 @@ export const updateProject = withErrorHandling(
     projectData: Partial<ProjectInsertedDataType>,
     techStacks: string[],
   ) => {
-    const user = await getCurrentUser();
-    if (!user) return { data: null, success: false, error: "Unauthorized" };
+    await requireAdmin();
 
     const [currentProject] = await db
       .select()
@@ -111,8 +106,7 @@ export const updateProject = withErrorHandling(
 );
 
 export const deleteProject = withErrorHandling(async (projectId: string) => {
-  const user = await getCurrentUser();
-  if (!user) return { data: null, success: false };
+  await requireAdmin();
 
   const [project] = await db
     .select()
@@ -145,9 +139,6 @@ export const getFilteredProjects = withErrorHandling(
     query,
     category,
   }: { query?: string; category?: string | null } = {}) => {
-    const user = await getCurrentUser();
-    if (!user) return { data: [], success: false };
-
     const conditions = [];
 
     if (query?.trim()) {
@@ -182,16 +173,8 @@ export const getProjectsPaginated = withErrorHandling(
     cursor?: string;
     limit?: number;
   } = {}) => {
-    // 1. Silent Auth (Same as before)
-    let currentUserDbId: number | null = null;
-    try {
-      const user = await getCurrentUser();
-      if (user && typeof user === "object" && "id" in user) {
-        currentUserDbId = (user as { id: number }).id;
-      }
-    } catch {
-      currentUserDbId = null;
-    }
+    // 1. Optional auth (only used to compute "hasLiked")
+    const currentUserDbId = (await getSessionUser())?.id ?? null;
 
     // 2. Define Count Subqueries
     // These create "Virtual Tables" that pre-calculate counts
@@ -303,9 +286,6 @@ export const getProjectsPaginated = withErrorHandling(
 );
 
 export const getProjectById = withErrorHandling(async (projectId: string) => {
-  const user = await getCurrentUser();
-  if (!user) return { data: null, success: false };
-
   const data = await db
     .select()
     .from(Projects)

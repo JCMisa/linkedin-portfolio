@@ -4,28 +4,18 @@ import { db } from "@/config/db";
 import { withErrorHandling } from "../utils";
 import { Likes, Users } from "@/config/schema";
 import { and, count, desc, eq } from "drizzle-orm";
-import { getCurrentUser } from "./users";
 import { revalidatePath } from "next/cache";
+import { requireUser } from "@/lib/auth";
 
-export const getAllLikes = withErrorHandling(async () => {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    return { data: null, success: false };
-  }
-
-  const likes = await db.select().from(Likes);
-
-  return { data: likes, success: true };
-});
+/** Public aggregate used by the profile stats. */
+export const getLikeCount = async () => {
+  const [row] = await db.select({ value: count() }).from(Likes);
+  return row?.value ?? 0;
+};
 
 export const toggleProjectLike = withErrorHandling(
   async (projectId: string) => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: null, success: false };
-    }
+    const user = await requireUser();
 
     const existingLike = await db
       .select()
@@ -58,26 +48,6 @@ export const toggleProjectLike = withErrorHandling(
   },
 );
 
-export const getProjectLikes = withErrorHandling(async (projectId: string) => {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    return { data: null, success: false };
-  }
-
-  const likes = await db
-    .select()
-    .from(Likes)
-    .where(eq(Likes.projectId, projectId))
-    .orderBy(desc(Likes.createdAt));
-
-  if (!likes) {
-    return { data: [], success: true };
-  }
-
-  return { data: likes, success: true };
-});
-
 export const getProjectLikesWithUserDetails = withErrorHandling(
   async (projectId: string) => {
     const likes = await db
@@ -94,23 +64,5 @@ export const getProjectLikesWithUserDetails = withErrorHandling(
       .orderBy(desc(Likes.createdAt));
 
     return { data: likes ?? [], success: true };
-  },
-);
-
-export const hasUserLikedProject = withErrorHandling(
-  async (projectId: string) => {
-    const user = await getCurrentUser();
-
-    if (!user) {
-      return { data: false, success: false };
-    }
-
-    const like = await db
-      .select()
-      .from(Likes)
-      .where(and(eq(Likes.projectId, projectId), eq(Likes.userId, user.id)))
-      .limit(1);
-
-    return { data: like.length > 0, success: true };
   },
 );

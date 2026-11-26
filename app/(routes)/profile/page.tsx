@@ -1,9 +1,9 @@
 import CertificatesPreview from "@/app/_components/_activity/CertificatesPreview";
 import Footer from "@/components/custom/Footer";
 import ProfileLeftInfo from "./_components/ProfileLeftInfo";
-import { getAllUsers, getCurrentUser } from "@/lib/actions/users";
-import { getAllLikes } from "@/lib/actions/likes";
-import { getAllComments } from "@/lib/actions/comments";
+import { getCurrentUser, getUserCount } from "@/lib/actions/users";
+import { getLikeCount } from "@/lib/actions/likes";
+import { getCommentCount } from "@/lib/actions/comments";
 import { Metadata } from "next";
 import { getAllProjects } from "@/lib/actions/projects";
 import PreferenceAndProfileLink from "./_components/PreferenceAndProfileLink";
@@ -117,15 +117,15 @@ export async function generateMetadata(): Promise<Metadata> {
 const ProfilePage = async () => {
   const [
     currentUser,
-    allUsers,
+    numberOfUsers,
     numberOfPostLikes,
     numberOfPostComments,
     projects,
   ] = await Promise.all([
     getCurrentUser(),
-    getAllUsers(),
-    getAllLikes(),
-    getAllComments(),
+    getUserCount(),
+    getLikeCount(),
+    getCommentCount(),
     getAllProjects(),
   ]);
 
@@ -142,9 +142,9 @@ const ProfilePage = async () => {
       <div className="max-w-7xl mx-auto relative flex flex-col xl:flex-row gap-6">
         {/* left info */}
         <ProfileLeftInfo
-          numberOfUsers={allUsers.length || 0}
-          numberOfPostLikes={numberOfPostLikes.data?.length || 0}
-          numberOfPostComments={numberOfPostComments.data?.length || 0}
+          numberOfUsers={numberOfUsers}
+          numberOfPostLikes={numberOfPostLikes}
+          numberOfPostComments={numberOfPostComments}
           latestProject1={latestProject1 as ProjectType}
           latestProject2={latestProject2 as ProjectType}
           userRole={currentUser ? currentUser.role : "user"}

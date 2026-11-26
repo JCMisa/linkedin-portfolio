@@ -15,7 +15,7 @@ import {
 import { EyeIcon } from "lucide-react";
 
 const CertificateCard = memo(
-  ({ cert, currentUser }: { cert: CertificateType; currentUser: UserType }) => {
+  ({ cert, currentUser }: { cert: CertificateType; currentUser: UserType | null }) => {
     return (
       <div className="flex w-full h-full flex-col space-y-4 rounded-lg bg-neutral-200 dark:bg-dark/80 p-4 border border-transparent hover:border-border transition-all">
         {/* header view and actions */}

@@ -2,6 +2,7 @@
 
 import { v2 as cloudinary } from "cloudinary";
 import { withErrorHandling } from "./utils";
+import { requireAdmin } from "./auth";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -18,6 +19,8 @@ cloudinary.config({
  */
 export const uploadImageToCloudinary = withErrorHandling(
   async (file: File, folder: string = "jcm") => {
+  await requireAdmin();
+
     // Validate environment variables
     if (
       !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
@@ -107,6 +110,8 @@ function extractPublicIdFromUrl(url: string): string | null {
  */
 export const deleteImageFromCloudinary = withErrorHandling(
   async (imageUrl: string | null | undefined) => {
+  await requireAdmin();
+
     // Validate environment variables
     if (
       !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
