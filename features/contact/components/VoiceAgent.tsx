@@ -245,9 +245,14 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
       toast.success("Inquiry processed successfully!");
     } catch (error: unknown) {
       console.error(error);
-      // Handle the specific 403 Insufficient Credits error
+      // 403 = no credits left, 429 = too many attempts in a short time
       if (error instanceof HttpError && error.status === 403) {
         toast.error("You have no contact credits remaining.");
+      } else if (error instanceof HttpError && error.status === 429) {
+        const body = error.body as { error?: string } | null;
+        toast.error(
+          body?.error ?? "Too many requests. Please wait and try again.",
+        );
       } else {
         toast.error("An error occurred processing the call.");
       }

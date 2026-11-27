@@ -9,6 +9,7 @@ import {
   processInquirySchema,
 } from "@/features/contact/schemas";
 import { getSessionUser } from "@/lib/auth";
+import { checkLimit, rateLimitHeaders } from "@/lib/rate-limit";
 
 /**
  * POST /api/process-inquiry
@@ -42,8 +43,20 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // 4. Cap bursts: parallel calls could each reach Gemini before a credit is spent
+  const limit = await checkLimit("inquiry", user.userId); // Clerk id, same key space as chat
+  if (!limit.allowed) {
+    return NextResponse.json(
+      {
+        error: `Too many requests. Please wait ${limit.retryAfterSec}s and try again.`,
+        retryAfterSeconds: limit.retryAfterSec,
+      },
+      { status: 429, headers: rateLimitHeaders(limit) },
+    );
+  }
+
   try {
-    // 4. Structured extraction — the SDK validates the output against the schema
+    // 5. Structured extraction — the SDK validates the output against the schema
     const { output } = await generateText({
       model: google("gemini-2.5-flash"),
       output: Output.object({ schema: extractedInquirySchema }),
@@ -57,7 +70,7 @@ export async function POST(req: NextRequest) {
         `TRANSCRIPT (JSON):\n${JSON.stringify(messages)}`,
     });
 
-    // 5. Spend a credit atomically; bail out if another request used the last one
+    // 6. Spend a credit atomically; bail out if another request used the last one
     const [spent] = await db
       .update(Users)
       .set({ remainingContactReq: sql`${Users.remainingContactReq} - 1` })
@@ -70,7 +83,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 6. Save the inquiry, owned by this user
+    // 7. Save the inquiry, owned by this user
     const [saved] = await db
       .insert(ContactInquiries)
       .values({ ...output, userId: user.id, rawTranscript: messages })

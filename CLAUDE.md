@@ -9,7 +9,10 @@ an AI chatbot (Gemini) and a voice assistant (Vapi). Deployed on Vercel.
 Next.js 16 (App Router, Turbopack) · React 19 · TypeScript 6 ·
 Tailwind v4 + shadcn/ui · Clerk auth · Neon Postgres + Drizzle ORM ·
 next-safe-action + zod 4 · TanStack Query 5 · react-hook-form · nuqs ·
-Cloudinary (signed direct uploads) · AI SDK 7 (`@ai-sdk/google`) · Vapi.
+Cloudinary (signed direct uploads) · AI SDK 7 (`@ai-sdk/google`) · Vapi ·
+Upstash Redis rate limits (`lib/rate-limit.ts`). Vercel functions, Neon and
+Upstash all live in Singapore (`ap-southeast-1` / `sin1`); keep new services
+there too.
 Node **24.x** (pinned in `package.json` `engines`, matches Vercel).
 
 ## Commands

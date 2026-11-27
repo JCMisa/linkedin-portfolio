@@ -25,6 +25,9 @@ export const env = createEnv({
     // Read implicitly by the Cloudinary SDK; optional because the three
     // explicit Cloudinary keys above are what the app configures with.
     CLOUDINARY_URL: z.string().startsWith("cloudinary://").optional(),
+    // Shared rate-limit store (lib/rate-limit.ts)
+    UPSTASH_REDIS_REST_URL: z.url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_SITE_URL: baseUrl.default("https://jcm-portfolio.vercel.app"),

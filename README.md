@@ -36,7 +36,8 @@ assistant.
 | Client data  | TanStack Query 5, react-hook-form, nuqs (URL state)        |
 | Media        | Cloudinary (signed, direct-from-browser uploads)           |
 | AI           | AI SDK 7 with Google Gemini, Vapi voice                    |
-| Hosting      | Vercel, Node.js 24                                         |
+| Rate limits  | Upstash Redis + `@upstash/ratelimit`                       |
+| Hosting      | Vercel (functions in Singapore, `sin1`), Node.js 24        |
 
 ## Getting started
 
@@ -89,6 +90,11 @@ CLOUDINARY_URL=
 
 # Vapi: Dashboard > API Keys > Public key
 NEXT_PUBLIC_VAPI_API_KEY=
+
+# Upstash: console.upstash.com > Redis database (same region as the
+# functions and Neon) > REST API section (use the regular, not read-only, token)
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
 ```
 
 Only `NEXT_PUBLIC_*` values reach the browser. Never commit `.env.local`.
@@ -162,6 +168,14 @@ proxy.ts            Clerk middleware (protects only the routes that need it)
 - **Auth:** Clerk handles sign-in; a signed webhook keeps the `users` table
   in sync. The site is public by default, and `proxy.ts` only guards the voice
   assistant and the AI endpoints, which also check the session themselves.
+- **Rate limits:** the AI chat (5 per 5 minutes) and voice-inquiry processing
+  (3 per 10 minutes, on top of contact credits) use per-user sliding windows
+  in Upstash Redis, so limits hold across every serverless instance. If Redis
+  is unreachable, requests are allowed after 1 second and the failure is
+  logged.
+- **Regions:** Vercel functions, Neon and Upstash all run in Singapore
+  (`ap-southeast-1`); keep them together, since each page makes several
+  database calls.
 - **Design system:** colors are semantic tokens defined once in
   `app/globals.css` for light and dark mode. The brand accent comes from a
   single variable, which is what makes the theme color picker possible.
@@ -171,7 +185,8 @@ proxy.ts            Clerk middleware (protects only the routes that need it)
 1. Import the repository and add the environment variables above, with
    `NEXT_PUBLIC_SITE_URL` set to the production URL.
 2. Project Settings > Build and Deployment > **Node.js Version: 24.x**
-   (it must match `engines.node`).
+   (it must match `engines.node`), and Settings > Functions > **Function
+   Region: Singapore (`sin1`)**, next to the database.
 3. Point the Clerk webhook at `https://<your-domain>/api/webhooks/clerk`.
 
 ## Working on this repo with Claude Code
@@ -186,9 +201,6 @@ writes, forced installs and reading `.env` files.
 
 ## Roadmap
 
-- **Distributed rate limiting:** the chatbot limiter keeps counts in memory,
-  so each serverless instance counts separately; move it to a shared store
-  such as Upstash Redis.
 - **`"use cache"` / Cache Components:** migrate from `unstable_cache` once
   the Clerk session reads are wrapped in Suspense boundaries.
 - **ESLint 10 and TypeScript 7:** upgrade when `eslint-config-next`'s plugins

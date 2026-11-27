@@ -2,7 +2,7 @@ import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { checkLimit } from "@/lib/rate-limit";
+import { checkLimit, rateLimitHeaders } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -13,15 +13,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // rate limit
-  const { allowed, waitSec } = checkLimit(userId);
-  if (!allowed)
+  // Shared per-user limit (Upstash), so it holds across serverless instances
+  const limit = await checkLimit("chat", userId);
+  if (!limit.allowed)
     return NextResponse.json(
       {
-        response: `Too many questions. Please wait ${waitSec}s before asking again.`,
-        retryAfterSeconds: waitSec,
+        response: `Too many questions. Please wait ${limit.retryAfterSec}s before asking again.`,
+        retryAfterSeconds: limit.retryAfterSec,
       },
-      { status: 429 },
+      { status: 429, headers: rateLimitHeaders(limit) },
     );
 
   const { message } = await req.json();
