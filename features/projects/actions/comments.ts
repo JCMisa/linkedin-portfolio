@@ -1,12 +1,13 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 import { db } from "@/db";
 import { Comments } from "@/db/schema";
 import { isAdminRole } from "@/lib/auth";
 import { ActionError } from "@/lib/errors";
 import { authActionClient } from "@/lib/safe-action";
+import { COMMENTS_TAG } from "../queries";
 import { commentIdSchema, createCommentSchema } from "../schemas";
 
 export const createComment = authActionClient
@@ -17,7 +18,7 @@ export const createComment = authActionClient
       .values({ projectId, content, userId: user.id })
       .returning({ id: Comments.id });
 
-    revalidatePath("/", "layout");
+    updateTag(COMMENTS_TAG);
     return comment;
   });
 
@@ -37,6 +38,6 @@ export const deleteComment = authActionClient
     }
 
     await db.delete(Comments).where(eq(Comments.id, commentId));
-    revalidatePath("/", "layout");
+    updateTag(COMMENTS_TAG);
     return { id: commentId };
   });

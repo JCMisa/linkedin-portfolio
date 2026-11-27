@@ -154,14 +154,15 @@ proxy.ts            Clerk middleware (protects only the routes that need it)
 
 ## How it works
 
-- **Static shells:** with Cache Components, every page prerenders its
-  layout and cached content. Only per-visitor or live parts (the feed's
-  "liked by me", profile counts, the voice assistant) stream in behind
-  `<Suspense>`. Admin controls check the role on the client, so public pages
-  never read the session.
+- **Static pages:** with Cache Components, every page (including each
+  project page, via `generateStaticParams`) is prerendered from cached data.
+  Only per-visitor parts (the feed's "liked by me", the voice assistant) stream
+  in behind `<Suspense>`. Admin controls check the role on the client, so
+  public pages never read the session.
 - **Reads** happen in server components through each feature's
-  `queries.ts`, cached with `unstable_cache` and tagged so mutations can
-  refresh exactly what changed. The feed loads in a single SQL query (counts
+  `queries.ts`: `"use cache"` functions tagged by what they contain
+  (projects, likes, comments, users, certificates, profile). A mutation
+  expires only its tags, and just the pages that used them are regenerated. The feed loads in a single SQL query (counts
   and "liked by me" included) and continues on the client with TanStack Query.
 - **Writes** are next-safe-action server actions. Every one runs through a
   public, signed-in or admin client that checks the session on the server,
@@ -206,8 +207,5 @@ writes, forced installs and reading `.env` files.
 
 ## Roadmap
 
-- **`"use cache"`:** Cache Components is on; next, move `unstable_cache`
-  reads to `"use cache: remote"` + `cacheTag`, and prerender project detail
-  pages.
 - **ESLint 10 and TypeScript 7:** upgrade when `eslint-config-next`'s plugins
   and `typescript-eslint` support them (held back to avoid forced installs).

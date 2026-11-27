@@ -4,6 +4,9 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { Users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
+import { USERS_TAG } from "@/features/users/queries";
+import { COMMENTS_TAG, LIKES_TAG } from "@/features/projects/queries";
 
 import { env } from "@/lib/env";
 export async function POST(req: Request) {
@@ -92,6 +95,8 @@ export async function POST(req: Request) {
             set: updateData,
           });
 
+        // Member count, liker/commenter names and avatars
+        revalidateTag(USERS_TAG, "max");
         console.log(
           `✅ User: ${id} ${eventType === "user.created" ? "created" : "updated"}`,
         );
@@ -103,6 +108,10 @@ export async function POST(req: Request) {
 
         // Soft delete or hard delete - here we hard delete
         await db.delete(Users).where(eq(Users.userId, id as string));
+        // Their likes and comments are deleted with them (FK cascade)
+        revalidateTag(USERS_TAG, "max");
+        revalidateTag(LIKES_TAG, "max");
+        revalidateTag(COMMENTS_TAG, "max");
         console.log(`🗑️ User ${id} deleted from database`);
         break;
       }

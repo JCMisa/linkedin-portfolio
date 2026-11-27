@@ -4,6 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { useCurrentUser } from "@/features/users/hooks";
+import { useNow } from "@/hooks/use-now";
 import {
   useCreateComment,
   useDeleteComment,
@@ -42,6 +43,7 @@ const CreateComment = ({
 
   const [content, setContent] = useState("");
   const { user: currentUser } = useCurrentUser();
+  const now = useNow(); // null while prerendering: times appear after load
   const { data, isLoading: fetchingComments } = useProjectComments(
     projectId,
     initialComments,
@@ -68,7 +70,7 @@ const CreateComment = ({
   };
 
   const formatDate = (date: Date) => {
-    const now = new Date();
+    if (!now) return null;
     const diff = now.getTime() - new Date(date).getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor(diff / (1000 * 60 * 60));

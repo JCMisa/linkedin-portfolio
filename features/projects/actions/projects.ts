@@ -1,12 +1,13 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 import { db } from "@/db";
 import { Projects } from "@/db/schema";
 import { deleteImage, deleteReplacedImage } from "@/lib/cloudinary";
 import { ActionError } from "@/lib/errors";
 import { adminActionClient } from "@/lib/safe-action";
+import { COMMENTS_TAG, LIKES_TAG, PROJECTS_TAG } from "../queries";
 import {
   projectIdSchema,
   projectInputSchema,
@@ -39,7 +40,7 @@ export const addProject = adminActionClient
       .values(toRow(parsedInput))
       .returning({ id: Projects.id, title: Projects.title });
 
-    revalidatePath("/", "layout");
+    updateTag(PROJECTS_TAG);
     return row;
   });
 
@@ -60,7 +61,7 @@ export const updateProject = adminActionClient
       .returning({ id: Projects.id, title: Projects.title });
 
     await deleteReplacedImage(current.image, input.imageUrl);
-    revalidatePath("/", "layout");
+    updateTag(PROJECTS_TAG);
     return row;
   });
 
@@ -74,6 +75,8 @@ export const deleteProject = adminActionClient
     if (!deleted) throw new ActionError("Project not found.");
 
     await deleteImage(deleted.image);
-    revalidatePath("/", "layout");
+    updateTag(PROJECTS_TAG);
+    updateTag(LIKES_TAG);
+    updateTag(COMMENTS_TAG);
     return { id: deleted.id };
   });

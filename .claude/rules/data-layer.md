@@ -44,20 +44,42 @@ export const updateThing = adminActionClient
 
 ## Reads
 
-- Server components call `queries.ts` directly. Wrap per-request duplicates
-  in React `cache()` (e.g. `getProjectById` is shared by `generateMetadata` and
-  the page).
-- Cross-request caching: `unstable_cache(fn, key, { revalidate, tags })` +
-  `updateTag(tag)` in the mutating action. Its tags also tag the prerendered
-  pages that use it, so `updateTag` refreshes those static shells too.
-  (`cacheComponents` is on; moving these reads to `"use cache"` is on the
-  roadmap.) Uncached reads (counts, project rows) are request-time data: render
-  them inside `<Suspense>` or the page loses its static shell.
+- Server components call `queries.ts` directly.
+- Shared (not per-user) reads are cached functions:
+
+  ```ts
+  export async function getThings() {
+    "use cache";
+    cacheTag(THINGS_TAG); // plus a per-row tag when useful: thingTag(id)
+    cacheLife("hours");
+    return db.select().from(Things);
+  }
+  ```
+
+  Tags live next to the queries (`PROJECTS_TAG`, `projectTag(id)`,
+  `LIKES_TAG`, `COMMENTS_TAG`, `USERS_TAG`, `CERTIFICATES_TAG`,
+  `PERSONAL_INFO_TAG`). A read that joins users also tags `USERS_TAG`. The
+  tags propagate to every prerendered page that used the read.
+
+- Invalidate with `updateTag(tag)` in server actions, or
+  `revalidateTag(tag, "max")` in route handlers (webhooks). Expire every tag
+  the change affects, including FK cascades (deleting a project or user also
+  removes its likes and comments). Don't use `revalidatePath("/", "layout")`.
+- Plain `"use cache"`, not `"use cache: remote"`: the results end up in
+  prerendered pages that Vercel stores, and Neon is in the same region, so a
+  remote cache would add cost without a real gain.
+- Never cache per-user data or anything that reads `cookies()`/`headers()`
+  (`getSessionUser`, `getProjectsPage` with "liked by me"); render it inside
+  `<Suspense>` instead. Uncached reads elsewhere also need `<Suspense>` or
+  the page loses its static shell.
 - Avoid N+1: the feed uses one SQL query with correlated subqueries
   (`getProjectsPage`); follow that pattern for counts/flags per row.
 - Client reads go through `app/api/*` route handlers + TanStack Query. Pass
   server-rendered data as `initialData` only when the query key matches what
-  the server fetched (see `useProjectsFeed`).
+  the server fetched and the component streams at request time
+  (`useProjectsFeed`). On prerendered pages a query holding data reads
+  `Date.now()` in render and fails the prerender: return
+  `query.data ?? serverData` instead (`useProjectComments`).
 - URL-driven filters use nuqs (`features/projects/use-project-filters.ts`).
 
 ## Database (Drizzle + Neon)

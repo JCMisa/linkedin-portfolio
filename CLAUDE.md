@@ -85,8 +85,16 @@ security) and loads when you touch matching files. Repeatable workflows live in
   the top. Admin UI uses `<AdminOnly>` / `useCurrentUser().isAdmin`;
   user-specific data streams inside `<Suspense>`. No `new Date()` during
   render (`hooks/use-now.ts`). A `loading.tsx` silently hides prerender
-  blockers. Details in `.claude/rules/routes-seo.md`. Reads still use
-  `unstable_cache` + `updateTag` until they move to `"use cache"`.
+  blockers. Details in `.claude/rules/routes-seo.md`.
+- **Caching:** shared reads are `"use cache"` functions with `cacheTag` +
+  `cacheLife("hours")` (no `unstable_cache`). Mutations call
+  `updateTag(tag)`; route handlers (the Clerk webhook) call
+  `revalidateTag(tag, "max")`. Never `revalidatePath("/", "layout")`: it
+  throws away every page.
+- **TanStack + prerender:** a `useQuery` holding data reads `Date.now()`
+  during render, which fails prerendering. On prerendered pages don't pass
+  server data as `initialData`; return `query.data ?? serverData` instead
+  (see `useProjectComments`).
 - **Metadata:** a page-level `openGraph`/`twitter` object replaces the root's
   file-based OG image. Use `pageMetadata()` from `lib/seo.ts`, which sets it.
 - **Clerk webhook (svix 2):** verify the raw `await req.text()`, then

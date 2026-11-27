@@ -38,8 +38,10 @@ export const updateThing = adminActionClient // or authActionClient / actionClie
 
 - Choose the client by who may call it; ownership checks use `ctx.user`.
 - `ActionError` for messages the user should read; other errors stay generic.
-- Invalidate every cached read that shows this data (`updateTag`), or
-  `router.refresh()` on the client for uncached server components.
+- Invalidate every cached read that shows this data: `updateTag(...)` for
+  each tag it touches (including FK cascades), never
+  `revalidatePath("/", "layout")`. The tags come from the `"use cache"` reads
+  in `queries.ts` (see `.claude/rules/data-layer.md`).
 - Images: upload in the browser via `uploadImageFile(file, folder)`; on
   replace call `deleteReplacedImage(oldUrl, newUrl)` server-side.
 

@@ -98,18 +98,28 @@ export function useProjectSearch(filters: Filters) {
   });
 }
 
+/**
+ * A project's comments. `initialData` (rendered on the server) is shown
+ * until the client query loads; it is NOT passed to useQuery, because a query
+ * that holds data reads Date.now() during render (staleness), which Cache
+ * Components rejects in prerendered pages. The query fetches once on mount.
+ */
 export function useProjectComments(
   projectId: string,
   initialData?: ProjectComment[],
 ) {
-  return useQuery({
+  const query = useQuery({
     queryKey: projectKeys.comments(projectId),
-    initialData,
     queryFn: async () =>
       (
         await fetchJson<ProjectComment[]>(`/api/projects/${projectId}/comments`)
       ).map(withDates),
   });
+  return {
+    ...query,
+    data: query.data ?? initialData,
+    isLoading: query.isLoading && !initialData,
+  };
 }
 
 /** Comment mutations refresh that project's comments and the feed counts. */

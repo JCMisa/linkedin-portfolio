@@ -19,11 +19,26 @@ import {
   getProjectById,
   getProjectComments,
   getProjectLikes,
+  getProjectSitemapEntries,
 } from "@/features/projects/queries";
 import { EmptyState } from "@/components/shared/EmptyState";
 
 interface ProjectDetailsPageProps {
   params: Promise<{ id: string }>;
+}
+
+/**
+ * Prerender every project at build time (all reads below are cached and
+ * tagged, so edits refresh the page). Projects added later render on their
+ * first visit behind loading.tsx and are then cached the same way.
+ */
+export async function generateStaticParams() {
+  const projects = await getProjectSitemapEntries();
+  // Cache Components requires at least one param; an unknown id 404s
+  if (projects.length === 0) {
+    return [{ id: "00000000-0000-0000-0000-000000000000" }];
+  }
+  return projects.map(({ id }) => ({ id }));
 }
 
 export async function generateMetadata({

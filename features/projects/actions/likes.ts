@@ -1,10 +1,11 @@
 "use server";
 
 import { and, count, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 import { db } from "@/db";
 import { Likes } from "@/db/schema";
 import { authActionClient } from "@/lib/safe-action";
+import { LIKES_TAG } from "../queries";
 import { projectIdSchema } from "../schemas";
 
 /** Likes or unlikes a project for the signed-in user. Returns the new state. */
@@ -25,6 +26,6 @@ export const toggleProjectLike = authActionClient
       .from(Likes)
       .where(eq(Likes.projectId, projectId));
 
-    revalidatePath("/", "layout");
+    updateTag(LIKES_TAG); // counts and liker lists
     return { liked, likesCount };
   });

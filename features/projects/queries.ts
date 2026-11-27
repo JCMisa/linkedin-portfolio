@@ -1,5 +1,5 @@
 import "server-only";
-import { cache } from "react";
+import { cacheLife, cacheTag } from "next/cache";
 import {
   and,
   count,
@@ -14,41 +14,77 @@ import {
 } from "drizzle-orm";
 import { db } from "@/db";
 import { Comments, Likes, Projects, Users } from "@/db/schema";
+import { USERS_TAG } from "@/features/users/queries";
 import type { ProjectsQuery } from "./schemas";
 import type { OptimizedProject } from "./types";
 
-export const getLatestProjects = (limit: number) =>
-  db.select().from(Projects).orderBy(desc(Projects.createdAt)).limit(limit);
+/**
+ * Cache tags for the "use cache" reads below. Mutations expire them with
+ * updateTag() (server actions) or revalidateTag(tag, "max") (route handlers);
+ * every prerendered page that used a tagged read is refreshed with it.
+ */
+export const PROJECTS_TAG = "projects";
+export const projectTag = (projectId: string) => `project:${projectId}`;
+export const LIKES_TAG = "likes";
+export const COMMENTS_TAG = "comments";
 
-/** Cached per request: generateMetadata and the page share one query. */
-export const getProjectById = cache(async (projectId: string) => {
+export async function getLatestProjects(limit: number) {
+  "use cache";
+  cacheTag(PROJECTS_TAG);
+  cacheLife("hours");
+  return db
+    .select()
+    .from(Projects)
+    .orderBy(desc(Projects.createdAt))
+    .limit(limit);
+}
+
+/** Shared by generateMetadata and the page (one query per project). */
+export async function getProjectById(projectId: string) {
+  "use cache";
+  cacheTag(PROJECTS_TAG, projectTag(projectId));
+  cacheLife("hours");
   const [project] = await db
     .select()
     .from(Projects)
     .where(eq(Projects.id, projectId))
     .limit(1);
   return project ?? null;
-});
+}
 
-/** Lightweight list for the sitemap. */
-export const getProjectSitemapEntries = () =>
-  db
+/** Lightweight id list for the sitemap and generateStaticParams. */
+export async function getProjectSitemapEntries() {
+  "use cache";
+  cacheTag(PROJECTS_TAG);
+  cacheLife("hours");
+  return db
     .select({ id: Projects.id, updatedAt: Projects.updatedAt })
     .from(Projects)
     .orderBy(desc(Projects.createdAt));
+}
 
-export const getLikeCount = async () => {
+export async function getLikeCount() {
+  "use cache";
+  cacheTag(LIKES_TAG);
+  cacheLife("hours");
   const [row] = await db.select({ value: count() }).from(Likes);
   return row?.value ?? 0;
-};
+}
 
-export const getCommentCount = async () => {
+export async function getCommentCount() {
+  "use cache";
+  cacheTag(COMMENTS_TAG);
+  cacheLife("hours");
   const [row] = await db.select({ value: count() }).from(Comments);
   return row?.value ?? 0;
-};
+}
 
-export const getProjectLikes = (projectId: string) =>
-  db
+/** Likers with their profile (refreshed when likes or users change). */
+export async function getProjectLikes(projectId: string) {
+  "use cache";
+  cacheTag(LIKES_TAG, USERS_TAG);
+  cacheLife("hours");
+  return db
     .select({
       userId: Users.id,
       userName: Users.name,
@@ -60,9 +96,14 @@ export const getProjectLikes = (projectId: string) =>
     .leftJoin(Users, eq(Likes.userId, Users.id))
     .where(eq(Likes.projectId, projectId))
     .orderBy(desc(Likes.createdAt));
+}
 
-export const getProjectComments = (projectId: string) =>
-  db
+/** Comments with their authors (refreshed when comments or users change). */
+export async function getProjectComments(projectId: string) {
+  "use cache";
+  cacheTag(COMMENTS_TAG, USERS_TAG);
+  cacheLife("hours");
+  return db
     .select({
       id: Comments.id,
       content: Comments.content,
@@ -78,6 +119,7 @@ export const getProjectComments = (projectId: string) =>
     .leftJoin(Users, eq(Comments.userId, Users.id))
     .where(eq(Comments.projectId, projectId))
     .orderBy(desc(Comments.createdAt));
+}
 
 function searchConditions({
   q,

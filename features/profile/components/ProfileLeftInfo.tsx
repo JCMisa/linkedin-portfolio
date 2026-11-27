@@ -19,8 +19,9 @@ import {
 import { getUserCount } from "@/features/users/queries";
 
 /**
- * Personal info is cached, so most sections prerender into the static shell.
- * The live counts and latest projects are uncached reads and stream in.
+ * Every read here is cached and tagged, so the whole profile prerenders.
+ * The counts and latest projects keep their own Suspense boundaries so a slow
+ * refresh of those reads never holds up the rest of the page.
  */
 const ProfileLeftInfo = async () => {
   const personalInfo = await getPersonalInfo();
