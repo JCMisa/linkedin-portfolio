@@ -1,0 +1,208 @@
+import { InferSelectModel, sql } from "drizzle-orm";
+import {
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
+
+export type SkillsType = {
+  id: string;
+  title: string;
+  description: string;
+  items: string[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type TopVoicesType = {
+  id: string;
+  name: string;
+  profileImg: string;
+  company: string;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ExperiencesType = {
+  id: string;
+  title: string;
+  description: string;
+  bannerImg: string;
+  dateFrom: string;
+  dateTo: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export const Users = pgTable(
+  "users",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    userId: varchar("userId", { length: 255 }).notNull().unique(),
+    name: varchar({ length: 255 }).notNull(),
+    email: varchar({ length: 255 }).notNull().unique(),
+    image: text("image"),
+    role: varchar("role").default("user").notNull(),
+    remainingContactReq: integer("remainingContactReq").default(3).notNull(),
+    createdAt: timestamp("createdAt")
+      .$defaultFn(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    updatedAt: timestamp("updatedAt")
+      .$defaultFn(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [uniqueIndex("users_userId_idx").on(table.userId)],
+);
+export type UsersType = InferSelectModel<typeof Users>;
+
+export const Projects = pgTable("projects", {
+  id: uuid().defaultRandom().primaryKey(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  image: text("image"),
+  githubLink: text("githubLink"),
+  liveLink: text("liveLink"),
+  techStacks: text("techStacks")
+    .array()
+    .default(sql`'{}'::text[]`),
+  category: varchar("category"), // tells which category is this project falls under? (tech | va | accounting)
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+export type ProjectsType = InferSelectModel<typeof Projects>;
+
+export const Likes = pgTable("likes", {
+  id: uuid().defaultRandom().primaryKey(),
+  // who created the like
+  userId: integer("userId")
+    .notNull()
+    .references(() => Users.id, { onDelete: "cascade" }),
+  // what project did the user liked
+  projectId: uuid("projectId")
+    .notNull()
+    .references(() => Projects.id, { onDelete: "cascade" }),
+
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+export type LikesType = InferSelectModel<typeof Likes>;
+
+export const Comments = pgTable("comments", {
+  id: uuid().defaultRandom().primaryKey(),
+  content: text("content").notNull(),
+  // who wrote the comment
+  userId: integer("userId")
+    .notNull()
+    .references(() => Users.id, { onDelete: "cascade" }),
+  // which project the comment belongs to
+  projectId: uuid("projectId")
+    .notNull()
+    .references(() => Projects.id, { onDelete: "cascade" }),
+
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+export type CommentsType = InferSelectModel<typeof Comments>;
+
+export const Certificates = pgTable("certificates", {
+  id: uuid().defaultRandom().primaryKey(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  image: text("image"),
+  acquiredDate: timestamp("acquiredDate"),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+export type CertificatesType = InferSelectModel<typeof Certificates>;
+
+export const PersonalInfo = pgTable("personalInfo", {
+  id: uuid().defaultRandom().primaryKey(),
+
+  name: varchar("name").default("John Carlo S. Misa").notNull(),
+  email: varchar("email").default("johncarlomisa399@gmail.com").notNull(),
+  city: varchar("city").default("San Pablo City").notNull(),
+  province: varchar("province").default("Laguna").notNull(),
+  country: varchar("country").default("Philippines").notNull(),
+
+  contactNumber: varchar("contactNumber").notNull(),
+  industryRole: varchar("industryRole").notNull(),
+
+  profileImg: text("profileImg"),
+  coverImg: text("coverImg"),
+  itResumeLink: text("itResumeLink").notNull(),
+  vaResumeLink: text("vaResumeLink").notNull(),
+  linkedinLink: text("linkedinLink").notNull(),
+  portfolioLink: text("portfolioLink").notNull(),
+  githubLink: text("githubLink").notNull(),
+  facebookLink: text("facebookLink").notNull(),
+  instagramLink: text("instagramLink").notNull(),
+  xLink: text("xLink").notNull(),
+  about: text("about").notNull(),
+
+  skills: jsonb("skills")
+    .$type<SkillsType[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+  topVoices: jsonb("topVoices")
+    .$type<TopVoicesType[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+  experiences: jsonb("experiences")
+    .$type<ExperiencesType[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+  services: jsonb("services")
+    .$type<string[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+});
+export type PersonalInfoType = InferSelectModel<typeof PersonalInfo>;
+
+export const ContactInquiries = pgTable("contact_inquiries", {
+  id: uuid("id").defaultRandom().primaryKey(),
+
+  // The signed-in user who made the call (null for rows created before v3)
+  userId: integer("userId").references(() => Users.id, {
+    onDelete: "set null",
+  }),
+
+  // Extracted Info
+  visitorName: varchar("visitor_name").default("Guest"),
+  email: varchar("email"),
+  phoneNumber: varchar("phone_number"),
+  purpose: text("purpose"), // Project, Job, General, etc.
+
+  // Meta
+  summary: text("summary"), // AI generated summary
+  rawTranscript: jsonb("raw_transcript").notNull(), // The full conversation logs
+
+  // Status tracking for you (the owner)
+  isReviewed: boolean("is_reviewed").default(false), // Have you seen this?
+  actionTaken: varchar("action_taken").default("pending"), // pending, emailed, called
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+export type ContactInquiryType = typeof ContactInquiries.$inferSelect;

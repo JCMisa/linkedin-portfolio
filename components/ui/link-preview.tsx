@@ -1,19 +1,15 @@
 "use client";
+
+import { useState, type MouseEvent, type ReactNode } from "react";
+import dynamic from "next/dynamic";
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card";
-
-import { encode } from "qss";
-import React from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useSpring,
-} from "motion/react";
-
 import { cn } from "@/lib/utils";
 
+// The animated card (and the `motion` library) load on first hover only
+const LinkPreviewCard = dynamic(() => import("./link-preview-card"));
+
 type LinkPreviewProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   url: string;
   className?: string;
   width?: number;
@@ -21,129 +17,82 @@ type LinkPreviewProps = {
   quality?: number;
   layout?: string;
 } & (
-  | { isStatic: true; imageSrc: string }
-  | { isStatic?: false; imageSrc?: never }
+  { isStatic: true; imageSrc: string } | { isStatic?: false; imageSrc?: never }
 );
 
+/** Microlink screenshot URL for a live page preview. */
+function screenshotUrl(url: string, width: number, height: number) {
+  const params = new URLSearchParams({
+    url,
+    screenshot: "true",
+    meta: "false",
+    embed: "screenshot.url",
+    colorScheme: "dark",
+    "viewport.isMobile": "true",
+    "viewport.deviceScaleFactor": "1",
+    "viewport.width": String(width * 3),
+    "viewport.height": String(height * 3),
+  });
+  return `https://api.microlink.io/?${params}`;
+}
+
+/** A link that shows a screenshot of its target in a hover card. */
 export const LinkPreview = ({
   children,
   url,
   className,
   width = 200,
   height = 125,
-  quality = 50,
-  layout = "fixed",
   isStatic = false,
   imageSrc = "",
 }: LinkPreviewProps) => {
-  let src;
-  if (!isStatic) {
-    const params = encode({
-      url,
-      screenshot: true,
-      meta: false,
-      embed: "screenshot.url",
-      colorScheme: "dark",
-      "viewport.isMobile": true,
-      "viewport.deviceScaleFactor": 1,
-      "viewport.width": width * 3,
-      "viewport.height": height * 3,
-    });
-    src = `https://api.microlink.io/?${params}`;
-  } else {
-    src = imageSrc;
-  }
+  const src = isStatic ? imageSrc : screenshotUrl(url, width, height);
+  const [isOpen, setOpen] = useState(false);
+  const [offsetX, setOffsetX] = useState(0);
 
-  const [isOpen, setOpen] = React.useState(false);
+  const handleMouseMove = (event: MouseEvent<HTMLAnchorElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    // Half the distance from center keeps the follow effect subtle
+    setOffsetX((event.clientX - rect.left - rect.width / 2) / 2);
+  };
 
-  const [isMounted, setIsMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  const springConfig = { stiffness: 100, damping: 15 };
-  const x = useMotionValue(0);
-
-  const translateX = useSpring(x, springConfig);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleMouseMove = (event: any) => {
-    const targetRect = event.target.getBoundingClientRect();
-    const eventOffsetX = event.clientX - targetRect.left;
-    const offsetFromCenter = (eventOffsetX - targetRect.width / 2) / 2; // Reduce the effect to make it subtle
-    x.set(offsetFromCenter);
+  // Warm the screenshot as soon as the pointer arrives (not on page load)
+  const prefetch = () => {
+    new Image().src = src;
   };
 
   return (
-    <>
-      {isMounted ? (
-        <div className="hidden">
-          <img src={src} width={width} height={height} alt="hidden image" />
-        </div>
-      ) : null}
-
-      <HoverCardPrimitive.Root
-        openDelay={50}
-        closeDelay={100}
-        onOpenChange={(open) => {
-          setOpen(open);
-        }}
+    <HoverCardPrimitive.Root
+      openDelay={50}
+      closeDelay={100}
+      onOpenChange={setOpen}
+    >
+      <HoverCardPrimitive.Trigger
+        onMouseEnter={prefetch}
+        onMouseMove={handleMouseMove}
+        className={cn("text-foreground", className)}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        <HoverCardPrimitive.Trigger
-          onMouseMove={handleMouseMove}
-          className={cn("text-black dark:text-white", className)}
-          href={url}
-          target="_blank"
-        >
-          {children}
-        </HoverCardPrimitive.Trigger>
+        {children}
+      </HoverCardPrimitive.Trigger>
 
-        <HoverCardPrimitive.Content
-          className="[transform-origin:var(--radix-hover-card-content-transform-origin)]"
-          side="top"
-          align="center"
-          sideOffset={10}
-        >
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 20, scale: 0.6 }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                  transition: {
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 20,
-                  },
-                }}
-                exit={{ opacity: 0, y: 20, scale: 0.6 }}
-                className="shadow-xl rounded-xl"
-                style={{
-                  x: translateX,
-                }}
-              >
-                <a
-                  href={url}
-                  target="_blank"
-                  className="block p-1 bg-white border-2 border-transparent shadow rounded-xl hover:border-neutral-200 dark:hover:border-neutral-800"
-                  style={{ fontSize: 0 }}
-                >
-                  <img
-                    src={isStatic ? imageSrc : src}
-                    width={width}
-                    height={height}
-                    className="rounded-lg"
-                    alt="preview image"
-                  />
-                </a>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </HoverCardPrimitive.Content>
-      </HoverCardPrimitive.Root>
-    </>
+      <HoverCardPrimitive.Content
+        className="[transform-origin:var(--radix-hover-card-content-transform-origin)]"
+        side="top"
+        align="center"
+        sideOffset={10}
+      >
+        <LinkPreviewCard
+          open={isOpen}
+          url={url}
+          src={src}
+          width={width}
+          height={height}
+          offsetX={offsetX}
+        />
+      </HoverCardPrimitive.Content>
+    </HoverCardPrimitive.Root>
   );
 };

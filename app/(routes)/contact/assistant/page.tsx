@@ -1,31 +1,36 @@
-import { getCurrentUser } from "@/lib/actions/users";
-import Agent from "./_components/Agent";
+import type { Metadata } from "next";
+import VoiceAgent from "@/features/contact/components/VoiceAgent";
 import { redirect } from "next/navigation";
 
+import { getSessionUser } from "@/lib/auth";
+export const metadata: Metadata = {
+  title: "AI Assistant",
+  robots: { index: false, follow: false },
+};
+
 const ContactAssistant = async () => {
-  const user = await getCurrentUser();
+  const user = await getSessionUser();
 
   if (!user) {
     redirect("/sign-in");
   }
 
   return (
-    <main className="min-h-screen pt-16 bg-neutral-200/50 dark:bg-black/90 flex flex-col items-center">
-      <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col gap-6">
-        <div className="text-center space-y-2">
-          <h3 className="text-2xl font-bold text-neutral-800 dark:text-neutral-100">
-            Let Me Help You With Your Concern
-          </h3>
-          <p className="text-neutral-500 dark:text-neutral-400">
-            Speak naturally. I'll take notes and notify John Carlo.
+    <main
+      id="main-content"
+      className="flex min-h-screen flex-col items-center bg-muted pt-16"
+    >
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
+        <div className="space-y-2 text-center">
+          <h1 className="text-2xl font-bold text-foreground">
+            How can I help?
+          </h1>
+          <p className="text-muted-foreground">
+            Speak naturally. I&apos;ll take notes and notify John Carlo.
           </p>
         </div>
 
-        <Agent
-          userName={user.name}
-          userId={user.userId}
-          credits={user.remainingContactReq}
-        />
+        <VoiceAgent userName={user.name} credits={user.remainingContactReq} />
       </div>
     </main>
   );

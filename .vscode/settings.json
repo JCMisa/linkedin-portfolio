@@ -1,0 +1,23 @@
+{
+  // ---- Formatting: Prettier on save (uses .prettierrc.json)
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "prettier.requireConfig": true,
+
+  // ---- Linting: apply ESLint auto-fixes on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.useFlatConfig": true,
+
+  // ---- TypeScript: use the project's TypeScript version, prefer "@/..." imports
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  // ---- Tailwind: class IntelliSense inside cn() and cva()
+  "tailwindCSS.classFunctions": ["cn", "cva"],
+
+  // ---- SQL: migrations are PostgreSQL (Neon + Drizzle); the SQL Server
+  // extension validates .sql files as T-SQL and reports false errors.
+  "mssql.intelliSense.enableErrorChecking": false
+}

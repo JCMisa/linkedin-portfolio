@@ -1,149 +1,85 @@
-"use server";
-
+import "server-only";
 import { v2 as cloudinary } from "cloudinary";
-import { withErrorHandling } from "./utils";
+import { env } from "@/lib/env";
 
-// Configure Cloudinary
 cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: env.CLOUDINARY_API_KEY,
+  api_secret: env.CLOUDINARY_API_SECRET,
 });
 
-/**
- * Uploads an image file to Cloudinary
- * @param file - The file to upload (as base64 string or file buffer)
- * @param folder - Optional folder name in Cloudinary
- * @returns The uploaded image URL
- */
-export const uploadImageToCloudinary = withErrorHandling(
-  async (file: File, folder: string = "jcm") => {
-    // Validate environment variables
-    if (
-      !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
-      !process.env.CLOUDINARY_API_KEY ||
-      !process.env.CLOUDINARY_API_SECRET
-    ) {
-      throw new Error("Cloudinary configuration is missing");
-    }
-
-    // Convert file to base64
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const base64 = buffer.toString("base64");
-    const dataURI = `data:${file.type};base64,${base64}`;
-
-    // Upload to Cloudinary
-    const result = await cloudinary.uploader.upload(dataURI, {
-      folder: folder,
-      resource_type: "image",
-      allowed_formats: ["jpg", "jpeg", "png", "webp", "svg"],
-      transformation: [
-        {
-          quality: "auto",
-          fetch_format: "auto",
-        },
-      ],
-    });
-
-    if (!result.secure_url) {
-      throw new Error("Failed to upload image to Cloudinary");
-    }
-
-    return result.secure_url;
-  }
-);
+/** Formats Cloudinary accepts for direct uploads (enforced via the signature). */
+export const ALLOWED_IMAGE_FORMATS = "jpg,jpeg,png,webp,svg";
 
 /**
- * Extracts the public_id from a Cloudinary URL
- * @param url - The Cloudinary image URL
- * @returns The public_id (folder/filename without extension) or null if invalid
+ * Signs a direct browser-to-Cloudinary upload. Every signed parameter is
+ * enforced by Cloudinary, so the client can't change the folder or formats.
  */
-function extractPublicIdFromUrl(url: string): string | null {
-  try {
-    // Cloudinary URLs typically look like:
-    // https://res.cloudinary.com/{cloud_name}/image/upload/v{version}/{folder}/{filename}.{ext}
-    // https://res.cloudinary.com/{cloud_name}/image/upload/{folder}/{filename}.{ext}
-
-    // Match everything after /image/upload/
-    const match = url.match(/\/image\/upload\/(.+)$/);
-
-    if (!match || !match[1]) {
-      return null;
-    }
-
-    let path = match[1];
-
-    // Remove version number if present (v1234567890/)
-    path = path.replace(/^v\d+\//, "");
-
-    // Split by "/" and find the part that contains a dot (the filename)
-    const parts = path.split("/");
-    const filenameIndex = parts.findIndex((part) => part.includes("."));
-
-    if (filenameIndex === -1) {
-      // No dot found, might be transformations only
-      return null;
-    }
-
-    // Reconstruct the public_id from folder path and filename (without extension)
-    const publicIdParts = parts.slice(0, filenameIndex + 1);
-    let publicId = publicIdParts.join("/");
-
-    // Remove file extension
-    publicId = publicId.replace(/\.[^.]+$/, "");
-
-    return publicId || null;
-  } catch (error) {
-    console.error("Error extracting public_id from URL:", error);
-    return null;
-  }
+export function signUpload(folder: string) {
+  const timestamp = Math.round(Date.now() / 1000);
+  const params = { timestamp, folder, allowed_formats: ALLOWED_IMAGE_FORMATS };
+  const signature = cloudinary.utils.api_sign_request(
+    params,
+    env.CLOUDINARY_API_SECRET,
+  );
+  return {
+    ...params,
+    signature,
+    apiKey: env.CLOUDINARY_API_KEY,
+    cloudName: env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  };
 }
 
 /**
- * Deletes an image from Cloudinary
- * @param imageUrl - The Cloudinary image URL to delete
- * @returns Success status
+ * Extracts the public_id from a Cloudinary delivery URL, e.g.
+ * https://res.cloudinary.com/<cloud>/image/upload/v123/<folder>/<name>.<ext>
  */
-export const deleteImageFromCloudinary = withErrorHandling(
-  async (imageUrl: string | null | undefined) => {
-    // Validate environment variables
-    if (
-      !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
-      !process.env.CLOUDINARY_API_KEY ||
-      !process.env.CLOUDINARY_API_SECRET
-    ) {
-      throw new Error("Cloudinary configuration is missing");
-    }
+function extractPublicId(url: string): string | null {
+  const match = url.match(/\/image\/upload\/(.+)$/);
+  if (!match) return null;
 
-    // If no image URL or not a Cloudinary URL, skip deletion
-    if (!imageUrl || !imageUrl.includes("cloudinary.com")) {
-      return { success: true, message: "No Cloudinary image to delete" };
-    }
+  const parts = match[1].replace(/^v\d+\//, "").split("/");
+  const fileIndex = parts.findIndex((part) => part.includes("."));
+  if (fileIndex === -1) return null;
 
-    // Extract public_id from URL
-    const publicId = extractPublicIdFromUrl(imageUrl);
+  return (
+    parts
+      .slice(0, fileIndex + 1)
+      .join("/")
+      .replace(/\.[^.]+$/, "") || null
+  );
+}
 
-    if (!publicId) {
-      console.warn("Could not extract public_id from URL:", imageUrl);
-      return { success: false, message: "Invalid Cloudinary URL" };
-    }
+/**
+ * Best-effort delete of a Cloudinary image. Never throws: a failed cleanup
+ * must not block the DB operation that triggered it. Non-Cloudinary URLs
+ * are ignored.
+ */
+export async function deleteImage(url: string | null | undefined) {
+  if (!url || !url.includes("res.cloudinary.com")) return;
 
-    try {
-      // Delete from Cloudinary
-      const result = await cloudinary.uploader.destroy(publicId, {
-        resource_type: "image",
-      });
-
-      if (result.result === "ok" || result.result === "not found") {
-        // "not found" is also considered success (image already deleted)
-        return { success: true, message: "Image deleted successfully" };
-      } else {
-        throw new Error(`Failed to delete image: ${result.result}`);
-      }
-    } catch (error) {
-      console.error("Error deleting image from Cloudinary:", error);
-      throw error;
-    }
+  const publicId = extractPublicId(url);
+  if (!publicId) {
+    console.warn("[cloudinary] could not parse public_id from", url);
+    return;
   }
-);
+
+  try {
+    const { result } = await cloudinary.uploader.destroy(publicId, {
+      resource_type: "image",
+    });
+    if (result !== "ok" && result !== "not found") {
+      console.warn("[cloudinary] destroy returned", result, "for", publicId);
+    }
+  } catch (error) {
+    console.error("[cloudinary] failed to delete", publicId, error);
+  }
+}
+
+/** Deletes `previous` only when it was replaced by a different image. */
+export async function deleteReplacedImage(
+  previous: string | null | undefined,
+  next: string | null | undefined,
+) {
+  if (previous && next && previous !== next) await deleteImage(previous);
+}

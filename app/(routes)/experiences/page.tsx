@@ -1,117 +1,35 @@
-import ProfessionalActivities from "@/app/_components/_activity/ProfessionalActivities";
-import ProfileCard from "@/app/_components/_profile/ProfileCard";
-import Footer from "@/components/custom/Footer";
-import { Metadata } from "next";
-import { getPersonalInfo } from "@/lib/actions/profileInfo";
-import { getCurrentUser } from "@/lib/actions/users";
-import ExperienceList from "./_components/ExperienceList";
-import { PersonalInfoType } from "@/config/schema";
+import { pageMetadata } from "@/lib/seo";
+import ProfessionalActivities from "@/features/profile/components/experience/ProfessionalActivities";
+import ProfileCard from "@/features/profile/components/ProfileCard";
+import Footer from "@/components/layout/Footer";
+import type { Metadata } from "next";
+import { getPersonalInfo } from "@/features/profile/queries";
+import ExperienceList from "@/features/profile/components/experience/ExperienceList";
+import { PersonalInfoType } from "@/db/schema";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const title = "Experience";
-
-  const description =
-    "Interactive timeline of John Carlo Misa’s professional journey: full-stack/AI Developer & Virtual Assistant, " +
-    "Multiple apps delivered, 90% client retention. " +
-    "From Canossa College ABM to Laguna State Polytechnic University IT graduate, " +
-    "AWS certified, Google Gemini certified, Cisco networking graduate. " +
-    "Freelance milestones, open-source contributions, certificates, and client success stories in chronological order.";
-
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
-
-  return {
-    title,
-    description,
-    authors: [{ name: "John Carlo Misa", url: siteUrl }],
-    creator: "John Carlo Misa",
-    publisher: "John Carlo Misa",
-    keywords: [
-      "John Carlo Misa experience",
-      "freelance developer timeline",
-      "career milestones",
-      "Laguna State Polytechnic University",
-      "Canossa College ABM",
-      "AWS certified timeline",
-      "Google Gemini API certified",
-      "Cisco Networking Academy",
-      "GreatStack React certificate",
-      "12th IT Skills Olympics",
-      "freelance web developer 2021",
-      "full-stack engineer Philippines",
-      "90 % client retention",
-      "hackathon winner history",
-      "open-source contributions timeline",
-      "Next.js projects evolution",
-      "React Native apps delivered",
-      ".NET Web API experience",
-      "Neon Drizzle ORM usage",
-      "serverless AWS journey",
-      "professional certificates chronology",
-      "career progression portfolio",
-      "San Pablo developer timeline",
-      "Philippines tech freelancer",
-    ],
-    openGraph: {
-      title,
-      description,
-      url: `${siteUrl}/experiences`,
-      siteName: "John Carlo Misa – Experience Timeline",
-      images: [
-        {
-          url: `${siteUrl}/og/logo.png`, // 1200×630, < 500 kB
-          width: 1200,
-          height: 630,
-          alt: "Interactive timeline of John Carlo Misa’s career and experiences",
-        },
-      ],
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      site: "@jcmisa_dev",
-      creator: "@jcmisa_dev",
-      title,
-      description,
-      images: [`${siteUrl}/og/logo.png`],
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
-    alternates: {
-      canonical: `${siteUrl}/experience`,
-      types: {
-        "application/pdf": `${siteUrl}/Resume-IT.pdf`,
-      },
-    },
-    manifest: "/site.webmanifest",
-    other: {
-      "msapplication-TileColor": "#0f172a",
-      "theme-color": "#0f172a",
-      "resume:pdf": `${siteUrl}/Resume-IT.pdf`,
-      "linkedin:profile":
-        "https://www.linkedin.com/in/john-carlo-misa-80a1b5208",
-      "certificates:gallery": `${siteUrl}/certificates`,
-    },
-  };
-}
+import { getSessionUser } from "@/lib/auth";
+import type { ExperiencesType } from "@/db/schema";
+export const metadata: Metadata = pageMetadata({
+  title: "Experience",
+  description:
+    "Career timeline of John Carlo Misa: freelance full-stack and AI development, virtual assistance, education and key milestones along the way.",
+  path: "/experiences",
+  keywords: [
+    "John Carlo Misa experience",
+    "full-stack developer career",
+    "freelance developer",
+    "virtual assistant",
+    "Laguna State Polytechnic University",
+  ],
+});
 
 const ExperiencesPage = async () => {
   const [personalInfo, currentUser] = await Promise.all([
     getPersonalInfo(),
-    getCurrentUser(),
+    getSessionUser(),
   ]);
 
-  let experiences: any[] = [];
+  let experiences: ExperiencesType[] = [];
 
   if (
     personalInfo &&
@@ -125,8 +43,8 @@ const ExperiencesPage = async () => {
   }
 
   return (
-    <main className="relative py-18 px-6 md:px-10 lg:px-16">
-      <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row gap-6">
+    <main id="main-content" className="relative px-6 py-18 md:px-10 lg:px-16">
+      <div className="relative mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row">
         {/* experiences timeline */}
         <div className="relative w-full overflow-clip rounded-lg">
           <ExperienceList
@@ -136,7 +54,10 @@ const ExperiencesPage = async () => {
         </div>
 
         {/* profile and latest certificates and footer - fixed */}
-        <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
+        <aside
+          aria-label="Sidebar"
+          className="flex w-full flex-col gap-2 rounded-lg lg:w-[320px]"
+        >
           <ProfileCard personalInfo={personalInfo as PersonalInfoType} />
 
           <div className="sticky top-[73px]">
@@ -147,7 +68,7 @@ const ExperiencesPage = async () => {
               <Footer />
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </main>
   );

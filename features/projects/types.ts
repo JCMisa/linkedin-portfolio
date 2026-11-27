@@ -1,0 +1,8 @@
+import { ProjectsType } from "@/db/schema";
+
+export interface OptimizedProject extends ProjectsType {
+  likesCount: number;
+  hasLiked: boolean;
+  commentsCount: number;
+  latestCommenter: { name: string; image: string | null } | null;
+}

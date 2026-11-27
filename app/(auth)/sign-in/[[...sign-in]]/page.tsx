@@ -1,10 +1,19 @@
+import type { Metadata } from "next";
 import { SignIn } from "@clerk/nextjs";
-import React from "react";
+import { AuthCardSkeleton } from "@/components/shared/AuthCardSkeleton";
+
+export const metadata: Metadata = {
+  title: "Sign in",
+  robots: { index: false, follow: false },
+};
 
 const SigninPage = () => {
   return (
-    <main className="flex items-center justify-center min-h-screen mt-20 sm:mt-3">
-      <SignIn />
+    <main
+      id="main-content"
+      className="mt-20 flex min-h-screen items-center justify-center sm:mt-3"
+    >
+      <SignIn fallback={<AuthCardSkeleton />} />
     </main>
   );
 };

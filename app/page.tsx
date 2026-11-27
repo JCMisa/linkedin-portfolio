@@ -1,143 +1,69 @@
-import { Metadata } from "next";
-import ProfileSection from "./_components/_profile/ProfileSection";
-import ProfessionalActivities from "./_components/_activity/ProfessionalActivities";
-import ProjectsFeed from "./_components/_feed/ProjectsFeed";
-import CertificatesPreview from "./_components/_activity/CertificatesPreview";
-import Footer from "@/components/custom/Footer";
-import { getCurrentUser } from "@/lib/actions/users";
-import { getProjectsPaginated } from "@/lib/actions/projects";
-import { ThemedTradingViewWidget } from "@/components/custom/ThemedTradingViewWidget";
-import { TOP_STORIES_WIDGET_CONFIG } from "@/lib/constants";
-import { getPersonalInfo } from "@/lib/actions/profileInfo";
-import { PersonalInfoType } from "@/config/schema";
-import { OptimizedProject } from "@/types/index.e";
+import { JsonLd } from "@/components/shared/JsonLd";
+import { personJsonLd } from "@/lib/seo";
+import type { Metadata } from "next";
+import ProfileSection from "@/features/profile/components/ProfileSection";
+import ProfessionalActivities from "@/features/profile/components/experience/ProfessionalActivities";
+import ProjectsFeed from "@/features/projects/components/ProjectsFeed";
+import CertificatesPreview from "@/features/certificates/components/CertificatesPreview";
+import Footer from "@/components/layout/Footer";
+import { getProjectsPage } from "@/features/projects/queries";
+import { MarketNewsWidget } from "@/components/shared/MarketNewsWidget";
+import { getPersonalInfo } from "@/features/profile/queries";
+import { PersonalInfoType } from "@/db/schema";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const title = "Feed | JCM Portfolio";
-  const description =
-    "Explore real-world projects, open-source contributions, and professional certificates " +
-    "built with Next.js, TypeScript, Javascript, Tailwindcss, AWS, Serverless database (Neon), Drizzle ORM, .NET Web API, FastAPI (Modal), with modern cloud and software developer tools.";
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://jcm-portfolio.vercel.app";
+import { getSessionUser } from "@/lib/auth";
 
-  return {
-    title,
-    description,
-    authors: [{ name: "John Carlo Misa", url: siteUrl }],
-    creator: "John Carlo Misa",
-    publisher: "John Carlo Misa",
-    keywords: [
-      "portfolio",
-      "ai",
-      "linkedin portfolio",
-      "full-stack developer portfolio",
-      "Next.js TypeScript projects",
-      "AWS serverless architect",
-      "Neon Drizzle ORM",
-      "open-source contributor",
-      "certified solutions architect",
-      "React Tailwind portfolio",
-      "Modal FastAPI",
-      ".NET Web API",
-    ],
-    openGraph: {
-      title,
-      description,
-      url: siteUrl,
-      siteName: "John Carlo Misa – Portfolio & Feed",
-      images: [
-        {
-          url: `${siteUrl}/og/logo.png`,
-          width: 1200,
-          height: 630,
-          alt: "Preview",
-        },
-      ],
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      site: "@jcmisa_dev",
-      title,
-      description,
-      images: [`${siteUrl}/og/logo.png`],
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
-    alternates: {
-      canonical: siteUrl,
-      types: { "application/pdf": `${siteUrl}/Resume-IT.pdf` },
-    },
-    manifest: "/site.webmanifest",
-    other: {
-      "msapplication-TileColor": "#0f172a",
-      "theme-color": "#0f172a",
-      "linkedin:profile":
-        "https://www.linkedin.com/in/john-carlo-misa-80a1b5208",
-      "github:username": "JCMisa",
-      "resume:pdf": `${siteUrl}/Resume-IT.pdf`,
-    },
-  };
-}
+// Title, description and share image come from the root layout defaults
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
-  const [currentUser, initialProjects, personalInfo] = await Promise.all([
-    getCurrentUser(),
-    getProjectsPaginated({ limit: 5 }), // first 5 projects
+  const currentUser = await getSessionUser();
+  const [initialPage, personalInfo] = await Promise.all([
+    getProjectsPage({ limit: 5 }, currentUser?.id ?? null), // first 5 projects
     getPersonalInfo(),
   ]);
 
-  // Handle the type cast here so the data passed to ProjectsFeed is correct
-  const typedProjects = (initialProjects.data ??
-    []) as unknown as OptimizedProject[];
-
   const userRole = currentUser && currentUser.role ? currentUser.role : "user";
-  const scriptUrl =
-    "https://s3.tradingview.com/external-embedding/embed-widget-";
 
   return (
-    <main className="relative py-14 lg:py-18 px-6 md:px-10 lg:px-16">
-      <div className="max-w-7xl mx-auto relative">
-        <div className="hidden lg:block fixed w-[240px] rounded-lg">
+    <main
+      id="main-content"
+      className="relative px-6 py-14 md:px-10 lg:px-16 lg:py-18"
+    >
+      <JsonLd data={personJsonLd()} />
+      <h1 className="sr-only">John Carlo Misa: projects feed</h1>
+      <div className="relative mx-auto max-w-7xl">
+        <aside
+          aria-label="Profile summary"
+          className="fixed hidden w-[240px] rounded-lg lg:block"
+        >
           <ProfileSection personalInfo={personalInfo as PersonalInfoType} />
-        </div>
+        </aside>
 
-        <div className="flex flex-col lg:flex-row gap-6 py-5 lg:py-0 lg:pl-[265px]">
-          <div className="w-full lg:max-w-[640px] rounded-lg">
+        <div className="flex flex-col gap-6 py-5 lg:flex-row lg:py-0 lg:pl-[265px]">
+          <div className="w-full rounded-lg lg:max-w-[640px]">
             <ProjectsFeed
               userRole={userRole}
-              initialProjects={typedProjects}
-              initialCursor={initialProjects.nextCursor ?? undefined}
-              initialHasMore={!!initialProjects.nextCursor}
+              initialPage={initialPage}
               personalInfo={personalInfo as PersonalInfoType}
             />
           </div>
 
-          <div className="w-full lg:w-[320px] rounded-lg flex flex-col gap-2">
+          <aside
+            aria-label="Activity and certificates"
+            className="flex w-full flex-col gap-2 rounded-lg lg:w-[320px]"
+          >
             <ProfessionalActivities
               personalInfo={personalInfo as PersonalInfoType}
             />
-            <ThemedTradingViewWidget
-              scriptUrl={`${scriptUrl}timeline.js`}
-              config={TOP_STORIES_WIDGET_CONFIG}
-            />
+            <MarketNewsWidget />
             <div className="sticky top-[73px]">
               <CertificatesPreview />
               <div className="mt-4">
                 <Footer />
               </div>
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </main>

@@ -1,0 +1,6 @@
+.next
+node_modules
+db/migrations
+public
+package-lock.json
+next-env.d.ts
