@@ -7,28 +7,28 @@ import {
   UserIcon,
 } from "lucide-react";
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
+import type { ProjectCategory } from "../schemas";
 import { cn } from "@/lib/utils";
 
 const categorizations = [
   {
     id: 1,
     title: "Software & AI",
-    key: "software",
+    key: "software" as const,
     icon: BrainCircuitIcon,
     iconClass: "text-success",
   },
   {
     id: 2,
     title: "Design & Assistance",
-    key: "virtual",
+    key: "virtual" as const,
     icon: PaletteIcon,
     iconClass: "text-primary",
   },
   {
     id: 3,
     title: "Others",
-    key: "others",
+    key: "others" as const,
     icon: LayoutDashboardIcon,
     iconClass: "text-warning",
   },
@@ -36,9 +36,9 @@ const categorizations = [
 
 interface Props {
   search: string;
-  setSearch: Dispatch<SetStateAction<string>>;
-  category: string | null;
-  setCategory: Dispatch<SetStateAction<string | null>>;
+  setSearch: (value: string) => void;
+  category: ProjectCategory | null;
+  setCategory: (value: ProjectCategory | null) => void;
   personalInfo: PersonalInfoType;
 }
 

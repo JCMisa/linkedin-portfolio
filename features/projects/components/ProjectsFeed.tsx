@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import type { PersonalInfoType } from "@/db/schema";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useProjectsFeed } from "../hooks";
-import type { ProjectCategory } from "../schemas";
+import { useProjectFilters } from "../use-project-filters";
 import type { OptimizedProject } from "../types";
 import { ProjectFormDialog } from "./admin-dialogs";
 import ProjectSearchFilter from "./ProjectSearchFilter";
@@ -20,14 +19,10 @@ export default function ProjectsFeed({
   initialPage: { items: OptimizedProject[]; nextCursor: string | null };
   personalInfo: PersonalInfoType;
 }) {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState<string | null>(null);
+  const { search, setSearch, category, setCategory } = useProjectFilters();
   const debouncedSearch = useDebounce(search, 300);
 
-  const feed = useProjectsFeed(
-    { q: debouncedSearch, category: category as ProjectCategory | null },
-    initialPage,
-  );
+  const feed = useProjectsFeed({ q: debouncedSearch, category }, initialPage);
   const projects = feed.data?.pages.flatMap((page) => page.items) ?? [];
 
   return (

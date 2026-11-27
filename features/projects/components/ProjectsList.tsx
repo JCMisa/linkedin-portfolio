@@ -5,7 +5,7 @@ import { Grid, type CellComponentProps } from "react-window";
 import ProjectSearchFilter from "./ProjectSearchFilter";
 import ProjectGridCard from "./ProjectGridCard";
 import { useProjectSearch } from "../hooks";
-import type { ProjectCategory } from "../schemas";
+import { useProjectFilters } from "../use-project-filters";
 import { useDebounce } from "@/hooks/use-debounce";
 import ProjectCardSkeleton from "./ProjectCardSkeleton";
 import { PersonalInfoType, ProjectsType } from "@/db/schema";
@@ -26,13 +26,13 @@ export default function ProjectsList({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(1000);
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState<string | null>(null);
+  const { search, setSearch, category, setCategory, reset } =
+    useProjectFilters();
 
   const debouncedSearch = useDebounce(search, 300);
   const { data: projects = [], isFetching: loading } = useProjectSearch({
     q: debouncedSearch,
-    category: category as ProjectCategory | null,
+    category,
   });
 
   // Resize logic from your Trucks project
@@ -88,10 +88,9 @@ export default function ProjectsList({
             {(debouncedSearch || category) && (
               <button
                 onClick={() => {
-                  setSearch("");
-                  setCategory(null);
+                  reset();
                 }}
-                className="cursor-pointer text-[10px] font-bold tracking-wider text-primary uppercase hover:underline"
+                className="cursor-pointer text-xs font-semibold text-primary hover:underline"
               >
                 Reset filters
               </button>

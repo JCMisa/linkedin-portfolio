@@ -2,8 +2,9 @@ import { z } from "zod";
 
 /** Shared by server actions (validation) and forms (Phase 5, react-hook-form). */
 
-export const PROJECT_CATEGORIES = ["software", "virtual", "others"] as const;
-export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number];
+import { PROJECT_CATEGORIES } from "./constants";
+
+export { PROJECT_CATEGORIES, type ProjectCategory } from "./constants";
 
 /**
  * An optional URL field: "" (empty input) is allowed and stored as null.

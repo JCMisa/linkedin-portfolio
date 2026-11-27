@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { EditorDialog } from "@/components/forms/EditorDialog";
 import { ImageUploadField } from "@/components/forms/ImageUploadField";
@@ -31,10 +31,13 @@ export const ImageEditorDialog = ({
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Start from the saved image each time the dialog opens
-  useEffect(() => {
+  // Start from the saved image each time the dialog opens (state adjusted
+  // during render when the prop flips, instead of a setState-in-effect)
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
     if (open) setImageUrl(currentImageUrl);
-  }, [open, currentImageUrl]);
+  }
 
   const handleSubmit = async (e?: React.BaseSyntheticEvent) => {
     e?.preventDefault();

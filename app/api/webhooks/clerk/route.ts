@@ -24,19 +24,21 @@ export async function POST(req: Request) {
     return new Response("Missing svix headers", { status: 400 });
   }
 
-  // Get and verify body
-  const payload = await req.json();
-  const body = JSON.stringify(payload);
+  // Verify the signature against the RAW body (re-serialized JSON can differ
+  // byte-for-byte from what Clerk signed), then parse it ourselves: svix v2's
+  // verify() no longer returns the parsed payload.
+  const body = await req.text();
 
   const wh = new Webhook(WEBHOOK_SECRET);
   let evt: WebhookEvent;
 
   try {
-    evt = wh.verify(body, {
+    wh.verify(body, {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
-    }) as WebhookEvent;
+    });
+    evt = JSON.parse(body) as WebhookEvent;
   } catch (err) {
     console.error("Webhook verification failed:", err);
     return new Response("Invalid webhook signature", { status: 400 });

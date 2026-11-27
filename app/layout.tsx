@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import AIChatbot from "@/features/chatbot/components/AIChatbot";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { shadcn } from "@clerk/ui/themes";
 import { siteConfig } from "@/lib/seo";
 import { ACCENT_INIT_SCRIPT } from "@/lib/accent";
@@ -92,15 +93,17 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <QueryProvider>
-              <TooltipProvider>
-                <Navbar />
-                {children}
-                <div className="fixed right-3 bottom-3">
-                  <AIChatbot />
-                </div>
-              </TooltipProvider>
-            </QueryProvider>
+            <NuqsAdapter>
+              <QueryProvider>
+                <TooltipProvider>
+                  <Navbar />
+                  {children}
+                  <div className="fixed right-3 bottom-3">
+                    <AIChatbot />
+                  </div>
+                </TooltipProvider>
+              </QueryProvider>
+            </NuqsAdapter>
             <Toaster />
           </ThemeProvider>
         </body>

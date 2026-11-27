@@ -146,14 +146,14 @@ const AIChatbot = () => {
     }
   };
 
-  /* ---------- avatars ---------- */
-  const UserAvatar = () => (
+  /* ---------- avatars (plain elements, not components declared in render) ---------- */
+  const userAvatar = (
     <Avatar className="h-6 w-6">
       <AvatarImage src={user?.imageUrl} />
       <AvatarFallback className="text-[10px]">U</AvatarFallback>
     </Avatar>
   );
-  const BotAvatar = () => (
+  const botAvatar = (
     <Avatar className="h-6 w-6">
       <AvatarImage src="/logo.png" />
       <AvatarFallback className="bg-primary text-[10px] text-primary-foreground">
@@ -236,7 +236,7 @@ const AIChatbot = () => {
               msg.sender === "user" ? "justify-end" : "justify-start"
             }`}
           >
-            {msg.sender === "bot" && <BotAvatar />}
+            {msg.sender === "bot" && botAvatar}
             <div
               className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
                 msg.sender === "user"
@@ -250,13 +250,13 @@ const AIChatbot = () => {
                 msg.text
               )}
             </div>
-            {msg.sender === "user" && <UserAvatar />}
+            {msg.sender === "user" && userAvatar}
           </div>
         ))}
 
         {loading && (
           <div className="flex justify-start gap-2">
-            <BotAvatar />
+            {botAvatar}
             <div className="rounded-2xl bg-muted px-3 py-2 text-sm">
               <span className="inline-flex space-x-1">
                 <span className="h-2 w-2 animate-bounce rounded-full bg-current" />

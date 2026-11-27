@@ -167,6 +167,16 @@ const VoiceAgent = ({ userName, credits }: VoiceAgentProps) => {
     const onError = (error: unknown) => {
       console.error("Vapi Error:", error);
       setStatus("idle");
+      // Vapi 3 checks the microphone before starting; explain a denied/missing mic
+      const type =
+        typeof error === "object" && error && "type" in error
+          ? String((error as { type: unknown }).type)
+          : "";
+      if (type.startsWith("microphone-preflight")) {
+        toast.error(
+          "Microphone access is needed to talk to the assistant. Please allow it and try again.",
+        );
+      }
     };
 
     // Register listeners with the Vapi SDK
