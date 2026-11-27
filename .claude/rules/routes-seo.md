@@ -24,9 +24,9 @@ paths:
 4. Public, indexable page → add it to `app/sitemap.ts`. Private or utility
    page (auth, assistant) → `robots: { index: false, follow: false }` and list
    it in `app/robots.ts` `disallow`.
-5. Needs sign-in → add it to `isProtectedRoute` in `proxy.ts` **and** check
-   the session in the page itself, inside a `<Suspense>` boundary (see
-   below).
+5. Needs sign-in → check the session in the page itself, inside a
+   `<Suspense>` boundary, and `redirect("/sign-in")` when missing (see
+   `app/(routes)/contact/assistant/page.tsx`).
 
 ## Static shells (Cache Components)
 
@@ -71,7 +71,9 @@ static shell, and anything that reads the request streams in behind
 
 ## proxy.ts (Clerk middleware)
 
-- Public by default. Only routes in `isProtectedRoute` require sign-in, so
-  unknown URLs return a real 404 instead of redirecting to sign-in.
+- A bare `clerkMiddleware()`: it makes `auth()` work and has no path rules.
+  Clerk deprecated `createRouteMatcher`; authorization is resource-based
+  (each page, route handler and action checks the session). Unknown URLs
+  return a real 404.
 - Metadata routes without a file extension (`/opengraph-image`,
   `/twitter-image`) pass through the matcher; keep them public.

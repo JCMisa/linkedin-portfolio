@@ -1,23 +1,13 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
 /**
- * The site is public by default; only these need a signed-in user.
- * (Protecting "everything else" turned unknown URLs into sign-in redirects
- * instead of 404s.) Each route below also checks the session itself, and
- * every server action calls requireUser/requireAdmin, so this is defense in
- * depth rather than the only gate.
+ * Clerk session handling only (it makes auth() work in pages, route handlers
+ * and actions). Authorization is resource-based, as Clerk recommends: every
+ * page, route handler and server action that needs a user checks the session
+ * itself (getSessionUser / requireUser / requireAdmin / auth()), so nothing
+ * depends on path matching here. The site is public by default.
  */
-const isProtectedRoute = createRouteMatcher([
-  "/contact/assistant(.*)",
-  "/api/chat(.*)",
-  "/api/process-inquiry(.*)",
-]);
-
-export default clerkMiddleware(async (auth, request) => {
-  if (isProtectedRoute(request)) {
-    await auth.protect();
-  }
-});
+export default clerkMiddleware();
 
 export const config = {
   matcher: [

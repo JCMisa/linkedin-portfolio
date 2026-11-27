@@ -34,9 +34,8 @@ md:px-10 lg:px-16">`, exactly one `<h1>` (visible or `sr-only`), cards as
      lightweight query like `getProjectSitemapEntries`).
    - Private/utility → `robots: { index: false, follow: false }` and add to
      `disallow` in `app/robots.ts`.
-8. **Auth.** If it needs a signed-in user: add the path to
-   `isProtectedRoute` in `proxy.ts` **and** check `getSessionUser()` in an
-   async component inside `<Suspense>` (redirect to `/sign-in` when
+8. **Auth.** If it needs a signed-in user: check `getSessionUser()` in an
+   async component inside `<Suspense>` (`proxy.ts` has no path rules) (redirect to `/sign-in` when
    missing; see `app/(routes)/contact/assistant/page.tsx`). Admin-only
    controls on public pages use `<AdminOnly>`, not a server session read.
    Confirm the page still prerenders (the "Static shells" section of

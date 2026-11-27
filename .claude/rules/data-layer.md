@@ -94,6 +94,6 @@ export const updateThing = adminActionClient
 ## Route handlers (`app/api`)
 
 - Validate the body/query with zod; return `{ error }` with a proper status.
-- Check the session in the handler (`getSessionUser()` / `auth()`), even if
-  `proxy.ts` also protects the path.
+- Check the session in the handler (`getSessionUser()` / `auth()`):
+  `proxy.ts` has no path rules, so the handler is the only gate.
 - Never return other users' emails or private fields.

@@ -149,7 +149,7 @@ components/         shadcn primitives (ui/) and shared layout, form and state
                     components
 lib/                env, auth, safe-action clients, SEO, theme color, uploads
 db/                 Drizzle client, schema, relations, migrations
-proxy.ts            Clerk middleware (protects only the routes that need it)
+proxy.ts            Clerk middleware (session only; no path-based rules)
 ```
 
 ## How it works
@@ -172,8 +172,9 @@ proxy.ts            Clerk middleware (protects only the routes that need it)
   server and the API secret never reaches the client. Replaced images are
   deleted.
 - **Auth:** Clerk handles sign-in; a signed webhook keeps the `users` table
-  in sync. The site is public by default, and `proxy.ts` only guards the voice
-  assistant and the AI endpoints, which also check the session themselves.
+  in sync. The site is public by default. Authorization is resource-based:
+  the voice assistant, the AI endpoints and every server action check the
+  session themselves (`proxy.ts` only runs Clerk, no path rules).
 - **Rate limits:** the AI chat (5 per 5 minutes) and voice-inquiry processing
   (3 per 10 minutes, on top of contact credits) use per-user sliding windows
   in Upstash Redis, so limits hold across every serverless instance. If Redis

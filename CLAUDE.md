@@ -65,8 +65,9 @@ proxy.ts             Clerk middleware (Next 16 name for middleware.ts)
   third-party services.
 - **Auth:** every mutation goes through `authActionClient` / `adminActionClient`
   (`lib/safe-action.ts`), which call `requireUser`/`requireAdmin`. Never trust a
-  client-sent user id. `proxy.ts` only protects a short explicit list; pages and
-  APIs must check the session themselves.
+  client-sent user id. `proxy.ts` is a bare `clerkMiddleware()` (no route
+  matcher, which Clerk deprecated): every page and API that needs a user checks
+  the session itself.
 - **Styling:** semantic tokens only (`bg-card`, `text-muted-foreground`,
   `bg-primary`…). No hex colors or raw palette classes in components; colors
   live in `app/globals.css`. The accent is user-selectable, so never hardcode blue.
@@ -76,6 +77,11 @@ security) and loads when you touch matching files. Repeatable workflows live in
 `.claude/skills/`.
 
 ## Gotchas (each one has bitten this repo)
+
+- **Next.js docs are bundled:** this Next version (16.4, Cache Components,
+  Partial Prefetching) is newer than most training data. Read the matching
+  guide in `node_modules/next/dist/docs/` before using an API, and heed
+  deprecation notices.
 
 - **Client bundles:** a client component that value-imports from a
   `schemas.ts` pulls all of zod into the browser (+30 KB). Import constants

@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   // Links prefetch each route's shared App Shell (no legacy full prefetches here)
   partialPrefetching: true,
+  // Don't let `next dev` write AGENTS.md; CLAUDE.md carries that guidance
+  agentRules: false,
   images: {
     // Only hosts that actually serve this site's images. A wildcard would let
     // anyone use our image optimizer as a free proxy for arbitrary URLs.

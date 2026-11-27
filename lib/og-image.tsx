@@ -2,6 +2,7 @@ import "server-only";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { cacheLife } from "next/cache";
 import { siteConfig } from "@/lib/seo";
 
 export const ogImageSize = { width: 1200, height: 630 };
@@ -18,10 +19,21 @@ const palette = {
   brand: siteConfig.colors.brand,
 };
 
+/**
+ * The logo as a data URI. Cached: under Cache Components an uncached file
+ * read is request-time work, which would make the OG image routes dynamic
+ * (rendered on every share) instead of prerendered at build.
+ */
+async function getLogoDataUri() {
+  "use cache";
+  cacheLife("max");
+  const logo = await readFile(join(process.cwd(), "public/jcm-logo.svg"));
+  return `data:image/svg+xml;base64,${logo.toString("base64")}`;
+}
+
 /** 1200x630 PNG social card: logo, name, role and site URL. */
 export async function renderOgImage() {
-  const logo = await readFile(join(process.cwd(), "public/jcm-logo.svg"));
-  const logoSrc = `data:image/svg+xml;base64,${logo.toString("base64")}`;
+  const logoSrc = await getLogoDataUri();
   const host = new URL(siteConfig.url).host;
 
   return new ImageResponse(
