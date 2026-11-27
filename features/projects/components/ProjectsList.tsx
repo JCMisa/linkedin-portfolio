@@ -18,10 +18,8 @@ const GAP = 20;
 const SCROLLBAR_WIDTH = 10;
 
 export default function ProjectsList({
-  userRole,
   personalInfo,
 }: {
-  userRole: string;
   personalInfo: PersonalInfoType;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -112,7 +110,7 @@ export default function ProjectsList({
           <>
             <Grid
               cellComponent={CellComponent}
-              cellProps={{ data: { projects, columnCount, userRole } }}
+              cellProps={{ data: { projects, columnCount } }}
               columnCount={columnCount}
               // Use containerWidth directly to match the Search bar's parent
               columnWidth={columnWidth}
@@ -161,10 +159,9 @@ const CellComponent = ({
   data: {
     projects: ProjectsType[];
     columnCount: number;
-    userRole: string;
   };
 }>) => {
-  const { projects, columnCount, userRole } = data;
+  const { projects, columnCount } = data;
 
   const index = rowIndex * columnCount + columnIndex;
   const project = projects[index];
@@ -187,7 +184,7 @@ const CellComponent = ({
 
   return (
     <div style={adjustedStyle}>
-      <ProjectGridCard project={project} currentUserRole={userRole} />
+      <ProjectGridCard project={project} />
     </div>
   );
 };

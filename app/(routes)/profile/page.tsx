@@ -7,13 +7,6 @@ import type { Metadata } from "next";
 import PreferenceAndProfileLink from "@/features/profile/components/PreferenceAndProfileLink";
 import DownloadResumeMobile from "@/features/profile/components/DownloadResumeMobile";
 
-import {
-  getLatestProjects,
-  getLikeCount,
-  getCommentCount,
-} from "@/features/projects/queries";
-import { getUserCount } from "@/features/users/queries";
-import { getSessionUser } from "@/lib/auth";
 export const metadata: Metadata = pageMetadata({
   title: "Profile",
   description:
@@ -30,36 +23,13 @@ export const metadata: Metadata = pageMetadata({
   ],
 });
 
-const ProfilePage = async () => {
-  const [
-    currentUser,
-    numberOfUsers,
-    numberOfPostLikes,
-    numberOfPostComments,
-    projects,
-  ] = await Promise.all([
-    getSessionUser(),
-    getUserCount(),
-    getLikeCount(),
-    getCommentCount(),
-    getLatestProjects(2),
-  ]);
-
-  const [latestProject1, latestProject2] = projects;
-
+const ProfilePage = () => {
   return (
     <main id="main-content" className="relative px-6 py-18 md:px-10 lg:px-16">
       <JsonLd data={personJsonLd()} />
       <div className="relative mx-auto flex max-w-7xl flex-col gap-6 xl:flex-row">
         {/* left info */}
-        <ProfileLeftInfo
-          numberOfUsers={numberOfUsers}
-          numberOfPostLikes={numberOfPostLikes}
-          numberOfPostComments={numberOfPostComments}
-          latestProject1={latestProject1 as ProjectType}
-          latestProject2={latestProject2 as ProjectType}
-          userRole={currentUser ? currentUser.role : "user"}
-        />
+        <ProfileLeftInfo />
 
         {/* right info */}
         <aside

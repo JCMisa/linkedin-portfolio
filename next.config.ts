@@ -4,6 +4,10 @@ import type { NextConfig } from "next";
 import { env } from "./lib/env";
 
 const nextConfig: NextConfig = {
+  // Partial prerendering: static shells, dynamic parts stream inside <Suspense>
+  cacheComponents: true,
+  // Links prefetch each route's shared App Shell (no legacy full prefetches here)
+  partialPrefetching: true,
   images: {
     // Only hosts that actually serve this site's images. A wildcard would let
     // anyone use our image optimizer as a free proxy for arbitrary URLs.

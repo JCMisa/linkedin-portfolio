@@ -7,7 +7,6 @@ import { getPersonalInfo } from "@/features/profile/queries";
 import ExperienceList from "@/features/profile/components/experience/ExperienceList";
 import { PersonalInfoType } from "@/db/schema";
 
-import { getSessionUser } from "@/lib/auth";
 import type { ExperiencesType } from "@/db/schema";
 export const metadata: Metadata = pageMetadata({
   title: "Experience",
@@ -24,10 +23,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const ExperiencesPage = async () => {
-  const [personalInfo, currentUser] = await Promise.all([
-    getPersonalInfo(),
-    getSessionUser(),
-  ]);
+  const personalInfo = await getPersonalInfo();
 
   let experiences: ExperiencesType[] = [];
 
@@ -47,10 +43,7 @@ const ExperiencesPage = async () => {
       <div className="relative mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row">
         {/* experiences timeline */}
         <div className="relative w-full overflow-clip rounded-lg">
-          <ExperienceList
-            initialExperiences={experiences}
-            userRole={currentUser?.role}
-          />
+          <ExperienceList initialExperiences={experiences} />
         </div>
 
         {/* profile and latest certificates and footer - fixed */}

@@ -1,9 +1,7 @@
 import type { MetadataRoute } from "next";
+import { cacheLife } from "next/cache";
 import { getProjectSitemapEntries } from "@/features/projects/queries";
 import { siteConfig } from "@/lib/seo";
-
-// Rebuild hourly so new projects show up without a redeploy
-export const revalidate = 3600;
 
 const staticRoutes: {
   path: string;
@@ -19,6 +17,10 @@ const staticRoutes: {
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  "use cache";
+  // Rebuild hourly so new projects show up without a redeploy
+  cacheLife("hours");
+
   const projects = await getProjectSitemapEntries().catch(() => []);
 
   return [

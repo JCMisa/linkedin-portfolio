@@ -1,5 +1,7 @@
 "use client";
 
+import { useCurrentUser } from "@/features/users/hooks";
+
 import { Separator } from "@/components/ui/separator";
 import type { PersonalInfoType } from "@/db/schema";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -11,14 +13,13 @@ import ProjectSearchFilter from "./ProjectSearchFilter";
 import ProjectsFeedList from "./ProjectsFeedList";
 
 export default function ProjectsFeed({
-  userRole,
   initialPage,
   personalInfo,
 }: {
-  userRole: string;
   initialPage: { items: OptimizedProject[]; nextCursor: string | null };
   personalInfo: PersonalInfoType;
 }) {
+  const { isAdmin } = useCurrentUser();
   const { search, setSearch, category, setCategory } = useProjectFilters();
   const debouncedSearch = useDebounce(search, 300);
 
@@ -36,16 +37,13 @@ export default function ProjectsFeed({
       />
 
       <div className="flex w-full items-center gap-2">
-        <Separator
-          className={userRole === "admin" ? "!w-[93%] sm:!w-[95%]" : "w-full"}
-        />
-        {userRole === "admin" && <ProjectFormDialog />}
+        <Separator className={isAdmin ? "!w-[93%] sm:!w-[95%]" : "w-full"} />
+        {isAdmin && <ProjectFormDialog />}
       </div>
 
       <ProjectsFeedList
         projects={projects}
         isFetchingProjects={feed.isFetching}
-        userRole={userRole}
         hasMore={!!feed.hasNextPage}
         loadMore={() => {
           if (!feed.isFetchingNextPage) feed.fetchNextPage();

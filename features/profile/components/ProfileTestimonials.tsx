@@ -1,3 +1,4 @@
+import { AdminOnly } from "@/features/users/components/AdminOnly";
 import {
   Carousel,
   CarouselContent,
@@ -135,14 +136,13 @@ export const fallbackTestimonials = [
   },
 ];
 
-const ProfileTestimonials = async ({ userRole }: { userRole: string }) => {
+const ProfileTestimonials = async () => {
   const personalInfo: PersonalInfoType | null = await getPersonalInfo();
 
   if (!personalInfo) {
     return null;
   }
 
-  const isOwner = userRole === "admin" || userRole === "owner";
   const displayTestimonials =
     personalInfo.topVoices && personalInfo.topVoices.length > 0
       ? personalInfo.topVoices
@@ -152,11 +152,11 @@ const ProfileTestimonials = async ({ userRole }: { userRole: string }) => {
     <div className="flex w-full flex-col overflow-hidden rounded-lg border bg-card p-[10px] px-5">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-xl font-semibold">Top Voices</h2>
-        {isOwner && (
+        <AdminOnly>
           <TestimonialsEditorDialog
             currentTestimonials={personalInfo.topVoices || []}
           />
-        )}
+        </AdminOnly>
       </div>
 
       {/* testimonials carousel */}

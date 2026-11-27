@@ -1,3 +1,4 @@
+import { AdminOnly } from "@/features/users/components/AdminOnly";
 import { LinkPreview } from "@/components/ui/link-preview";
 import { PersonalInfoType } from "@/db/schema";
 import { getPersonalInfo } from "@/features/profile/queries";
@@ -10,7 +11,7 @@ I also have a background in data analytics and simple bookkeeping, using tools l
 
 I'm constantly working on new projects that showcase my skills, like TechTrail, an AI-powered learning management system, Zeno, a real-time code editor, and Odeon, a web application that help users craft music powered by AI. I've also earned multiple certifications in areas such as AWS, Project Management, and Business Analytics.`;
 
-const ProfileAboutMessage = async ({ userRole }: { userRole: string }) => {
+const ProfileAboutMessage = async () => {
   const personalInfo: PersonalInfoType | null = await getPersonalInfo();
 
   if (!personalInfo) {
@@ -23,9 +24,9 @@ const ProfileAboutMessage = async ({ userRole }: { userRole: string }) => {
     <div className="flex w-full flex-col rounded-lg border bg-card p-[10px] px-5">
       <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
         <h2 className="text-xl font-semibold">About Me</h2>
-        {(userRole === "admin" || userRole === "owner") && (
+        <AdminOnly>
           <EditAboutMessageDialog currentAbout={personalInfo.about || ""} />
-        )}
+        </AdminOnly>
       </div>
 
       <div className="mt-5 w-full text-sm text-muted-foreground">

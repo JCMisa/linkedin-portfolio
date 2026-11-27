@@ -12,18 +12,14 @@ import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
 
 import { getSessionUser } from "@/lib/auth";
+import { Suspense } from "react";
+import ProjectCardSkeleton from "@/features/projects/components/ProjectCardSkeleton";
 
 // Title, description and share image come from the root layout defaults
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
-  const currentUser = await getSessionUser();
-  const [initialPage, personalInfo] = await Promise.all([
-    getProjectsPage({ limit: 5 }, currentUser?.id ?? null), // first 5 projects
-    getPersonalInfo(),
-  ]);
-
-  const userRole = currentUser && currentUser.role ? currentUser.role : "user";
+  const personalInfo = await getPersonalInfo();
 
   return (
     <main
@@ -42,11 +38,9 @@ export default async function Home() {
 
         <div className="flex flex-col gap-6 py-5 lg:flex-row lg:py-0 lg:pl-[265px]">
           <div className="w-full rounded-lg lg:max-w-[640px]">
-            <ProjectsFeed
-              userRole={userRole}
-              initialPage={initialPage}
-              personalInfo={personalInfo as PersonalInfoType}
-            />
+            <Suspense fallback={<FeedSkeleton />}>
+              <HomeFeed personalInfo={personalInfo as PersonalInfoType} />
+            </Suspense>
           </div>
 
           <aside
@@ -67,5 +61,24 @@ export default async function Home() {
         </div>
       </div>
     </main>
+  );
+}
+
+/**
+ * The first feed page includes "liked by me", so it reads the session and
+ * streams in at request time; the rest of the page is in the static shell.
+ */
+async function HomeFeed({ personalInfo }: { personalInfo: PersonalInfoType }) {
+  const viewer = await getSessionUser();
+  const initialPage = await getProjectsPage({ limit: 5 }, viewer?.id ?? null);
+  return <ProjectsFeed initialPage={initialPage} personalInfo={personalInfo} />;
+}
+
+function FeedSkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      <ProjectCardSkeleton />
+      <ProjectCardSkeleton />
+    </div>
   );
 }

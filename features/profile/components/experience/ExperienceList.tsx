@@ -1,5 +1,8 @@
 "use client";
 
+import { useCurrentUser } from "@/features/users/hooks";
+import { useNow } from "@/hooks/use-now";
+
 import Image from "next/image";
 
 import { useState } from "react";
@@ -50,7 +53,6 @@ interface ExperienceItemProps {
 
 interface ExperienceListProps {
   initialExperiences: ExperienceType[];
-  userRole?: string;
 }
 // --------------------------------------------- types and interfaces ---------------------------------------------
 
@@ -61,9 +63,11 @@ const formatDate = (dateStr: string) => {
   return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 };
 
-const getDuration = (from: string, to: string) => {
+/** "2 yr 3 mos". Ongoing roles need `now`, so they return null until it's known. */
+const getDuration = (from: string, to: string, now: Date | null) => {
+  if (!to && !now) return null;
   const start = new Date(from);
-  const end = to ? new Date(to) : new Date();
+  const end = to ? new Date(to) : now!;
   const months =
     (end.getFullYear() - start.getFullYear()) * 12 +
     (end.getMonth() - start.getMonth());
@@ -83,8 +87,10 @@ const ExperienceItem = ({
   handleUpdateExperience,
 }: ExperienceItemProps) => {
   const [expanded, setExpanded] = useState(false);
+  const now = useNow();
   const isCurrent =
-    !experience.dateTo || new Date(experience.dateTo) >= new Date();
+    !experience.dateTo || (now !== null && new Date(experience.dateTo) >= now);
+  const duration = getDuration(experience.dateFrom, experience.dateTo, now);
   const descLines = experience.description;
   const shouldTruncate = descLines.length > 150;
 
@@ -128,9 +134,11 @@ const ExperienceItem = ({
                   {formatDate(experience.dateFrom)} –{" "}
                   {formatDate(experience.dateTo)}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  · {getDuration(experience.dateFrom, experience.dateTo)}
-                </span>
+                {duration && (
+                  <span className="text-xs text-muted-foreground">
+                    · {duration}
+                  </span>
+                )}
               </div>
               {isCurrent && (
                 <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
@@ -188,24 +196,22 @@ const ExperienceItem = ({
   );
 };
 
-const ExperienceList = ({
-  initialExperiences,
-  userRole = "user",
-}: ExperienceListProps) => {
-  const isOwner = userRole === "admin" || userRole === "owner";
+const ExperienceList = ({ initialExperiences }: ExperienceListProps) => {
+  const { isAdmin: isOwner } = useCurrentUser();
 
   const [experiences, setExperiences] = useState<ExperienceType[]>(
     initialExperiences || [],
   );
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  const sortedExperiences = [...experiences].sort((a, b) => {
-    const aIsCurrent = !a.dateTo || new Date(a.dateTo) >= new Date();
-    const bIsCurrent = !b.dateTo || new Date(b.dateTo) >= new Date();
-    if (aIsCurrent && !bIsCurrent) return -1;
-    if (!aIsCurrent && bIsCurrent) return 1;
-    return new Date(b.dateFrom).getTime() - new Date(a.dateFrom).getTime();
-  });
+  // Ongoing first, then by end date, then by start date (stored dates only,
+  // so the order is the same in the prerendered shell and in the browser)
+  const endTime = (e: ExperienceType) =>
+    e.dateTo ? new Date(e.dateTo).getTime() : Number.POSITIVE_INFINITY;
+  const startTime = (e: ExperienceType) => new Date(e.dateFrom).getTime();
+  const sortedExperiences = [...experiences].sort(
+    (a, b) => endTime(b) - endTime(a) || startTime(b) - startTime(a),
+  );
 
   const handleAddExperience = async (newExp: ExperienceType) => {
     // 1. Optimistically update state

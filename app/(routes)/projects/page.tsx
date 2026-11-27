@@ -6,7 +6,8 @@ import ProjectsList from "@/features/projects/components/ProjectsList";
 import type { Metadata } from "next";
 import { getPersonalInfo } from "@/features/profile/queries";
 import { PersonalInfoType } from "@/db/schema";
-import { getSessionUser } from "@/lib/auth";
+import { Suspense } from "react";
+import ProjectsGridSkeleton from "@/features/projects/components/ProjectsGridSkeleton";
 
 export const metadata: Metadata = pageMetadata({
   title: "Projects",
@@ -24,20 +25,16 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const ProjectsPage = async () => {
-  const [currentUser, personalInfo] = await Promise.all([
-    getSessionUser(),
-    getPersonalInfo(),
-  ]);
+  const personalInfo = await getPersonalInfo();
 
   return (
     <main id="main-content" className="relative px-6 py-18 md:px-10 lg:px-16">
       <h1 className="sr-only">Projects</h1>
       <div className="relative mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row">
-        {/* projects list */}
-        <ProjectsList
-          userRole={currentUser?.role ?? "user"}
-          personalInfo={personalInfo as PersonalInfoType}
-        />
+        {/* projects list: filters live in the URL, so it streams in */}
+        <Suspense fallback={<ProjectsGridSkeleton />}>
+          <ProjectsList personalInfo={personalInfo as PersonalInfoType} />
+        </Suspense>
 
         {/* profile and latest certificates and footer - fixed */}
         <aside

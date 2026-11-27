@@ -81,9 +81,12 @@ security) and loads when you touch matching files. Repeatable workflows live in
   `schemas.ts` pulls all of zod into the browser (+30 KB). Import constants
   from a zod-free module (e.g. `features/projects/constants.ts`); type-only
   imports are fine.
-- **Caching:** reads use `unstable_cache` with tags; mutations call
-  `updateTag(...)`. `cacheComponents` / `"use cache"` is not enabled (Clerk
-  session reads need Suspense boundaries first).
+- **Static shells (Cache Components on):** pages must not read the session at
+  the top. Admin UI uses `<AdminOnly>` / `useCurrentUser().isAdmin`;
+  user-specific data streams inside `<Suspense>`. No `new Date()` during
+  render (`hooks/use-now.ts`). A `loading.tsx` silently hides prerender
+  blockers. Details in `.claude/rules/routes-seo.md`. Reads still use
+  `unstable_cache` + `updateTag` until they move to `"use cache"`.
 - **Metadata:** a page-level `openGraph`/`twitter` object replaces the root's
   file-based OG image. Use `pageMetadata()` from `lib/seo.ts`, which sets it.
 - **Clerk webhook (svix 2):** verify the raw `await req.text()`, then

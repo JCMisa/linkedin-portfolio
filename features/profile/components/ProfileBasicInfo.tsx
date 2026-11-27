@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getActionError, type ActionResult } from "@/lib/action-result";
-import { isAdminRole } from "@/lib/roles";
+import { useCurrentUser } from "@/features/users/hooks";
 import {
   Popover,
   PopoverContent,
@@ -43,12 +43,10 @@ import type { ExperiencesType } from "@/db/schema";
 import type { ContactInfoInput } from "../schemas";
 
 interface ProfileBasicInfoProps {
-  userRole?: string;
   personalInfo: PersonalInfoType;
 }
 
 const ProfileBasicInfo = ({
-  userRole = "user",
   personalInfo: initialPersonalInfo,
 }: ProfileBasicInfoProps) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -63,7 +61,7 @@ const ProfileBasicInfo = ({
   const router = useRouter();
   const [personalInfo, setPersonalInfo] =
     useState<PersonalInfoType>(initialPersonalInfo);
-  const isOwner = isAdminRole(userRole);
+  const { isAdmin: isOwner } = useCurrentUser();
 
   /**
    * Applies an action result: on success merges the returned fields into local
@@ -127,22 +125,22 @@ const ProfileBasicInfo = ({
   const displayCoverImage = personalInfo?.coverImg || "/empty-img.webp";
   const displayProfileImage = personalInfo?.profileImg || "/empty-img.webp";
 
-  // Find latest experience
+  // Latest experience: no end date (ongoing) first, then the latest end date,
+  // then the latest start. Compares stored dates only (no "now"), so the card
+  // can prerender into the static shell.
   let latestExperience: ExperiencesType | null = null;
   if (
     personalInfo?.experiences &&
     Array.isArray(personalInfo.experiences) &&
     personalInfo.experiences.length > 0
   ) {
-    const sorted = [...personalInfo.experiences].sort((a, b) => {
-      const aIsCurrent = !a.dateTo || new Date(a.dateTo) >= new Date();
-      const bIsCurrent = !b.dateTo || new Date(b.dateTo) >= new Date();
-      if (aIsCurrent && !bIsCurrent) return -1;
-      if (!aIsCurrent && bIsCurrent) return 1;
-      const dateA = new Date(a.dateFrom || 0).getTime();
-      const dateB = new Date(b.dateFrom || 0).getTime();
-      return dateB - dateA;
-    });
+    const endTime = (e: ExperiencesType) =>
+      e.dateTo ? new Date(e.dateTo).getTime() : Number.POSITIVE_INFINITY;
+    const startTime = (e: ExperiencesType) =>
+      new Date(e.dateFrom || 0).getTime();
+    const sorted = [...personalInfo.experiences].sort(
+      (a, b) => endTime(b) - endTime(a) || startTime(b) - startTime(a),
+    );
     latestExperience = sorted[0];
   }
 

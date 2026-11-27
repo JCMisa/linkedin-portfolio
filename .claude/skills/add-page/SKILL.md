@@ -35,8 +35,12 @@ md:px-10 lg:px-16">`, exactly one `<h1>` (visible or `sr-only`), cards as
    - Private/utility → `robots: { index: false, follow: false }` and add to
      `disallow` in `app/robots.ts`.
 8. **Auth.** If it needs a signed-in user: add the path to
-   `isProtectedRoute` in `proxy.ts` **and** check `getSessionUser()` in the
-   page (redirect to `/sign-in` when missing).
+   `isProtectedRoute` in `proxy.ts` **and** check `getSessionUser()` in an
+   async component inside `<Suspense>` (redirect to `/sign-in` when
+   missing; see `app/(routes)/contact/assistant/page.tsx`). Admin-only
+   controls on public pages use `<AdminOnly>`, not a server session read.
+   Confirm the page still prerenders (the "Static shells" section of
+   `.claude/rules/routes-seo.md`).
 9. **Navigation.** If it belongs in the navbar or footer, update
    `components/layout/Navbar.tsx` (`menuItems`) and `Footer.tsx`, plus
    `components/layout/search-paths.ts` for the search dialog.

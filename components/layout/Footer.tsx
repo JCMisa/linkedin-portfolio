@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { cacheLife } from "next/cache";
 
 // Real destinations only (the old LinkedIn-style labels went nowhere)
 const footerLinks = [
@@ -11,7 +12,12 @@ const footerLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
-const Footer = () => {
+// Cached: the copyright year is the only value that changes, so the footer
+// stays in every static shell and refreshes daily.
+const Footer = async () => {
+  "use cache";
+  cacheLife("days");
+
   return (
     <footer className="flex flex-col items-center justify-center gap-3">
       <nav aria-label="Footer">

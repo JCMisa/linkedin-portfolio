@@ -1,5 +1,7 @@
 "use client";
 
+import { useCurrentUser } from "@/features/users/hooks";
+
 import { cn } from "@/lib/utils";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { useState } from "react";
@@ -16,12 +18,11 @@ type SkillCategory = {
 
 interface SkillsContentProps {
   skills: SkillCategory[];
-  userRole: string;
 }
 
-const SkillsContent = ({ skills, userRole }: SkillsContentProps) => {
+const SkillsContent = ({ skills }: SkillsContentProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const isOwner = userRole === "admin" || userRole === "owner";
+  const { isAdmin: isOwner } = useCurrentUser();
 
   return (
     <div

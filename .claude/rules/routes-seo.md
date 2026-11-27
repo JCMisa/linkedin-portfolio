@@ -25,7 +25,35 @@ paths:
    page (auth, assistant) → `robots: { index: false, follow: false }` and list
    it in `app/robots.ts` `disallow`.
 5. Needs sign-in → add it to `isProtectedRoute` in `proxy.ts` **and** check
-   the session in the page itself.
+   the session in the page itself, inside a `<Suspense>` boundary (see
+   below).
+
+## Static shells (Cache Components)
+
+`cacheComponents` and `partialPrefetching` are on: each page prerenders a
+static shell, and anything that reads the request streams in behind
+`<Suspense>`. Keep shells real (content, not a skeleton):
+
+- **Session:** don't read it in a page or layout just to show admin controls.
+  Wrap them in `<AdminOnly>` (`features/users/components/AdminOnly.tsx`) or
+  use `useCurrentUser().isAdmin` in client components. Read the session on
+  the server only for user-specific data (feed "liked by me", the voice
+  assistant), in an async component inside `<Suspense>` with a skeleton.
+- **URL data** (`usePathname`, `useSearchParams`, nuqs filters, Clerk
+  `<SignIn>`/`<SignUp>`) needs a `<Suspense>` boundary too (see the
+  navbar's `MainNavItems`).
+- **Time and randomness:** no `new Date()`, `Date.now()` or `Math.random()`
+  during render. Compare stored dates, use `useNow()` (`hooks/use-now.ts`)
+  in client components, or a `"use cache"` + `cacheLife` component (the
+  footer year).
+- **No segment config:** `export const revalidate/dynamic` is rejected; use
+  `"use cache"` + `cacheLife` (see `app/sitemap.ts`).
+- **`loading.tsx` hides blockers:** with a loading file, a blocked route
+  quietly ships the skeleton as its shell and the build still passes. To
+  audit, temporarily move the route's `loading.tsx` (and `app/loading.tsx`)
+  aside and build: the error names the blocking component. Restore them after.
+  The build's route table shows ○ (fully static) or ◐ (shell + streamed
+  parts).
 
 ## Metadata details
 

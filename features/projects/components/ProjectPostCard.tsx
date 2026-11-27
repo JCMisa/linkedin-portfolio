@@ -1,5 +1,7 @@
 "use client";
 
+import { AdminOnly } from "@/features/users/components/AdminOnly";
+
 import { Separator } from "@/components/ui/separator";
 import {
   ChevronRightIcon,
@@ -51,11 +53,9 @@ function postAge(createdAt: Date | string) {
 
 const ProjectPostCard = ({
   project,
-  userRole,
   personalInfo,
 }: {
   project: OptimizedProject;
-  userRole: string;
   personalInfo: PersonalInfoType;
 }) => {
   const { user } = useUser();
@@ -141,12 +141,10 @@ const ProjectPostCard = ({
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          {userRole === "admin" && (
-            <>
-              <ProjectFormDialog project={project} />
-              <DeleteProject project={project} />
-            </>
-          )}
+          <AdminOnly>
+            <ProjectFormDialog project={project} />
+            <DeleteProject project={project} />
+          </AdminOnly>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link

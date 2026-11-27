@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SignUp } from "@clerk/nextjs";
 import { AuthCardSkeleton } from "@/components/shared/AuthCardSkeleton";
 
@@ -13,7 +14,10 @@ const SignupPage = () => {
       id="main-content"
       className="mt-36 flex min-h-screen items-center justify-center sm:mt-20"
     >
-      <SignUp fallback={<AuthCardSkeleton />} />
+      {/* Clerk reads the URL for its routing, so the form streams in */}
+      <Suspense fallback={<AuthCardSkeleton />}>
+        <SignUp fallback={<AuthCardSkeleton />} />
+      </Suspense>
     </main>
   );
 };

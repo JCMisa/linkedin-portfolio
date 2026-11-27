@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
@@ -60,8 +61,89 @@ const menuItems = [
   },
 ];
 
+type NavVariant = "desktop" | "mobile";
+
+/** Main links; `pathname` is null in the prerendered shell (no active tab). */
+function NavItems({
+  variant,
+  pathname,
+}: {
+  variant: NavVariant;
+  pathname: string | null;
+}) {
+  return variant === "desktop" ? (
+    <>
+      {menuItems.map((item) => {
+        const isActive = pathname === item.path;
+        const Icon = item.icon;
+        return (
+          <Link
+            key={item.id}
+            href={item.path}
+            aria-current={isActive ? "page" : undefined}
+            className={
+              "flex h-[52px] w-[64px] flex-col items-center justify-center border-b lg:w-[80px] " +
+              (isActive
+                ? "border-b-2 border-b-foreground text-foreground"
+                : "border-b-transparent text-muted-foreground")
+            }
+          >
+            <Icon
+              className={"size-5 " + (isActive ? "" : "text-muted-foreground")}
+            />
+            <span
+              className={
+                "mt-1 text-[12px] leading-none " +
+                (isActive ? "" : "text-muted-foreground")
+              }
+            >
+              {item.title}
+            </span>
+          </Link>
+        );
+      })}
+    </>
+  ) : (
+    <>
+      {menuItems.map((item) => {
+        const isActive = pathname === item.path;
+        const Icon = item.icon;
+        return (
+          <Link
+            key={item.id}
+            href={item.path}
+            aria-current={isActive ? "page" : undefined}
+            className={
+              "flex items-center gap-4 rounded-lg p-2 transition-colors " +
+              (isActive
+                ? "bg-accent text-accent-foreground"
+                : "hover:bg-accent hover:text-accent-foreground")
+            }
+          >
+            <Icon className="size-5" />
+            <span className="text-base">{item.title}</span>
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+
+// usePathname() is request data under Cache Components, so the active state
+// streams in behind <Suspense> while the plain links stay in the static shell.
+function ActiveNavItems({ variant }: { variant: NavVariant }) {
+  return <NavItems variant={variant} pathname={usePathname()} />;
+}
+
+function MainNavItems({ variant }: { variant: NavVariant }) {
+  return (
+    <Suspense fallback={<NavItems variant={variant} pathname={null} />}>
+      <ActiveNavItems variant={variant} />
+    </Suspense>
+  );
+}
+
 const Navbar = () => {
-  const pathname = usePathname();
   const { user } = useUser();
 
   return (
@@ -83,37 +165,7 @@ const Navbar = () => {
 
         {/* menu items - large screen */}
         <nav aria-label="Main" className="hidden items-center md:flex">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.path;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.id}
-                href={item.path}
-                aria-current={isActive ? "page" : undefined}
-                className={
-                  "flex h-[52px] w-[64px] flex-col items-center justify-center border-b lg:w-[80px] " +
-                  (isActive
-                    ? "border-b-2 border-b-foreground text-foreground"
-                    : "border-b-transparent text-muted-foreground")
-                }
-              >
-                <Icon
-                  className={
-                    "size-5 " + (isActive ? "" : "text-muted-foreground")
-                  }
-                />
-                <span
-                  className={
-                    "mt-1 text-[12px] leading-none " +
-                    (isActive ? "" : "text-muted-foreground")
-                  }
-                >
-                  {item.title}
-                </span>
-              </Link>
-            );
-          })}
+          <MainNavItems variant="desktop" />
         </nav>
 
         {/* menu items - small screen */}
@@ -143,26 +195,7 @@ const Navbar = () => {
 
                 {/* Menu Items */}
                 <nav aria-label="Mobile" className="mt-2 space-y-4">
-                  {menuItems.map((item) => {
-                    const isActive = pathname === item.path;
-                    const Icon = item.icon;
-                    return (
-                      <Link
-                        key={item.id}
-                        href={item.path}
-                        aria-current={isActive ? "page" : undefined}
-                        className={
-                          "flex items-center gap-4 rounded-lg p-2 transition-colors " +
-                          (isActive
-                            ? "bg-accent text-accent-foreground"
-                            : "hover:bg-accent hover:text-accent-foreground")
-                        }
-                      >
-                        <Icon className="size-5" />
-                        <span className="text-base">{item.title}</span>
-                      </Link>
-                    );
-                  })}
+                  <MainNavItems variant="mobile" />
                 </nav>
 
                 <Separator className="my-4" />

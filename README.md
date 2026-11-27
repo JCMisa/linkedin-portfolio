@@ -154,6 +154,11 @@ proxy.ts            Clerk middleware (protects only the routes that need it)
 
 ## How it works
 
+- **Static shells:** with Cache Components, every page prerenders its
+  layout and cached content. Only per-visitor or live parts (the feed's
+  "liked by me", profile counts, the voice assistant) stream in behind
+  `<Suspense>`. Admin controls check the role on the client, so public pages
+  never read the session.
 - **Reads** happen in server components through each feature's
   `queries.ts`, cached with `unstable_cache` and tagged so mutations can
   refresh exactly what changed. The feed loads in a single SQL query (counts
@@ -201,7 +206,8 @@ writes, forced installs and reading `.env` files.
 
 ## Roadmap
 
-- **`"use cache"` / Cache Components:** migrate from `unstable_cache` once
-  the Clerk session reads are wrapped in Suspense boundaries.
+- **`"use cache"`:** Cache Components is on; next, move `unstable_cache`
+  reads to `"use cache: remote"` + `cacheTag`, and prerender project detail
+  pages.
 - **ESLint 10 and TypeScript 7:** upgrade when `eslint-config-next`'s plugins
   and `typescript-eslint` support them (held back to avoid forced installs).

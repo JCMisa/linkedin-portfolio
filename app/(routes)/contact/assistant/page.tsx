@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import VoiceAgent from "@/features/contact/components/VoiceAgent";
 import { redirect } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { getSessionUser } from "@/lib/auth";
 export const metadata: Metadata = {
@@ -8,13 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const ContactAssistant = async () => {
-  const user = await getSessionUser();
-
-  if (!user) {
-    redirect("/sign-in");
-  }
-
+const ContactAssistant = () => {
   return (
     <main
       id="main-content"
@@ -30,10 +26,25 @@ const ContactAssistant = async () => {
           </p>
         </div>
 
-        <VoiceAgent userName={user.name} credits={user.remainingContactReq} />
+        {/* The call stage needs the signed-in user, so it streams in */}
+        <Suspense
+          fallback={
+            <Skeleton className="h-[80vh] max-h-[800px] min-h-[500px] w-full rounded-3xl" />
+          }
+        >
+          <AssistantStage />
+        </Suspense>
       </div>
     </main>
   );
 };
+
+async function AssistantStage() {
+  // proxy.ts already guards this route; this is the page's own check
+  const user = await getSessionUser();
+  if (!user) redirect("/sign-in");
+
+  return <VoiceAgent userName={user.name} credits={user.remainingContactReq} />;
+}
 
 export default ContactAssistant;

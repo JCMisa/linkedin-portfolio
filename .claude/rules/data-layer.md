@@ -48,8 +48,11 @@ export const updateThing = adminActionClient
   in React `cache()` (e.g. `getProjectById` is shared by `generateMetadata` and
   the page).
 - Cross-request caching: `unstable_cache(fn, key, { revalidate, tags })` +
-  `updateTag(tag)` in the mutating action. Don't introduce `"use cache"` until
-  `cacheComponents` is adopted project-wide.
+  `updateTag(tag)` in the mutating action. Its tags also tag the prerendered
+  pages that use it, so `updateTag` refreshes those static shells too.
+  (`cacheComponents` is on; moving these reads to `"use cache"` is on the
+  roadmap.) Uncached reads (counts, project rows) are request-time data: render
+  them inside `<Suspense>` or the page loses its static shell.
 - Avoid N+1: the feed uses one SQL query with correlated subqueries
   (`getProjectsPage`); follow that pattern for counts/flags per row.
 - Client reads go through `app/api/*` route handlers + TanStack Query. Pass

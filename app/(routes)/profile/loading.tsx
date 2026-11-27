@@ -4,8 +4,11 @@ import {
   PageSkeleton,
   SectionCardSkeleton,
   SidebarSkeleton,
-  TextLinesSkeleton,
 } from "@/components/shared/skeletons";
+import {
+  LatestProjectsSkeleton,
+  ProfileAnalyticsSkeleton,
+} from "@/features/profile/components/ProfileSkeletons";
 
 /** Profile: big intro card, stats/about/services sections, sidebar. */
 export default function ProfileLoading() {
@@ -30,31 +33,12 @@ export default function ProfileLoading() {
             </div>
           </CardSkeleton>
 
-          {/* analytics */}
-          <CardSkeleton className="grid grid-cols-3 gap-4 p-4 sm:p-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="space-y-2">
-                <Skeleton className="h-3 w-16" />
-                <Skeleton className="h-5 w-10" />
-              </div>
-            ))}
-          </CardSkeleton>
+          <ProfileAnalyticsSkeleton />
 
           <SectionCardSkeleton lines={4} />
           <SectionCardSkeleton lines={2} />
 
-          {/* latest projects */}
-          <CardSkeleton className="space-y-4 p-4 sm:p-6">
-            <Skeleton className="h-5 w-36" />
-            <div className="grid gap-3 sm:grid-cols-2">
-              {[1, 2].map((i) => (
-                <div key={i} className="space-y-2">
-                  <Skeleton className="aspect-video w-full" />
-                  <TextLinesSkeleton lines={2} />
-                </div>
-              ))}
-            </div>
-          </CardSkeleton>
+          <LatestProjectsSkeleton className="hidden sm:block" />
         </div>
 
         <SidebarSkeleton

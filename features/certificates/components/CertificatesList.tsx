@@ -12,10 +12,8 @@ const GAP = 20;
 const SCROLLBAR_WIDTH = 10;
 
 const CertificatesList = ({
-  currentUser,
   certificates,
 }: {
-  currentUser: UserType | null;
   certificates: CertificateType[];
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -48,7 +46,7 @@ const CertificatesList = ({
         <>
           <Grid
             cellComponent={CellComponent}
-            cellProps={{ data: { certificates, columnCount, currentUser } }}
+            cellProps={{ data: { certificates, columnCount } }}
             columnCount={columnCount}
             columnWidth={columnWidth}
             rowCount={rowCount}
@@ -95,10 +93,9 @@ const CellComponent = ({
   data: {
     certificates: CertificateType[];
     columnCount: number;
-    currentUser: UserType | null;
   };
 }>) => {
-  const { certificates, columnCount, currentUser } = data;
+  const { certificates, columnCount } = data;
 
   const index = rowIndex * columnCount + columnIndex;
   const cert = certificates[index];
@@ -120,7 +117,7 @@ const CellComponent = ({
 
   return (
     <div style={adjustedStyle}>
-      <CertificateCard cert={cert} currentUser={currentUser} />
+      <CertificateCard cert={cert} />
     </div>
   );
 };

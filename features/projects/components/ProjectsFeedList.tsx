@@ -10,14 +10,12 @@ import { FolderOpenIcon } from "lucide-react";
 const ProjectsFeedList = ({
   projects,
   isFetchingProjects,
-  userRole,
   hasMore,
   loadMore,
   personalInfo,
 }: {
   projects: OptimizedProject[];
   isFetchingProjects: boolean;
-  userRole: string;
   hasMore: boolean;
   loadMore: () => void;
   personalInfo: PersonalInfoType;
@@ -30,7 +28,6 @@ const ProjectsFeedList = ({
             <ProjectPostCard
               key={project.id}
               project={project}
-              userRole={userRole}
               personalInfo={personalInfo}
             />
           ))}

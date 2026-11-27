@@ -1,3 +1,4 @@
+import { AdminOnly } from "@/features/users/components/AdminOnly";
 import { CertificateFormDialog } from "./admin-dialogs";
 
 import { ArrowRightIcon, AwardIcon } from "lucide-react";
@@ -5,13 +6,9 @@ import Link from "next/link";
 import CertificatePreviewCard from "./CertificatePreviewCard";
 
 import { getLatestCertificates } from "@/features/certificates/queries";
-import { getSessionUser } from "@/lib/auth";
 import { EmptyState } from "@/components/shared/EmptyState";
 const CertificatesPreview = async () => {
-  const [currentUser, latestCertificates] = await Promise.all([
-    getSessionUser(),
-    getLatestCertificates(3),
-  ]);
+  const latestCertificates = await getLatestCertificates(3);
 
   return (
     <div className="no-scrollbar flex max-h-[394px] w-full flex-col items-start gap-4 overflow-x-hidden overflow-y-auto rounded-lg border bg-card p-3">
@@ -19,11 +16,11 @@ const CertificatesPreview = async () => {
       <div className="flex w-full items-center justify-between gap-2">
         <h2 className="text-md font-bold">Proof in Paper</h2>
 
-        {currentUser && currentUser.role === "admin" && (
+        <AdminOnly>
           <div className="flex items-center gap-2">
             <CertificateFormDialog />
           </div>
-        )}
+        </AdminOnly>
       </div>
 
       {/* certifications list */}

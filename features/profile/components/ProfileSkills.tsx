@@ -155,7 +155,7 @@ const FALLBACK_SKILLS = [
   },
 ];
 
-const ProfileSkills = async ({ userRole }: { userRole: string }) => {
+const ProfileSkills = async () => {
   const personalInfo: PersonalInfoType | null = await getPersonalInfo();
 
   if (!personalInfo) {
@@ -168,7 +168,7 @@ const ProfileSkills = async ({ userRole }: { userRole: string }) => {
       ? personalInfo.skills
       : FALLBACK_SKILLS;
 
-  return <SkillsContent skills={displaySkills} userRole={userRole} />;
+  return <SkillsContent skills={displaySkills} />;
 };
 
 export default ProfileSkills;

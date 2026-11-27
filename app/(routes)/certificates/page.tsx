@@ -8,7 +8,6 @@ import { PersonalInfoType } from "@/db/schema";
 import { getPersonalInfo } from "@/features/profile/queries";
 
 import { getAllCertificates } from "@/features/certificates/queries";
-import { getSessionUser } from "@/lib/auth";
 export const metadata: Metadata = pageMetadata({
   title: "Certificates",
   description:
@@ -24,8 +23,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const CertificatesPage = async () => {
-  const [currentUser, certificates, personalInfo] = await Promise.all([
-    getSessionUser(),
+  const [certificates, personalInfo] = await Promise.all([
     getAllCertificates(),
     getPersonalInfo(),
   ]);
@@ -50,10 +48,7 @@ const CertificatesPage = async () => {
         </aside>
 
         {/* certificates list */}
-        <CertificatesList
-          currentUser={currentUser}
-          certificates={certificates ? certificates : []}
-        />
+        <CertificatesList certificates={certificates ? certificates : []} />
       </div>
     </main>
   );
