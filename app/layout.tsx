@@ -12,7 +12,7 @@ import { shadcn } from "@clerk/ui/themes";
 import { siteConfig } from "@/lib/seo";
 import { ACCENT_INIT_SCRIPT } from "@/lib/accent";
 
-// Icons come from app/favicon.ico, app/icon.svg and app/apple-icon.png;
+// Icons come from app/favicon.ico, app/icon.png and app/apple-icon.png;
 // social previews from app/opengraph-image.tsx and app/twitter-image.tsx;
 // the manifest from app/manifest.ts (all wired by Next's file conventions).
 export const metadata: Metadata = {

@@ -36,10 +36,10 @@ paths:
 - Absolute URLs come from `metadataBase` (`NEXT_PUBLIC_SITE_URL`); use paths.
 - Structured data: render `<JsonLd data={...} />` (escapes `<`). Person
   schema comes from `personJsonLd()`.
-- Brand images: `app/icon.svg`, `favicon.ico`, `apple-icon.png`,
-  `public/icons/*` are generated from `public/jcm-logo.svg`; the OG card is
-  `lib/og-image.tsx`. `public/logo.png` is the in-app navbar/footer logo,
-  a different asset kept on purpose.
+- Brand images: the browser-tab icon (`app/icon.png`, `favicon.ico`) is
+  generated from `public/logo.png`, the same "JC" logo as the navbar,
+  footer and loader. `apple-icon.png`, `public/icons/*` and the OG card
+  (`lib/og-image.tsx`) use the `public/jcm-logo.svg` brand mark.
 
 ## proxy.ts (Clerk middleware)
 
